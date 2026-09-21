@@ -1,14 +1,15 @@
-import React from 'react';
 import { PageHeader, GroupLabel } from '../components/ui/PageHeader';
 import { AssetFrame } from '../components/ui/AssetFrame';
-import { A4 } from '../components/documents/DocumentChrome';
 import { Logo, BrandRule } from '../components/brand/Logo';
 import { QrPlaceholder } from '../components/brand/iconSystem';
-import { company } from '../data/brand';
+import { useCompany } from '@/lib/brand-context';
+import { formats } from '@/lib/formats';
 
 const PAD = 64;
 
 export function DocumentCoversPage() {
+  const company = useCompany();
+
   return (
     <>
       <PageHeader
@@ -22,10 +23,8 @@ export function DocumentCoversPage() {
       <AssetFrame
         title="Cover — Reversed Primary"
         fileName="NubiaGo_Cover_01_Reversed"
-        spec="A4 · 210 × 297 mm"
         description="The default cover. Title occupies the lower third so a cropped image or debossed finish can occupy the space above."
-        width={A4.width}
-        height={A4.height}>
+        artboard={formats.a4}>
         
         <div className="flex h-full w-full flex-col justify-between bg-brand" style={{ padding: PAD }}>
           <div className="flex items-start justify-between">
@@ -57,10 +56,8 @@ export function DocumentCoversPage() {
       <AssetFrame
         title="Cover — Image Band"
         fileName="NubiaGo_Cover_02_Image_Band"
-        spec="A4 · 210 × 297 mm"
         description="A full-width image band between two white fields. Type never sits on the photograph, so any image can be dropped in without a legibility check."
-        width={A4.width}
-        height={A4.height}>
+        artboard={formats.a4}>
         
         <div className="flex h-full w-full flex-col bg-white">
           <div className="flex items-start justify-between" style={{ padding: PAD, paddingBottom: 40 }}>
@@ -96,10 +93,8 @@ export function DocumentCoversPage() {
       <AssetFrame
         title="Cover — Editorial Warm Sand"
         fileName="NubiaGo_Cover_03_Editorial"
-        spec="A4 · 210 × 297 mm"
         description="Warm Sand field with the title set against a client and reference block. Used where the document is addressed to one named recipient."
-        width={A4.width}
-        height={A4.height}>
+        artboard={formats.a4}>
         
         <div className="flex h-full w-full flex-col justify-between bg-brand-sand" style={{ padding: PAD }}>
           <Logo size={24} />
@@ -135,10 +130,8 @@ export function DocumentCoversPage() {
       <AssetFrame
         title="Cover — Technical Index"
         fileName="NubiaGo_Cover_04_Technical"
-        spec="A4 · 210 × 297 mm"
         description="Minimal cover that doubles as a contents page for technical documents, with a QR placeholder linking to the online version."
-        width={A4.width}
-        height={A4.height}>
+        artboard={formats.a4}>
         
         <div className="flex h-full w-full flex-col bg-white" style={{ padding: PAD }}>
           <div className="flex items-end justify-between pb-5">

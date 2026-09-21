@@ -1,10 +1,10 @@
-import React from 'react';
 import { PageHeader, GroupLabel } from '../components/ui/PageHeader';
 import { AssetFrame } from '../components/ui/AssetFrame';
-import { A4, A4Page, DocumentHeader, DocumentFooter } from '../components/documents/DocumentChrome';
+import { A4Page, DocumentHeader, DocumentFooter } from '../components/documents/DocumentChrome';
 import { Logo, BrandRule } from '../components/brand/Logo';
 import { QrPlaceholder } from '../components/brand/iconSystem';
-import { company } from '../data/brand';
+import { useCompany } from '@/lib/brand-context';
+import { formats } from '@/lib/formats';
 
 const PAD = 64;
 
@@ -59,6 +59,8 @@ function MiniLineChart() {
 }
 
 export function ReportsPage() {
+  const company = useCompany();
+
   return (
     <>
       <PageHeader
@@ -72,10 +74,8 @@ export function ReportsPage() {
       <AssetFrame
         title="Report — Cover"
         fileName="NubiaGo_Report_01_Cover"
-        spec="A4 · 210 × 297 mm"
         description="Reporting period and classification sit above the title; the metadata block below records author, reference and distribution."
-        width={A4.width}
-        height={A4.height}>
+        artboard={formats.a4}>
         
         <div className="flex h-full w-full flex-col justify-between bg-white" style={{ padding: PAD }}>
           <div className="flex items-start justify-between">
@@ -119,10 +119,8 @@ export function ReportsPage() {
       <AssetFrame
         title="Report — Executive Summary"
         fileName="NubiaGo_Report_02_Executive_Summary"
-        spec="A4 · 210 × 297 mm"
         description="Headline figures, then findings as numbered statements. Written so a reader who stops here still has the argument."
-        width={A4.width}
-        height={A4.height}>
+        artboard={formats.a4}>
         
         <A4Page
           header={<DocumentHeader variant="continuation" documentTitle="QBR-2024-Q4 · Executive summary" />}
@@ -182,10 +180,8 @@ export function ReportsPage() {
       <AssetFrame
         title="Report — Data Page"
         fileName="NubiaGo_Report_03_Data_Page"
-        spec="A4 · 210 × 297 mm"
         description="Two charts with commentary beside each, and a source line under every exhibit. Figures never appear without an attribution."
-        width={A4.width}
-        height={A4.height}>
+        artboard={formats.a4}>
         
         <A4Page
           header={<DocumentHeader variant="continuation" documentTitle="QBR-2024-Q4 · Performance" />}
@@ -241,10 +237,8 @@ export function ReportsPage() {
       <AssetFrame
         title="Report — Table Page"
         fileName="NubiaGo_Report_04_Table_Page"
-        spec="A4 · 210 × 297 mm"
         description="Market-level table with status marked in semantic colour. Semantic colours appear only as status, never as decoration."
-        width={A4.width}
-        height={A4.height}>
+        artboard={formats.a4}>
         
         <A4Page
           header={<DocumentHeader variant="continuation" documentTitle="QBR-2024-Q4 · Market detail" />}
@@ -303,10 +297,8 @@ export function ReportsPage() {
       <AssetFrame
         title="Report — Conclusions"
         fileName="NubiaGo_Report_05_Conclusions"
-        spec="A4 · 210 × 297 mm"
         description="Recommendations with an owner and a date against each one, closing on a decision requested from the reader."
-        width={A4.width}
-        height={A4.height}>
+        artboard={formats.a4}>
         
         <A4Page
           header={<DocumentHeader variant="continuation" documentTitle="QBR-2024-Q4 · Conclusions" />}
@@ -346,10 +338,8 @@ export function ReportsPage() {
       <AssetFrame
         title="Report — Contact Page"
         fileName="NubiaGo_Report_06_Contact"
-        spec="A4 · 210 × 297 mm"
         description="Author, department contacts and a QR placeholder for the online version, over the reversed closing band."
-        width={A4.width}
-        height={A4.height}>
+        artboard={formats.a4}>
         
         <div className="flex h-full w-full flex-col justify-between bg-white" style={{ padding: PAD, paddingBottom: 0 }}>
           <div>

@@ -1,10 +1,9 @@
-import React from 'react';
 import { PageHeader, GroupLabel } from '../components/ui/PageHeader';
 import { AssetFrame } from '../components/ui/AssetFrame';
-import { A4 } from '../components/documents/DocumentChrome';
 import { Logo, BrandRule } from '../components/brand/Logo';
 import { NG_STROKE, iconByKey, QrPlaceholder } from '../components/brand/iconSystem';
-import { company } from '../data/brand';
+import { useCompany } from '@/lib/brand-context';
+import { formats } from '@/lib/formats';
 
 const PAD = 56;
 
@@ -17,6 +16,7 @@ function CatalogueSpread({
 
 
 }: {section: string;page: string;children: React.ReactNode;}) {
+  const company = useCompany();
   return (
     <div className="flex h-full w-full flex-col bg-white" style={{ padding: PAD, paddingBottom: 32 }}>
       <header className="flex shrink-0 items-baseline justify-between border-b border-gray-200 pb-3">
@@ -48,6 +48,8 @@ const specRows: [string, string][] = [
 
 
 export function CataloguePage() {
+  const company = useCompany();
+
   const Product = iconByKey('product');
   const Spec = iconByKey('spec');
   const Cert = iconByKey('certification');
@@ -66,10 +68,8 @@ export function CataloguePage() {
       <AssetFrame
         title="Catalogue — Category Cover"
         fileName="NubiaGo_Catalogue_01_Category_Cover"
-        spec="A4 · 210 × 297 mm"
         description="Reversed lower field carrying the category number and name, with the image band above."
-        width={A4.width}
-        height={A4.height}>
+        artboard={formats.a4}>
         
         <div className="flex h-full w-full flex-col bg-white">
           <div className="flex items-end justify-between px-14 pb-8 pt-12">
@@ -98,10 +98,8 @@ export function CataloguePage() {
       <AssetFrame
         title="Catalogue — Product Introduction"
         fileName="NubiaGo_Catalogue_02_Introduction"
-        spec="A4 · 210 × 297 mm"
         description="Narrative column beside four capability marks, closing on the category index so buyers can jump straight to a range."
-        width={A4.width}
-        height={A4.height}>
+        artboard={formats.a4}>
         
         <CatalogueSpread section="Industrial equipment · Introduction" page="03">
           <h1 className="text-[28px] font-bold leading-[1.15] tracking-[-0.025em] text-ink">
@@ -166,10 +164,8 @@ export function CataloguePage() {
       <AssetFrame
         title="Catalogue — Product Grid"
         fileName="NubiaGo_Catalogue_03_Product_Grid"
-        spec="A4 · 210 × 297 mm"
         description="A 2 × 3 grid with shared baselines: image, model code, name, one-line description and a key figure in the same position on every card."
-        width={A4.width}
-        height={A4.height}>
+        artboard={formats.a4}>
         
         <CatalogueSpread section="Industrial equipment · Material handling" page="04">
           <div className="grid h-full grid-cols-2 grid-rows-3 gap-x-8 gap-y-7">
@@ -204,10 +200,8 @@ export function CataloguePage() {
       <AssetFrame
         title="Catalogue — Single Product"
         fileName="NubiaGo_Catalogue_04_Single_Product"
-        spec="A4 · 210 × 297 mm"
         description="Hero image, model code, key figures and a short technical extract. Full data continues on the specification page."
-        width={A4.width}
-        height={A4.height}>
+        artboard={formats.a4}>
         
         <CatalogueSpread section="Industrial equipment · NG-IND-4200" page="05">
           <div className="grid grid-cols-12 gap-10">
@@ -274,10 +268,8 @@ export function CataloguePage() {
       <AssetFrame
         title="Catalogue — Specification Page"
         fileName="NubiaGo_Catalogue_05_Specification"
-        spec="A4 · 210 × 297 mm"
         description="Two-column technical table with zebra rows, a dimensional diagram area and the certification block beneath."
-        width={A4.width}
-        height={A4.height}>
+        artboard={formats.a4}>
         
         <CatalogueSpread section="Industrial equipment · Technical data" page="06">
           <h1 className="text-[22px] font-bold leading-[1.2] tracking-[-0.02em] text-ink">
@@ -326,10 +318,8 @@ export function CataloguePage() {
       <AssetFrame
         title="Catalogue — Product Comparison"
         fileName="NubiaGo_Catalogue_06_Comparison"
-        spec="A4 · 210 × 297 mm"
         description="Three models compared on the same attributes, with the recommended configuration held in Warm Sand."
-        width={A4.width}
-        height={A4.height}>
+        artboard={formats.a4}>
         
         <CatalogueSpread section="Industrial equipment · Comparison" page="07">
           <h1 className="text-[22px] font-bold leading-[1.2] tracking-[-0.02em] text-ink">
@@ -390,10 +380,8 @@ export function CataloguePage() {
       <AssetFrame
         title="Catalogue — Contact Page"
         fileName="NubiaGo_Catalogue_07_Contact"
-        spec="A4 · 210 × 297 mm"
         description="How to order, regional contacts and QR placeholders for the full catalogue and company profile."
-        width={A4.width}
-        height={A4.height}>
+        artboard={formats.a4}>
         
         <CatalogueSpread section="Contact" page="24">
           <div className="flex h-full flex-col justify-between">

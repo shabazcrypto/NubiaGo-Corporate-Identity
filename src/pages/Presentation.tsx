@@ -1,7 +1,8 @@
-import React from 'react';
+import { useRef, useState } from 'react';
+import { DownloadIcon, Loader2Icon } from 'lucide-react';
 import { PageHeader, GroupLabel } from '../components/ui/PageHeader';
 import { AssetFrame } from '../components/ui/AssetFrame';
-import { SLIDE } from '../components/presentation/SlideChrome';
+import { Button } from '@/components/ui/button';
 import {
   CoverSlide,
   SectionDividerSlide,
@@ -23,6 +24,8 @@ import {
   QuoteSlide,
   ContactSlide } from
 '../components/presentation/slidesData';
+import { formats } from '@/lib/formats';
+import { exportDeckPdf } from '@/utils/exportAsset';
 
 interface SlideEntry {
   title: string;
@@ -31,7 +34,7 @@ interface SlideEntry {
   render: () => JSX.Element;
 }
 
-const slides: SlideEntry[] = [
+export const slides: SlideEntry[] = [
 {
   title: '01 — Cover / Title',
   fileName: 'NubiaGo_Slide_01_Cover',
@@ -137,6 +140,25 @@ const slides: SlideEntry[] = [
 
 
 export function PresentationPage() {
+  const deckHostRef = useRef<HTMLDivElement>(null);
+  const [deckBusy, setDeckBusy] = useState(false);
+  const [deckError, setDeckError] = useState<string | null>(null);
+
+  const downloadDeck = async () => {
+    const host = deckHostRef.current;
+    if (!host) return;
+    setDeckBusy(true);
+    setDeckError(null);
+    try {
+      const nodes = Array.from(host.querySelectorAll('[data-deck-slide]')) as HTMLElement[];
+      await exportDeckPdf(nodes, 'NubiaGo_Presentation_Deck', formats.slide);
+    } catch (err) {
+      setDeckError(err instanceof Error ? err.message : 'Deck export failed');
+    } finally {
+      setDeckBusy(false);
+    }
+  };
+
   return (
     <>
       <PageHeader
@@ -159,17 +181,43 @@ export function PresentationPage() {
         )}
       </div>
 
-      <GroupLabel note="Export each slide as PNG, or print the deck to PDF">Slide layouts</GroupLabel>
+      <div className="mb-8 flex flex-wrap items-center gap-3 border border-gray-200 bg-gray-50 px-5 py-4 print:hidden">
+        <Button type="button" onClick={downloadDeck} disabled={deckBusy}>
+          {deckBusy ? <Loader2Icon className="animate-spin" strokeWidth={1.5} /> : <DownloadIcon strokeWidth={1.5} />}
+          Download deck PDF
+        </Button>
+        <p className="text-[13px] text-gray-700">
+          One multi-page 16:9 PDF of all 17 slides. Per-slide PNG remains on each artboard below.
+        </p>
+        {deckError ? <p className="w-full text-[12px] text-state-error">{deckError}</p> : null}
+      </div>
+
+      <div
+        ref={deckHostRef}
+        aria-hidden
+        className="pointer-events-none fixed left-[-10000px] top-0 opacity-0"
+        style={{ width: formats.slide.width }}
+      >
+        {slides.map((slide) => (
+          <div
+            key={`deck-${slide.fileName}`}
+            data-deck-slide
+            style={{ width: formats.slide.width, height: formats.slide.height, overflow: 'hidden' }}
+          >
+            {slide.render()}
+          </div>
+        ))}
+      </div>
+
+      <GroupLabel note="PNG per slide · deck PDF above">Slide layouts</GroupLabel>
 
       {slides.map((slide) =>
       <AssetFrame
         key={slide.fileName}
         title={slide.title}
         fileName={slide.fileName}
-        spec="Slide · 1280 × 720 px"
         description={slide.description}
-        width={SLIDE.width}
-        height={SLIDE.height}>
+        artboard={formats.slide}>
         
           {slide.render()}
         </AssetFrame>

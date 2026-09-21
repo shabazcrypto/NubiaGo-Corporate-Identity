@@ -1,7 +1,6 @@
-import React from 'react';
 import { PageHeader, GroupLabel } from '../components/ui/PageHeader';
 import { AssetFrame } from '../components/ui/AssetFrame';
-import { A4, A4Page, DocumentFooter } from '../components/documents/DocumentChrome';
+import { A4Page, DocumentFooter } from '../components/documents/DocumentChrome';
 import {
   DocumentTypeHeader,
   PartyBlocks,
@@ -11,13 +10,16 @@ import {
   SignatureRow } from
 '../components/documents/CommercialParts';
 import { QrPlaceholder } from '../components/brand/iconSystem';
-import { company } from '../data/brand';
+import { useCompany } from '@/lib/brand-context';
+import { formats } from '@/lib/formats';
 import { quotationItems, totals, customer, terms, bankDetails } from '../data/commercial';
 
 const customerLines = [customer.company, customer.attention, customer.address, customer.country, customer.taxId];
-const salesLines = ['[Name Surname]', '[Job Title]', company.phone, company.email];
 
 export function CommercialPage() {
+  const company = useCompany();
+  const salesLines = [company.personName, company.jobTitle, company.phone, company.email];
+
   return (
     <>
       <PageHeader
@@ -31,10 +33,8 @@ export function CommercialPage() {
       <AssetFrame
         title="Quotation — Clean Standard"
         fileName="NubiaGo_Quotation_Standard"
-        spec="A4 · 210 × 297 mm"
         description="The everyday version: light header, full line-item detail, terms grid and signature row. Lowest ink coverage of the commercial family."
-        width={A4.width}
-        height={A4.height}>
+        artboard={formats.a4}>
         
         <A4Page footer={<DocumentFooter variant="minimal" page="1 / 2" />}>
           <DocumentTypeHeader
@@ -71,10 +71,8 @@ export function CommercialPage() {
       <AssetFrame
         title="Quotation — Premium Sales"
         fileName="NubiaGo_Quotation_Premium"
-        spec="A4 · 210 × 297 mm"
         description="Reversed header band, a summary statement above the table and bank details in the closing block. Same structure and figures as the standard version."
-        width={A4.width}
-        height={A4.height}>
+        artboard={formats.a4}>
         
         <A4Page footer={<DocumentFooter variant="full" page="1 / 3" reference="QT-2024-0417" />}>
           <DocumentTypeHeader
@@ -142,10 +140,8 @@ export function CommercialPage() {
       <AssetFrame
         title="Commercial Invoice"
         fileName="NubiaGo_Commercial_Invoice"
-        spec="A4 · 210 × 297 mm"
         description="Customs-ready layout: consignee and notify party, HS-style code column, declaration statement and signature. Clarity is prioritised over decoration throughout."
-        width={A4.width}
-        height={A4.height}>
+        artboard={formats.a4}>
         
         <A4Page footer={<DocumentFooter variant="minimal" page="1 / 1" />}>
           <DocumentTypeHeader
@@ -198,10 +194,8 @@ export function CommercialPage() {
       <AssetFrame
         title="Proforma Invoice"
         fileName="NubiaGo_Proforma_Invoice"
-        spec="A4 · 210 × 297 mm"
         description="Same engine, marked as proforma for advance payment and import licensing. A status band states explicitly that it is not a tax invoice."
-        width={A4.width}
-        height={A4.height}>
+        artboard={formats.a4}>
         
         <A4Page footer={<DocumentFooter variant="minimal" page="1 / 1" />}>
           <DocumentTypeHeader
@@ -250,10 +244,8 @@ export function CommercialPage() {
       <AssetFrame
         title="Order Confirmation"
         fileName="NubiaGo_Order_Confirmation"
-        spec="A4 · 210 × 297 mm"
         description="Confirms an accepted order: status band in Success, confirmed delivery schedule table and no payment request."
-        width={A4.width}
-        height={A4.height}>
+        artboard={formats.a4}>
         
         <A4Page footer={<DocumentFooter variant="minimal" page="1 / 1" />}>
           <DocumentTypeHeader

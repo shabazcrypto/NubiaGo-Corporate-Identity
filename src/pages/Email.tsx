@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { CopyIcon, CheckIcon, FileCode2Icon, ArrowRightIcon } from 'lucide-react';
 import { PageHeader, GroupLabel } from '../components/ui/PageHeader';
 import { AssetFrame } from '../components/ui/AssetFrame';
+import { Button } from '@/components/ui/button';
 import { Logo, BrandRule } from '../components/brand/Logo';
 import { NG_STROKE, iconByKey } from '../components/brand/iconSystem';
-import { company } from '../data/brand';
+import { useCompany } from '@/lib/brand-context';
+import { formats } from '@/lib/formats';
 import { copyText, downloadText } from '../utils/exportAsset';
 import {
   standardSignatureHtml,
@@ -13,16 +15,14 @@ import {
   wrapAsEmailDocument } from
 '../utils/emailSignatures';
 
-const buttonBase =
-'inline-flex items-center gap-1.5 border border-gray-200 bg-white px-2.5 py-1.5 text-[11px] font-medium text-gray-700 transition-colors duration-150 ease-out hover:border-brand hover:text-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-1';
-
 function HtmlActions({ html, fileName }: {html: string;fileName: string;}) {
   const [copied, setCopied] = useState(false);
   return (
     <>
-      <button
+      <Button
         type="button"
-        className={buttonBase}
+        variant="outline"
+        size="sm"
         onClick={async () => {
           await copyText(html);
           setCopied(true);
@@ -30,20 +30,21 @@ function HtmlActions({ html, fileName }: {html: string;fileName: string;}) {
         }}>
         
         {copied ?
-        <CheckIcon className="h-3.5 w-3.5 text-state-success" strokeWidth={2} /> :
+        <CheckIcon className="text-state-success" strokeWidth={2} /> :
 
-        <CopyIcon className="h-3.5 w-3.5" strokeWidth={1.5} />
+        <CopyIcon strokeWidth={1.5} />
         }
         Copy HTML
-      </button>
-      <button
+      </Button>
+      <Button
         type="button"
-        className={buttonBase}
+        variant="outline"
+        size="sm"
         onClick={() => downloadText(wrapAsEmailDocument(html, fileName), `${fileName}.html`, 'text/html')}>
         
-        <FileCode2Icon className="h-3.5 w-3.5" strokeWidth={1.5} />
+        <FileCode2Icon strokeWidth={1.5} />
         HTML
-      </button>
+      </Button>
     </>);
 
 }
@@ -75,6 +76,11 @@ function NewsletterBlock({ label, children }: {label: string;children: React.Rea
 }
 
 export function EmailPage() {
+  const company = useCompany();
+  const standardHtml = standardSignatureHtml(company);
+  const compactHtml = compactSignatureHtml(company);
+  const executiveHtml = executiveSignatureHtml(company);
+
   const MailIcon = iconByKey('email');
   const GlobeIcon = iconByKey('website');
 
@@ -92,37 +98,34 @@ export function EmailPage() {
       <AssetFrame
         title="Standard Corporate Signature"
         fileName="NubiaGo_Signature_Standard"
-        spec="HTML · ~360 px wide"
         description="The default for all staff. Stacked layout survives narrow mobile clients; placeholders in square brackets are replaced per person."
-        width={720}
-        height={420}
-        actions={<HtmlActions html={standardSignatureHtml} fileName="NubiaGo_Signature_Standard" />}>
+        artboard={formats.signature}
+        htmlOnly
+        actions={<HtmlActions html={standardHtml} fileName="NubiaGo_Signature_Standard" />}>
         
-        <SignaturePreview html={standardSignatureHtml} />
+        <SignaturePreview html={standardHtml} />
       </AssetFrame>
 
       <AssetFrame
         title="Compact Signature"
         fileName="NubiaGo_Signature_Compact"
-        spec="HTML · ~420 px wide"
         description="For replies and internal threads. One rule of Gold separates the mark from the details, keeping three lines of chrome at most."
-        width={720}
-        height={260}
-        actions={<HtmlActions html={compactSignatureHtml} fileName="NubiaGo_Signature_Compact" />}>
+        artboard={formats.signatureCompact}
+        htmlOnly
+        actions={<HtmlActions html={compactHtml} fileName="NubiaGo_Signature_Compact" />}>
         
-        <SignaturePreview html={compactSignatureHtml} />
+        <SignaturePreview html={compactHtml} />
       </AssetFrame>
 
       <AssetFrame
         title="Executive / Sales Signature"
         fileName="NubiaGo_Signature_Executive"
-        spec="HTML · 540 px wide"
         description="For executives, sales and business development writing to international customers. Adds the reversed brand band, a connect column and the legal line."
-        width={720}
-        height={520}
-        actions={<HtmlActions html={executiveSignatureHtml} fileName="NubiaGo_Signature_Executive" />}>
+        artboard={formats.signatureExecutive}
+        htmlOnly
+        actions={<HtmlActions html={executiveHtml} fileName="NubiaGo_Signature_Executive" />}>
         
-        <SignaturePreview html={executiveSignatureHtml} />
+        <SignaturePreview html={executiveHtml} />
       </AssetFrame>
 
       <div className="mb-14 border-l-2 border-brand-gold bg-gray-50 px-5 py-4 text-[13px] leading-relaxed text-gray-700">
@@ -135,10 +138,8 @@ export function EmailPage() {
       <AssetFrame
         title="Email / Newsletter Master"
         fileName="NubiaGo_Newsletter_Master"
-        spec="Email · 600 px column"
         description="Header, title area, image area, content blocks, CTA and footer as independent modules. Blocks can be reordered or removed without breaking the grid."
-        width={NEWSLETTER_WIDTH}
-        height={1180}>
+        artboard={formats.newsletter}>
         
         <div style={{ width: NEWSLETTER_WIDTH }} className="bg-white">
           <NewsletterBlock label="Header">

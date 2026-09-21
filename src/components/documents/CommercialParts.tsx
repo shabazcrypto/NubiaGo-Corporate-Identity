@@ -1,4 +1,3 @@
-import React from 'react';
 import { Logo, BrandRule } from '../brand/Logo';
 import { company } from '../../data/brand';
 import { type LineItem } from '../../data/commercial';

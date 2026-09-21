@@ -1,14 +1,13 @@
-import React from 'react';
 import { PageHeader, GroupLabel } from '../components/ui/PageHeader';
 import { AssetFrame } from '../components/ui/AssetFrame';
 import { Logo, BrandRule } from '../components/brand/Logo';
 import { NG_STROKE, iconByKey } from '../components/brand/iconSystem';
-import { company } from '../data/brand';
+import { useCompany } from '@/lib/brand-context';
+import { formats } from '@/lib/formats';
 
-const LINK = { width: 1200, height: 627 };
-const SQUARE = { width: 1080, height: 1080 };
 
 function PostFooter({ tone = 'dark', label }: {tone?: 'dark' | 'light';label?: string;}) {
+  const company = useCompany();
   const border = tone === 'dark' ? 'border-white/15' : 'border-gray-200';
   const text = tone === 'dark' ? 'text-white/55' : 'text-gray-500';
   return (
@@ -22,6 +21,8 @@ function PostFooter({ tone = 'dark', label }: {tone?: 'dark' | 'light';label?: s
 }
 
 export function DigitalSocialPage() {
+  const company = useCompany();
+
   const Cert = iconByKey('certification');
   const Product = iconByKey('product');
   const Contact = iconByKey('contact');
@@ -52,12 +53,8 @@ export function DigitalSocialPage() {
       <AssetFrame
         title="LinkedIn — Company Announcement"
         fileName="NubiaGo_Social_01_Company_Announcement"
-        spec="LinkedIn link post · 1200 × 627 px"
         description="Reversed field, eyebrow, one statement and a supporting line. No stock photography and no decorative shapes."
-        width={LINK.width}
-        height={LINK.height}
-        formats={['png', 'jpg']}
-        printable={false}>
+        artboard={formats.linkedIn}>
         
         <div className="flex h-full w-full flex-col justify-between bg-brand p-16">
           <div className="flex items-start justify-between">
@@ -81,12 +78,8 @@ export function DigitalSocialPage() {
       <AssetFrame
         title="LinkedIn — Product Announcement"
         fileName="NubiaGo_Social_02_Product_Announcement"
-        spec="LinkedIn link post · 1200 × 627 px"
         description="Split layout: message on White, product image area on Warm Sand. Used when a visual genuinely adds information."
-        width={LINK.width}
-        height={LINK.height}
-        formats={['png', 'jpg']}
-        printable={false}>
+        artboard={formats.linkedIn}>
         
         <div className="flex h-full w-full">
           <div className="flex w-[58%] flex-col justify-between p-16">
@@ -116,12 +109,8 @@ export function DigitalSocialPage() {
       <AssetFrame
         title="Feed — Product Launch"
         fileName="NubiaGo_Social_03_Product_Launch"
-        spec="LinkedIn feed post · 1080 × 1080 px"
         description="Square launch card with three supporting facts at the base. Sized so the headline holds at thumbnail scale."
-        width={SQUARE.width}
-        height={SQUARE.height}
-        formats={['png', 'jpg']}
-        printable={false}>
+        artboard={formats.square}>
         
         <div className="flex h-full w-full flex-col justify-between bg-white p-20">
           <div className="flex items-start justify-between">
@@ -166,12 +155,8 @@ export function DigitalSocialPage() {
       <AssetFrame
         title="Feed — Company News"
         fileName="NubiaGo_Social_04_Company_News"
-        spec="LinkedIn feed post · 1080 × 1080 px"
         description="Warm Sand field for softer, non-commercial updates — office openings, team news, policy notes."
-        width={SQUARE.width}
-        height={SQUARE.height}
-        formats={['png', 'jpg']}
-        printable={false}>
+        artboard={formats.square}>
         
         <div className="flex h-full w-full flex-col justify-between bg-brand-sand p-20">
           <div className="flex items-start justify-between">
@@ -195,12 +180,8 @@ export function DigitalSocialPage() {
       <AssetFrame
         title="Feed — Corporate Achievement"
         fileName="NubiaGo_Social_05_Achievement"
-        spec="LinkedIn feed post · 1080 × 1080 px"
         description="A single figure carries the post. Restraint is the point — no confetti, no badges, no exclamation."
-        width={SQUARE.width}
-        height={SQUARE.height}
-        formats={['png', 'jpg']}
-        printable={false}>
+        artboard={formats.square}>
         
         <div className="flex h-full w-full flex-col justify-between bg-brand p-20">
           <div className="flex items-start justify-between">
@@ -222,12 +203,8 @@ export function DigitalSocialPage() {
       <AssetFrame
         title="LinkedIn — Event Announcement"
         fileName="NubiaGo_Social_06_Event"
-        spec="LinkedIn link post · 1200 × 627 px"
         description="Event details are set as a labelled block so date, venue and format are readable without the caption."
-        width={LINK.width}
-        height={LINK.height}
-        formats={['png', 'jpg']}
-        printable={false}>
+        artboard={formats.linkedIn}>
         
         <div className="flex h-full w-full flex-col justify-between bg-white p-16">
           <div className="flex items-start justify-between">
@@ -265,12 +242,8 @@ export function DigitalSocialPage() {
       <AssetFrame
         title="Feed — Customer / Partner Announcement"
         fileName="NubiaGo_Social_07_Partner"
-        spec="LinkedIn feed post · 1080 × 1080 px"
         description="Partner logo cleared in its own white field, one line of substance, and a quote attributed to a named person."
-        width={SQUARE.width}
-        height={SQUARE.height}
-        formats={['png', 'jpg']}
-        printable={false}>
+        artboard={formats.square}>
         
         <div className="flex h-full w-full flex-col justify-between bg-white p-20">
           <div className="flex items-center gap-3">

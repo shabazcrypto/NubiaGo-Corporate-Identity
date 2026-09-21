@@ -1,12 +1,36 @@
-/* @import url() FONT IMPORTS MUST ALWAYS BE AT THE VERY TOP OF THIS FILE, ABOVE THE TAILWIND IMPORTS — DO NOT DELETE THIS COMMENT */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import '@fontsource/inter/300.css';
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/inter/700.css';
+@import '@fontsource/inter/800.css';
 
-/* CRITICAL: THE FOLLOWING TAILWIND IMPORTS MUST NEVER BE DELETED OR REORDERED — DO NOT DELETE THIS COMMENT */
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-/* END TAILWIND IMPORTS — ALL OTHER CSS MUST GO BELOW THIS LINE */
+:root {
+  --background: 0 0% 100%;
+  --foreground: 0 0% 10%;
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 10%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 10%;
+  --primary: 214 52% 25%;
+  --primary-foreground: 40 39% 94%;
+  --secondary: 38 39% 94%;
+  --secondary-foreground: 214 52% 25%;
+  --muted: 0 0% 98%;
+  --muted-foreground: 0 0% 45%;
+  --accent: 38 39% 94%;
+  --accent-foreground: 214 52% 25%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 0 0% 90%;
+  --input: 0 0% 90%;
+  --ring: 214 52% 25%;
+  --radius: 0px;
+}
 
 html,
 body,
@@ -20,13 +44,11 @@ body {
   -webkit-font-smoothing: antialiased;
   font-feature-settings: 'cv11', 'ss01';
 }
-/* The NubiaGo wordmark: Inter, 800, tightened tracking, always lowercase. */
 .ng-wordmark {
   font-weight: 800;
   letter-spacing: -0.035em;
   line-height: 1;
 }
-/* Keep type crisp in html-to-image raster exports. */
 .ng-wordmark,
 .asset-scale {
   text-rendering: geometricPrecision;
@@ -50,7 +72,6 @@ body {
     box-shadow: none !important;
     margin: 0 !important;
   }
-  /* Neutralise the preview scaling so the artboard prints at true size. */
   .asset-scale {
     transform: none !important;
   }

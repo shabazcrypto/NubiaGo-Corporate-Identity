@@ -1,27 +1,27 @@
-import { company } from '../data/brand';
+import type { CompanyInfo } from '@/data/brand';
+import { defaultCompany } from '@/data/brand';
 
-const FONT = "font-family:Inter,Arial,Helvetica,sans-serif;";
+const FONT = 'font-family:Inter,Arial,Helvetica,sans-serif;';
 const PRIMARY = '#1E3A5F';
 const GOLD = '#C9A227';
 const GRAY500 = '#737373';
 const GRAY200 = '#E5E5E5';
 const INK = '#1A1A1A';
-const MAILTO = `mailto:${company.email}`;
 
 const wordmark = (size: number, color: string) =>
-`<span style="${FONT}font-size:${size}px;font-weight:800;letter-spacing:-0.035em;color:${color};line-height:1;">nubiago</span>`;
+  `<span style="${FONT}font-size:${size}px;font-weight:800;letter-spacing:-0.035em;color:${color};line-height:1;">nubiago</span>`;
 
-/** A single hairline. The identity is carried by type and space, not ornament. */
 const rule = (width: number, color = PRIMARY) =>
-`<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="${width}" style="border-collapse:collapse;"><tr>` +
-`<td width="${width}" height="2" style="background-color:${color};font-size:0;line-height:0;">&nbsp;</td>` +
-`</tr></table>`;
+  `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="${width}" style="border-collapse:collapse;"><tr>` +
+  `<td width="${width}" height="2" style="background-color:${color};font-size:0;line-height:0;">&nbsp;</td>` +
+  `</tr></table>`;
 
 const link = (label: string, href: string, color = GRAY500) =>
-`<a href="${href}" style="${FONT}color:${color};text-decoration:none;">${label}</a>`;
+  `<a href="${href}" style="${FONT}color:${color};text-decoration:none;">${label}</a>`;
 
-/** Standard corporate signature — the default for all employees. */
-export const standardSignatureHtml = `
+export function standardSignatureHtml(company: CompanyInfo = defaultCompany) {
+  const mailto = `mailto:${company.email}`;
+  return `
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;${FONT}">
   <tr>
     <td style="padding:0 0 12px 0;">${wordmark(20, PRIMARY)}</td>
@@ -30,17 +30,17 @@ export const standardSignatureHtml = `
     <td style="padding:0 0 12px 0;">${rule(64)}</td>
   </tr>
   <tr>
-    <td style="${FONT}font-size:14px;font-weight:600;color:${INK};padding:0 0 2px 0;">[NAME SURNAME]</td>
+    <td style="${FONT}font-size:14px;font-weight:600;color:${INK};padding:0 0 2px 0;">${company.personName.toUpperCase()}</td>
   </tr>
   <tr>
-    <td style="${FONT}font-size:12px;color:${GRAY500};padding:0 0 12px 0;">[JOB TITLE] &middot; NubiaGo</td>
+    <td style="${FONT}font-size:12px;color:${GRAY500};padding:0 0 12px 0;">${company.jobTitle} &middot; NubiaGo</td>
   </tr>
   <tr>
     <td style="${FONT}font-size:12px;color:${GRAY500};line-height:1.7;">
-      T ${link('[Phone]', 'tel:+2340000000000')}<br />
-      E ${link(company.email, MAILTO)}<br />
+      T ${link(company.phone, `tel:${company.phone.replace(/\s/g, '')}`)}<br />
+      E ${link(company.email, mailto)}<br />
       W ${link(company.website, company.websiteUrl, PRIMARY)}<br />
-      A [Street address], ${company.addressLine2}, ${company.country}
+      A ${company.addressLine1}, ${company.addressLine2}, ${company.country}
     </td>
   </tr>
   <tr>
@@ -49,25 +49,29 @@ export const standardSignatureHtml = `
     </td>
   </tr>
 </table>`.trim();
+}
 
-/** Compact signature — replies and short internal threads. */
-export const compactSignatureHtml = `
+export function compactSignatureHtml(company: CompanyInfo = defaultCompany) {
+  const mailto = `mailto:${company.email}`;
+  return `
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;${FONT}">
   <tr>
     <td valign="middle" style="padding:0 14px 0 0;border-right:1px solid ${GRAY200};">
       ${wordmark(16, PRIMARY)}
     </td>
     <td valign="top" style="padding:0 0 0 14px;${FONT}font-size:12px;color:${GRAY500};line-height:1.6;">
-      <span style="font-size:13px;font-weight:600;color:${INK};">[NAME SURNAME]</span><br />
-      [JOB TITLE] &middot; NubiaGo<br />
-      [Phone] &middot; ${link(company.email, MAILTO)} &middot; ${link(company.website, company.websiteUrl, PRIMARY)}<br />
+      <span style="font-size:13px;font-weight:600;color:${INK};">${company.personName.toUpperCase()}</span><br />
+      ${company.jobTitle} &middot; NubiaGo<br />
+      ${company.phone} &middot; ${link(company.email, mailto)} &middot; ${link(company.website, company.websiteUrl, PRIMARY)}<br />
       <span style="font-size:10px;color:#A3A3A3;">${company.endorsement}</span>
     </td>
   </tr>
 </table>`.trim();
+}
 
-/** Executive / sales signature — external and international correspondence. */
-export const executiveSignatureHtml = `
+export function executiveSignatureHtml(company: CompanyInfo = defaultCompany) {
+  const mailto = `mailto:${company.email}`;
+  return `
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="540" style="border-collapse:collapse;${FONT}width:540px;">
   <tr>
     <td style="background-color:${PRIMARY};padding:18px 20px;">
@@ -82,13 +86,13 @@ export const executiveSignatureHtml = `
       <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;">
         <tr>
           <td valign="top" style="${FONT}padding-right:20px;">
-            <div style="font-size:15px;font-weight:600;color:${INK};padding-bottom:2px;">[NAME SURNAME]</div>
-            <div style="font-size:12px;color:${GRAY500};padding-bottom:12px;">[JOB TITLE]</div>
+            <div style="font-size:15px;font-weight:600;color:${INK};padding-bottom:2px;">${company.personName.toUpperCase()}</div>
+            <div style="font-size:12px;color:${GRAY500};padding-bottom:12px;">${company.jobTitle}</div>
             <div style="font-size:12px;color:${GRAY500};line-height:1.8;">
-              T ${link('[Phone]', 'tel:+2340000000000')}<br />
-              E ${link(company.email, MAILTO)}<br />
+              T ${link(company.phone, `tel:${company.phone.replace(/\s/g, '')}`)}<br />
+              E ${link(company.email, mailto)}<br />
               W ${link(company.website, company.websiteUrl, PRIMARY)}<br />
-              A [Street address], ${company.addressLine2}, ${company.country}
+              A ${company.addressLine1}, ${company.addressLine2}, ${company.country}
             </div>
           </td>
           <td valign="top" width="150" style="${FONT}border-left:1px solid ${GRAY200};padding-left:20px;font-size:11px;color:${GRAY500};line-height:1.8;">
@@ -110,6 +114,7 @@ export const executiveSignatureHtml = `
     </td>
   </tr>
 </table>`.trim();
+}
 
 export function wrapAsEmailDocument(body: string, title: string) {
   return `<!doctype html>

@@ -1,4 +1,3 @@
-import React from 'react';
 import { SlideShell, DarkSlide, StatBlock } from './SlideChrome';
 import { Logo, BrandRule } from '../brand/Logo';
 import { NG_STROKE, iconByKey, QrPlaceholder } from '../brand/iconSystem';

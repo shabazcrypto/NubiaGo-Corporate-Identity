@@ -1,8 +1,9 @@
 import React from 'react';
 import { Logo, BrandRule } from '../brand/Logo';
-import { company } from '../../data/brand';
+import { formats } from '@/lib/formats';
+import { useCompany } from '@/lib/brand-context';
 
-export const SLIDE = { width: 1280, height: 720 };
+export const SLIDE = { width: formats.slide.width, height: formats.slide.height };
 export const SLIDE_MARGIN = 64;
 
 interface SlideShellProps {
@@ -43,6 +44,7 @@ export function SlideShell({ eyebrow, title, lead, number, children, tint = 'whi
 }
 
 export function SlideFooter({ number, tone = 'light' }: {number: string;tone?: 'light' | 'dark';}) {
+  const company = useCompany();
   const color = tone === 'light' ? 'text-gray-500' : 'text-white/55';
   const border = tone === 'light' ? 'border-gray-200' : 'border-white/15';
   return (

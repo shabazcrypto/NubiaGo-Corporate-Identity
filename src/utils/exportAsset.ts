@@ -1,74 +1,177 @@
-import { toPng, toJpeg, toSvg } from 'html-to-image';
+import { toJpeg, toPng } from 'html-to-image';
+import { PDFDocument } from 'pdf-lib';
+import type { ArtboardSpec, ExportKind } from '@/lib/formats';
+import { mmToPt } from '@/lib/formats';
+import { dataUrlToBytes, injectPngDpi } from '@/lib/png-phys';
+import { outlinedWordmarkSvg, type WordmarkTone } from '@/lib/wordmark';
 
-export type ExportFormat = 'png' | 'jpg' | 'svg';
+export type ExportFormat = ExportKind;
 
-function triggerDownload(dataUrl: string, fileName: string) {
+function triggerDownload(href: string, fileName: string) {
   const link = document.createElement('a');
-  link.href = dataUrl;
+  link.href = href;
   link.download = fileName;
+  link.rel = 'noopener';
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
 }
 
-/**
- * Screen artboards are authored at 96 dpi, so a 3.125× pixel ratio produces a
- * true 300 dpi file — the minimum for print. Raster exports are never taken at
- * 1× or 2×, which is what made earlier downloads look soft.
- */
-export const PRINT_SCALE = 3.125;
-export const SCREEN_SCALE = 3;
+export function triggerDownloadBytes(bytes: Uint8Array, fileName: string, mime: string) {
+  const copy = new Uint8Array(bytes.byteLength);
+  copy.set(bytes);
+  const blob = new Blob([copy], { type: mime });
+  const url = URL.createObjectURL(blob);
+  triggerDownload(url, fileName);
+  window.setTimeout(() => URL.revokeObjectURL(url), 4000);
+}
 
 async function waitForFonts() {
   if ('fonts' in document) {
     try {
-      await (document as Document & {fonts: FontFaceSet;}).fonts.ready;
+      await (document as Document & { fonts: FontFaceSet }).fonts.ready;
+      // Warm the wordmark face used across artboards.
+      await (document as Document & { fonts: FontFaceSet }).fonts.load('800 72px Inter');
     } catch {
-
-      /* font loading is best-effort */}
+      /* font loading is best-effort */
+    }
   }
+  // Give layout a frame after fonts settle (important on first production visit).
+  await new Promise((resolve) => requestAnimationFrame(() => resolve(undefined)));
 }
 
-function baseOptions(pixelRatio: number, width: number, height: number) {
-  return {
+function cloneOptions(spec: ArtboardSpec, transparent: boolean) {
+  const base = {
     cacheBust: true,
-    pixelRatio,
-    width,
-    height,
-    canvasWidth: Math.round(width * pixelRatio),
-    canvasHeight: Math.round(height * pixelRatio),
-    backgroundColor: '#ffffff',
+    pixelRatio: spec.pixelRatio,
+    width: spec.width,
+    height: spec.height,
+    canvasWidth: spec.exportWidth,
+    canvasHeight: spec.exportHeight,
     skipAutoScale: true,
-    style: { transform: 'none', margin: '0', boxShadow: 'none' }
+    // Keep only the artboard subtree — ignore scaled preview wrappers.
+    filter: (node: HTMLElement) => {
+      if (node.classList?.contains('print:hidden')) return false;
+      return true;
+    },
+    style: {
+      transform: 'none' as const,
+      margin: '0',
+      boxShadow: 'none',
+      // Force true artboard size even if the live node sits inside a scaled preview.
+      width: `${spec.width}px`,
+      height: `${spec.height}px`
+    }
   };
+  return transparent ? base : { ...base, backgroundColor: '#ffffff' };
+}
+
+export async function capturePngBytes(
+  node: HTMLElement,
+  spec: ArtboardSpec,
+  transparent = Boolean(spec.transparent)
+): Promise<Uint8Array> {
+  await waitForFonts();
+  const options = cloneOptions(spec, transparent);
+  // Warm-up pass primes font/image caches; second pass is the production capture.
+  try {
+    await toPng(node, { ...options, pixelRatio: 1, canvasWidth: spec.width, canvasHeight: spec.height });
+  } catch {
+    /* warm-up is best-effort */
+  }
+  const dataUrl = await toPng(node, options);
+  return injectPngDpi(dataUrlToBytes(dataUrl), spec.targetDpi);
+}
+
+async function captureJpegBytes(node: HTMLElement, spec: ArtboardSpec): Promise<Uint8Array> {
+  await waitForFonts();
+  const options = { ...cloneOptions(spec, false), quality: 1 as const };
+  try {
+    await toPng(node, { ...options, pixelRatio: 1, canvasWidth: spec.width, canvasHeight: spec.height });
+  } catch {
+    /* warm-up is best-effort */
+  }
+  const dataUrl = await toJpeg(node, options);
+  return dataUrlToBytes(dataUrl);
+}
+
+export async function pngBytesToPdf(pngBytes: Uint8Array, spec: ArtboardSpec): Promise<Uint8Array> {
+  const doc = await PDFDocument.create();
+  const page = doc.addPage([mmToPt(spec.widthMm), mmToPt(spec.heightMm)]);
+  const image = await doc.embedPng(pngBytes);
+  page.drawImage(image, {
+    x: 0,
+    y: 0,
+    width: page.getWidth(),
+    height: page.getHeight()
+  });
+  return doc.save();
+}
+
+export async function pngPagesToPdf(pages: Array<{ bytes: Uint8Array; spec: ArtboardSpec }>): Promise<Uint8Array> {
+  const doc = await PDFDocument.create();
+  for (const pageSpec of pages) {
+    const page = doc.addPage([mmToPt(pageSpec.spec.widthMm), mmToPt(pageSpec.spec.heightMm)]);
+    const image = await doc.embedPng(pageSpec.bytes);
+    page.drawImage(image, {
+      x: 0,
+      y: 0,
+      width: page.getWidth(),
+      height: page.getHeight()
+    });
+  }
+  return doc.save();
 }
 
 export async function exportNode(
-node: HTMLElement,
-fileName: string,
-format: ExportFormat,
-pixelRatio: number = SCREEN_SCALE)
-{
-  await waitForFonts();
+  node: HTMLElement,
+  fileName: string,
+  format: ExportFormat,
+  spec: ArtboardSpec,
+  options: { transparent?: boolean; wordmarkTone?: WordmarkTone } = {}
+) {
+  const transparent = options.transparent ?? Boolean(spec.transparent);
 
-  const width = node.offsetWidth;
-  const height = node.offsetHeight;
-  const options = baseOptions(pixelRatio, width, height);
+  if (format === 'svg') {
+    if (spec.family === 'logo') {
+      const svg = await outlinedWordmarkSvg(options.wordmarkTone ?? 'primary');
+      downloadText(svg, `${fileName}.svg`, 'image/svg+xml;charset=utf-8');
+      return;
+    }
+    throw new Error('SVG download is reserved for outlined logo files.');
+  }
 
-  // The first pass primes image and font caches; the second renders cleanly.
-  if (format !== 'svg') await toPng(node, { ...options, pixelRatio: 1 });
+  if (format === 'jpg') {
+    const bytes = await captureJpegBytes(node, spec);
+    triggerDownloadBytes(bytes, `${fileName}.jpg`, 'image/jpeg');
+    return;
+  }
 
-  const dataUrl =
-  format === 'png' ?
-  await toPng(node, options) :
-  format === 'jpg' ?
-  await toJpeg(node, { ...options, quality: 1 }) :
-  await toSvg(node, { ...options, pixelRatio: 1 });
+  const pngBytes = await capturePngBytes(node, spec, transparent);
 
-  triggerDownload(dataUrl, `${fileName}.${format}`);
+  if (format === 'png') {
+    // Always use Blob URLs — large A4 PNGs can exceed data-URL limits in some browsers.
+    triggerDownloadBytes(pngBytes, `${fileName}.png`, 'image/png');
+    return;
+  }
+
+  const pdfBytes = await pngBytesToPdf(pngBytes, spec);
+  triggerDownloadBytes(pdfBytes, `${fileName}.pdf`, 'application/pdf');
 }
 
-/** Prints a single artboard at true size via the browser's Save-as-PDF dialog. */
+export async function exportDeckPdf(nodes: HTMLElement[], fileName: string, spec: ArtboardSpec) {
+  if (!nodes.length) {
+    throw new Error('No slides available to export.');
+  }
+  const pages: Array<{ bytes: Uint8Array; spec: ArtboardSpec }> = [];
+  for (const node of nodes) {
+    pages.push({ bytes: await capturePngBytes(node, spec, false), spec });
+  }
+  const pdfBytes = await pngPagesToPdf(pages);
+  triggerDownloadBytes(pdfBytes, `${fileName}.pdf`, 'application/pdf');
+}
+
+/** Prints a single artboard at true size via the browser print dialog (preview only). */
 export function printNode(node: HTMLElement) {
   node.classList.add('print-active');
   const cleanup = () => {
@@ -88,5 +191,5 @@ export function downloadText(value: string, fileName: string, mime: string) {
   const blob = new Blob([value], { type: mime });
   const url = URL.createObjectURL(blob);
   triggerDownload(url, fileName);
-  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+  window.setTimeout(() => URL.revokeObjectURL(url), 4000);
 }

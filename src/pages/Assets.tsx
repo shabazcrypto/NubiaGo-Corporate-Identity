@@ -1,42 +1,125 @@
-import React from 'react';
+import { DownloadIcon, Loader2Icon } from 'lucide-react';
+import { useState } from 'react';
 import { PageHeader, GroupLabel } from '../components/ui/PageHeader';
 import { AssetFrame } from '../components/ui/AssetFrame';
+import { Button } from '@/components/ui/button';
 import { Logo, BrandRule } from '../components/brand/Logo';
 import { brandIcons, NG_STROKE, QrPlaceholder } from '../components/brand/iconSystem';
 import { navigation } from '../data/navigation';
-import { company } from '../data/brand';
+import { useCompany } from '@/lib/brand-context';
+import { formats } from '@/lib/formats';
+import {
+  downloadIconPack,
+  downloadLogoPack,
+  downloadQrPack,
+  downloadSocialPack
+} from '@/utils/downloadPacks';
 
 const exportMatrix: [string, string, string][] = [
-['Letterhead · covers · reports', 'PDF (print dialog), PNG, SVG', 'PNG renders at 300 dpi · A4 at 100%, never scaled to fit'],
-['Presentation slides', 'PNG per slide, PDF for the deck', '1280 × 720 px · place 1:1 in 16:9 masters'],
-['Email signatures', 'HTML file, copy-to-clipboard HTML', 'Paste as HTML — never as an image'],
-['Newsletter', 'PNG preview, 600 px modular blocks', 'Rebuild blocks in the ESP using these values'],
-['Business cards', 'PDF, PNG, SVG', '85 × 55 mm + 3 mm bleed, CMYK on export'],
-['Catalogue pages', 'PDF, PNG', 'A4 · supply images at 300 dpi'],
-['Social templates', 'PNG, JPG', '1200 × 627 and 1080 × 1080 px, sRGB'],
-['Logo & icons', 'SVG, PNG (transparent)', 'Wordmark is live Inter 800 — outline before print']];
+  ['Letterhead · covers · reports · catalogue · commercial', 'PNG + PDF', '300 dpi PNG with pHYs · PDF page is true A4'],
+  ['Presentation slides', 'PNG per slide · deck PDF', '1280 × 720 · multi-page 16:9 PDF from the Presentation page'],
+  ['Email signatures', 'HTML only', 'Copy HTML or download .html — never paste a screenshot'],
+  ['Newsletter', 'PNG preview', 'Rebuild blocks in your ESP from these values'],
+  ['Business cards', 'PNG + PDF', '85 × 55 mm PDF · bleed variant 91 × 61 mm · ~1004 × 650 px at 300 dpi'],
+  ['Social templates', 'PNG · JPG', '1200 × 627 and 1080 × 1080 · sRGB'],
+  ['Logo', 'Outlined SVG · transparent PNG', 'SVG is path-outlined Inter ExtraBold — not foreignObject HTML'],
+  ['Icons & patterns', 'PNG', 'Icon sheet optional transparency · patterns are sRGB screen files']
+];
 
+type PackId = 'logo' | 'icons' | 'social' | 'qr';
 
 export function AssetsPage() {
+  const company = useCompany();
+  const [busyPack, setBusyPack] = useState<PackId | null>(null);
+  const [packError, setPackError] = useState<string | null>(null);
+
+  const runPack = async (id: PackId, action: () => Promise<void>) => {
+    setBusyPack(id);
+    setPackError(null);
+    try {
+      await action();
+    } catch (err) {
+      setPackError(err instanceof Error ? err.message : 'Pack download failed');
+    } finally {
+      setBusyPack(null);
+    }
+  };
+
   return (
     <>
       <PageHeader
         code="11"
         title="Assets, Patterns & Export"
         folder="11_ASSETS"
-        description="The supporting layer: the icon set, the two permitted brand patterns, QR placeholders, and the export and file-naming rules that keep everything in this kit consistent once it leaves here." />
-      
+        description="Supporting downloads: icon sheet, brand patterns, QR placeholders, honest export rules, and download packs for handoff."
+      />
+
+      <GroupLabel note="Zip packs for design and marketing handoff">Download packs</GroupLabel>
+      <div className="mb-14 space-y-3 border border-gray-200 bg-gray-50 px-5 py-4">
+        <div className="flex flex-wrap items-center gap-2">
+          <Button type="button" onClick={() => runPack('logo', downloadLogoPack)} disabled={busyPack !== null}>
+            {busyPack === 'logo' ? (
+              <Loader2Icon className="animate-spin" strokeWidth={1.5} />
+            ) : (
+              <DownloadIcon strokeWidth={1.5} />
+            )}
+            Logo pack
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => runPack('icons', downloadIconPack)}
+            disabled={busyPack !== null}
+          >
+            {busyPack === 'icons' ? (
+              <Loader2Icon className="animate-spin" strokeWidth={1.5} />
+            ) : (
+              <DownloadIcon strokeWidth={1.5} />
+            )}
+            Icon pack
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => runPack('social', downloadSocialPack)}
+            disabled={busyPack !== null}
+          >
+            {busyPack === 'social' ? (
+              <Loader2Icon className="animate-spin" strokeWidth={1.5} />
+            ) : (
+              <DownloadIcon strokeWidth={1.5} />
+            )}
+            Social pack
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => runPack('qr', downloadQrPack)}
+            disabled={busyPack !== null}
+          >
+            {busyPack === 'qr' ? (
+              <Loader2Icon className="animate-spin" strokeWidth={1.5} />
+            ) : (
+              <DownloadIcon strokeWidth={1.5} />
+            )}
+            QR pack
+          </Button>
+        </div>
+        <p className="text-[13px] text-gray-700">
+          Logo pack includes outlined SVG (all tones) plus transparent Primary and reversed PNGs. Social pack is sRGB
+          screen sizes. A4 templates download individually from their section pages as true-size PNG/PDF.
+        </p>
+        {packError ? <p className="text-[12px] text-state-error">{packError}</p> : null}
+      </div>
 
       <GroupLabel note="Lucide line icons · 1.5 px stroke · 24 px grid">Icon system</GroupLabel>
       <AssetFrame
         title="Icon Sheet"
         fileName="NubiaGo_Icon_Sheet"
-        spec="Sheet · 960 × 520 px"
-        description="The complete supporting set. Icons carry meaning in documents and signatures; they are never used as decoration or as bullet ornaments."
-        width={960}
-        height={520}
-        printable={false}>
-        
+        description="The complete supporting set. Icons carry meaning in documents and signatures; they are never used as decoration."
+        artboard={formats.iconSheet}
+        transparent
+      >
         <div className="flex h-full w-full flex-col bg-white p-12">
           <div className="flex items-start justify-between">
             <div>
@@ -57,61 +140,62 @@ export function AssetsPage() {
             <BrandRule width="100%" thickness={1} />
           </div>
           <div className="mt-10 grid flex-1 grid-cols-7 gap-y-10">
-            {brandIcons.map(({ key, label, usage, Icon }) =>
-            <div key={key} className="flex flex-col items-center px-2 text-center">
+            {brandIcons.map(({ key, label, usage, Icon }) => (
+              <div key={key} className="flex flex-col items-center px-2 text-center">
                 <Icon className="h-7 w-7 text-brand" strokeWidth={NG_STROKE} />
                 <div className="mt-3 text-[11px] font-semibold text-ink">{label}</div>
                 <div className="mt-0.5 text-[8.5px] leading-tight text-gray-500">{usage}</div>
               </div>
-            )}
+            ))}
           </div>
         </div>
       </AssetFrame>
 
       <GroupLabel note="Two devices only — nothing else is a brand pattern">Patterns</GroupLabel>
-      <div className="mb-14 grid gap-8 lg:grid-cols-2">
-        <div className="border border-gray-200">
-          <div className="flex h-56 flex-col justify-center gap-4 bg-white px-10">
-            {[100, 72, 44].map((width) =>
+      <AssetFrame
+        title="Rule stack"
+        fileName="NubiaGo_Pattern_Rule_Stack"
+        description="Primary hairlines at decreasing widths, closed by one Gold rule. Maximum weight is two pixels."
+        artboard={formats.pattern}
+      >
+        <div className="flex h-full w-full flex-col justify-center gap-4 bg-white px-16">
+          {[100, 72, 44].map((width) => (
             <div key={width} className="h-[2px] bg-brand" style={{ width: `${width}%` }} />
-            )}
-            <div className="h-[2px] w-[22%] bg-brand-gold" />
-          </div>
-          <div className="border-t border-gray-200 px-6 py-4">
-            <div className="text-[13px] font-semibold text-ink">Rule stack</div>
-            <p className="mt-1 text-[12px] leading-relaxed text-gray-500">
-              Primary hairlines at decreasing widths, closed by one Gold rule. Two pixels is the maximum weight — the
-              rule marks a division, it is not a graphic.
-            </p>
-          </div>
+          ))}
+          <div className="h-[2px] w-[22%] bg-brand-gold" />
         </div>
-        <div className="border border-gray-200">
-          <div
-            className="h-56 bg-brand-sand"
-            style={{
-              backgroundImage:
+      </AssetFrame>
+      <AssetFrame
+        title="Grid field"
+        fileName="NubiaGo_Pattern_Grid_Field"
+        description="32 px Primary grid at 10% on Warm Sand — quiet field behind image placeholders and diagrams."
+        artboard={formats.pattern}
+      >
+        <div
+          className="h-full w-full bg-brand-sand"
+          style={{
+            backgroundImage:
               'linear-gradient(to right, rgba(30,58,95,0.10) 1px, transparent 1px), linear-gradient(to bottom, rgba(30,58,95,0.10) 1px, transparent 1px)',
-              backgroundSize: '32px 32px'
-            }} />
-          
-          <div className="border-t border-gray-200 px-6 py-4">
-            <div className="text-[13px] font-semibold text-ink">Grid field</div>
-            <p className="mt-1 text-[12px] leading-relaxed text-gray-500">
-              A 32 px Primary grid at 10% on Warm Sand. Used as a quiet field behind image placeholders and technical
-              diagrams.
-            </p>
-          </div>
-        </div>
-      </div>
+            backgroundSize: '32px 32px'
+          }}
+        />
+      </AssetFrame>
 
       <GroupLabel note="Destinations are never invented — replace before publishing">QR placeholders</GroupLabel>
-      <div className="mb-14 flex flex-wrap items-start gap-10 border border-gray-200 p-8">
-        {['Website', 'Product catalogue', 'Company profile', 'Contact card', 'LinkedIn'].map((label) =>
-        <QrPlaceholder key={label} size={96} label={label} />
-        )}
-      </div>
+      <AssetFrame
+        title="QR placeholder row"
+        fileName="NubiaGo_QR_Placeholders"
+        description="Marked placeholders only. Generate real codes with the final URL before any public use."
+        artboard={formats.qrRow}
+      >
+        <div className="flex h-full w-full flex-wrap items-center justify-center gap-10 bg-white px-8">
+          {['Website', 'Product catalogue', 'Company profile', 'Contact card', 'LinkedIn'].map((label) => (
+            <QrPlaceholder key={label} size={96} label={label} />
+          ))}
+        </div>
+      </AssetFrame>
 
-      <GroupLabel note="What each asset exports as">Export requirements</GroupLabel>
+      <GroupLabel note="What each asset actually exports">Export requirements</GroupLabel>
       <div className="mb-14 overflow-hidden border border-gray-200">
         <table className="w-full border-collapse text-[13px]">
           <thead>
@@ -122,26 +206,24 @@ export function AssetsPage() {
             </tr>
           </thead>
           <tbody>
-            {exportMatrix.map((row, index) =>
-            <tr key={row[0]} className={index % 2 === 1 ? 'bg-gray-50' : 'bg-white'}>
+            {exportMatrix.map((row, index) => (
+              <tr key={row[0]} className={index % 2 === 1 ? 'bg-gray-50' : 'bg-white'}>
                 <td className="border-b border-gray-200 px-4 py-3 font-medium text-ink">{row[0]}</td>
                 <td className="border-b border-gray-200 px-4 py-3 text-gray-700">{row[1]}</td>
                 <td className="border-b border-gray-200 px-4 py-3 text-gray-500">{row[2]}</td>
               </tr>
-            )}
+            ))}
           </tbody>
         </table>
       </div>
       <div className="mb-8 border-l-2 border-brand-gold bg-gray-50 px-5 py-4 text-[13px] leading-relaxed text-gray-700">
-        <strong className="font-semibold text-ink">Resolution.</strong> Every raster export is rendered from the
-        artboard at 300 dpi for print families and 288 dpi for screen families — never from the on-screen preview,
-        which is scaled down to fit the column. SVG exports stay resolution-independent, so use SVG wherever the
-        destination supports it.
+        <strong className="font-semibold text-ink">Resolution.</strong> Raster exports render from the unscaled artboard
+        at the dpi in <code className="text-[12px]">formats.ts</code> — never from the on-screen preview. PDF pages are
+        sized in millimetres via pdf-lib.
       </div>
       <div className="mb-14 border-l-2 border-brand-gold bg-gray-50 px-5 py-4 text-[13px] leading-relaxed text-gray-700">
-        <strong className="font-semibold text-ink">Print colour.</strong> Screen assets are sRGB. For offset or digital
-        print, convert to CMYK using the values on the Brand System page and supply files with 3 mm bleed and crop
-        marks. Primary must be checked on press — it flattens if printed as a rich black build.
+        <strong className="font-semibold text-ink">Colour.</strong> Kit files are sRGB. For offset or digital print,
+        convert to CMYK offline using Brand System values and add bleed / crop marks in your press workflow.
       </div>
 
       <GroupLabel note="Every asset in this kit carries its own file name">File organisation</GroupLabel>
@@ -150,18 +232,18 @@ export function AssetsPage() {
           NUBIAGO_CORPORATE_IDENTITY/
         </div>
         <ul className="divide-y divide-gray-200">
-          {navigation.map((item) =>
-          <li key={item.folder} className="flex flex-wrap items-baseline gap-x-4 gap-y-1 px-5 py-3">
+          {navigation.map((item) => (
+            <li key={item.folder} className="flex flex-wrap items-baseline gap-x-4 gap-y-1 px-5 py-3">
               <span className="w-56 shrink-0 font-mono text-[12px] text-brand">{item.folder}/</span>
               <span className="text-[13px] text-gray-700">{item.description}</span>
             </li>
-          )}
+          ))}
         </ul>
       </div>
       <p className="text-[13px] leading-relaxed text-gray-500">
         File names follow <span className="font-mono text-[12px] text-gray-700">NubiaGo_[Asset]_[Variant]</span> — the
-        same name shown on every asset card in this kit, so a downloaded file can always be traced back to its template.
+        same name shown on every asset card in this kit.
       </p>
-    </>);
-
+    </>
+  );
 }

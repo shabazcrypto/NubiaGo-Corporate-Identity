@@ -1,9 +1,10 @@
 import React from 'react';
 import { Logo, BrandRule } from '../brand/Logo';
-import { company } from '../../data/brand';
+import { formats } from '@/lib/formats';
+import { useCompany } from '@/lib/brand-context';
 
-export const A4 = { width: 794, height: 1123 };
-export const A4_LANDSCAPE = { width: 1123, height: 794 };
+export const A4 = { width: formats.a4.width, height: formats.a4.height };
+export const A4_LANDSCAPE = { width: formats.a4Landscape.width, height: formats.a4Landscape.height };
 export const MARGIN = 64;
 
 type HeaderVariant = 'full' | 'minimal' | 'continuation';
@@ -16,6 +17,7 @@ interface DocumentHeaderProps {
 }
 
 export function DocumentHeader({ variant = 'full', meta, documentTitle }: DocumentHeaderProps) {
+  const company = useCompany();
   if (variant === 'continuation') {
     return (
       <header
@@ -81,6 +83,7 @@ interface DocumentFooterProps {
 }
 
 export function DocumentFooter({ variant = 'full', page = '1 / 1', reference, showPhone = false }: DocumentFooterProps) {
+  const company = useCompany();
   if (variant === 'minimal') {
     return (
       <footer className="flex items-baseline justify-between border-t border-gray-200 pt-3 text-[8.5px] text-gray-500">

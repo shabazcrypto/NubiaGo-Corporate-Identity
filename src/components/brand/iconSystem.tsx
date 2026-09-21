@@ -1,5 +1,20 @@
-import React from "react";
-import { PhoneIcon, MailIcon, GlobeIcon, MapPinIcon, PackageIcon, FileTextIcon, DownloadIcon, InfoIcon, UsersIcon, BadgeCheckIcon, TruckIcon, LifeBuoyIcon, LinkedinIcon, BoxIcon } from "lucide-react";
+import type { LucideIcon } from 'lucide-react';
+import {
+  PhoneIcon,
+  MailIcon,
+  GlobeIcon,
+  MapPinIcon,
+  PackageIcon,
+  FileTextIcon,
+  DownloadIcon,
+  InfoIcon,
+  UsersIcon,
+  BadgeCheckIcon,
+  TruckIcon,
+  LifeBuoyIcon,
+  LinkedinIcon
+} from 'lucide-react';
+
 /**
  * One icon family, one weight. NubiaGo uses Lucide line icons at 1.5px stroke
  * on a 24px grid, rendered in Primary or Gray 500 only.
@@ -9,7 +24,7 @@ export interface BrandIcon {
   key: string;
   label: string;
   usage: string;
-  Icon: BoxIcon;
+  Icon: LucideIcon;
 }
 export const brandIcons: BrandIcon[] = [{
   key: 'phone',
@@ -77,7 +92,7 @@ export const brandIcons: BrandIcon[] = [{
   usage: 'Social, signatures',
   Icon: LinkedinIcon
 }];
-export function iconByKey(key: string): BoxIcon {
+export function iconByKey(key: string): LucideIcon {
   return brandIcons.find((icon) => icon.key === key)?.Icon ?? InfoIcon;
 }
 

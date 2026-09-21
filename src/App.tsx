@@ -1,5 +1,5 @@
-import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrandProvider } from '@/lib/brand-context';
 import { AppShell } from './components/layout/AppShell';
 import { BrandSystemPage } from './pages/BrandSystem';
 import { LetterheadPage } from './pages/Letterhead';
@@ -14,25 +14,28 @@ import { DigitalSocialPage } from './pages/DigitalSocial';
 import { AssetsPage } from './pages/Assets';
 
 export function App() {
+  const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || undefined;
   return (
-    <BrowserRouter>
-      <AppShell>
-        <Routes>
-          <Route path="/" element={<Navigate to="/brand-system" replace />} />
-          <Route path="/brand-system" element={<BrandSystemPage />} />
-          <Route path="/letterhead" element={<LetterheadPage />} />
-          <Route path="/email" element={<EmailPage />} />
-          <Route path="/presentation" element={<PresentationPage />} />
-          <Route path="/commercial" element={<CommercialPage />} />
-          <Route path="/business-card" element={<BusinessCardPage />} />
-          <Route path="/document-covers" element={<DocumentCoversPage />} />
-          <Route path="/catalogue" element={<CataloguePage />} />
-          <Route path="/reports" element={<ReportsPage />} />
-          <Route path="/digital-social" element={<DigitalSocialPage />} />
-          <Route path="/assets" element={<AssetsPage />} />
-          <Route path="*" element={<Navigate to="/brand-system" replace />} />
-        </Routes>
-      </AppShell>
-    </BrowserRouter>);
-
+    <BrandProvider>
+      <BrowserRouter basename={basename}>
+        <AppShell>
+          <Routes>
+            <Route path="/" element={<Navigate to="/brand-system" replace />} />
+            <Route path="/brand-system" element={<BrandSystemPage />} />
+            <Route path="/letterhead" element={<LetterheadPage />} />
+            <Route path="/email" element={<EmailPage />} />
+            <Route path="/presentation" element={<PresentationPage />} />
+            <Route path="/commercial" element={<CommercialPage />} />
+            <Route path="/business-card" element={<BusinessCardPage />} />
+            <Route path="/document-covers" element={<DocumentCoversPage />} />
+            <Route path="/catalogue" element={<CataloguePage />} />
+            <Route path="/reports" element={<ReportsPage />} />
+            <Route path="/digital-social" element={<DigitalSocialPage />} />
+            <Route path="/assets" element={<AssetsPage />} />
+            <Route path="*" element={<Navigate to="/brand-system" replace />} />
+          </Routes>
+        </AppShell>
+      </BrowserRouter>
+    </BrandProvider>
+  );
 }

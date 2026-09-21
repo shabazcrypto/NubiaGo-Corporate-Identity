@@ -1,8 +1,10 @@
-import React from 'react';
 import { PageHeader, GroupLabel } from '../components/ui/PageHeader';
+import { AssetFrame } from '../components/ui/AssetFrame';
 import { Logo, LogoLockup, BrandRule, Endorsement } from '../components/brand/Logo';
 import { brandIcons, NG_STROKE } from '../components/brand/iconSystem';
-import { brandColors, neutralColors, semanticColors, typeScale, voiceAndTone, company, type Swatch } from '../data/brand';
+import { brandColors, neutralColors, semanticColors, typeScale, voiceAndTone, type Swatch } from '../data/brand';
+import { useCompany } from '@/lib/brand-context';
+import { formats } from '@/lib/formats';
 import { MailIcon, GlobeIcon, CheckIcon, XIcon } from 'lucide-react';
 
 function SwatchGrid({ title, swatches }: {title: string;swatches: Swatch[];}) {
@@ -40,6 +42,8 @@ function SwatchGrid({ title, swatches }: {title: string;swatches: Swatch[];}) {
 const spacingScale = [4, 8, 12, 16, 24, 32, 48, 64];
 
 export function BrandSystemPage() {
+  const company = useCompany();
+
   return (
     <>
       <PageHeader
@@ -49,23 +53,47 @@ export function BrandSystemPage() {
         description="The single source of truth for every asset in this kit. Logo, colour, type, spacing and components are taken directly from the NubiaGo Brand Guidelines v1.0 and are not reinterpreted anywhere downstream." />
       
 
-      <GroupLabel note="Wordmark only — the mark supplied in the guidelines">Logo system</GroupLabel>
-      <div className="mb-8 grid gap-px bg-gray-200 md:grid-cols-3">
-        <div className="flex h-48 flex-col items-center justify-center bg-gray-50">
-          <Logo size={44} />
-          <span className="mt-6 text-[10px] font-medium uppercase tracking-[0.14em] text-gray-500">Primary</span>
+      <GroupLabel note="Wordmark only — download outlined SVG or transparent PNG">Logo system</GroupLabel>
+      <AssetFrame
+        title="Wordmark — Primary"
+        fileName="NubiaGo_Logo_Primary"
+        description="Official download: outlined SVG for print and vector tools, transparent PNG for screen. Live Inter is only for on-page preview."
+        artboard={formats.logoMark}
+        transparent
+        formats={['png', 'svg']}
+      >
+        <div className="flex h-full w-full flex-col items-center justify-center bg-transparent">
+          <Logo size={72} />
+          <span className="mt-8 text-[10px] font-medium uppercase tracking-[0.14em] text-gray-500">Primary</span>
         </div>
-        <div className="flex h-48 flex-col items-center justify-center bg-brand">
-          <Logo size={44} tone="light" />
-          <span className="mt-6 text-[10px] font-medium uppercase tracking-[0.14em] text-white/60">Reversed</span>
+      </AssetFrame>
+      <AssetFrame
+        title="Wordmark — Reversed"
+        fileName="NubiaGo_Logo_Reversed"
+        description="Light wordmark on Primary. Use on dark fields, slides and social covers."
+        artboard={formats.logoMarkDark}
+        formats={['png']}
+      >
+        <div className="flex h-full w-full flex-col items-center justify-center bg-brand">
+          <Logo size={72} tone="light" />
+          <span className="mt-8 text-[10px] font-medium uppercase tracking-[0.14em] text-white/60">Reversed</span>
         </div>
-        <div className="flex h-48 flex-col items-center justify-center bg-brand-sand">
-          <Logo size={44} tone="black" />
-          <span className="mt-6 text-[10px] font-medium uppercase tracking-[0.14em] text-gray-500">
+      </AssetFrame>
+      <AssetFrame
+        title="Wordmark — Mono on Warm Sand"
+        fileName="NubiaGo_Logo_Mono_Sand"
+        description="Black wordmark on Warm Sand for low-ink print and mono applications."
+        artboard={formats.logoMark}
+        transparent={false}
+        formats={['png']}
+      >
+        <div className="flex h-full w-full flex-col items-center justify-center bg-brand-sand">
+          <Logo size={72} tone="black" />
+          <span className="mt-8 text-[10px] font-medium uppercase tracking-[0.14em] text-gray-500">
             Mono on Warm Sand
           </span>
         </div>
-      </div>
+      </AssetFrame>
 
       <div className="mb-10 grid gap-8 md:grid-cols-3">
         <div className="border border-gray-200 p-6">

@@ -1,4 +1,3 @@
-import React from 'react';
 import { CheckIcon } from 'lucide-react';
 import { Logo, BrandRule } from '../brand/Logo';
 import { SlideShell, DarkSlide, StatBlock, SLIDE_MARGIN } from './SlideChrome';
