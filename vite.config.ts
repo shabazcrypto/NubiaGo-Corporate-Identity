@@ -2,12 +2,12 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 
-// GitHub Pages project site: https://<user>.github.io/NubiaGo-Corporate-Identity/
-const repoBase = '/NubiaGo-Corporate-Identity/';
+// Use VITE_BASE when publishing under a subpath (e.g. GitHub Pages).
+// Default `/` works for Vercel, Netlify, and local preview.
+const base = process.env.VITE_BASE || '/';
 
-export default defineConfig(({ mode }) => ({
-  // Relative base also works for preview; absolute repo base is required for GH Pages assets + router.
-  base: mode === 'production' ? repoBase : '/',
+export default defineConfig({
+  base,
   plugins: [react()],
   resolve: {
     alias: {
@@ -18,4 +18,4 @@ export default defineConfig(({ mode }) => ({
     sourcemap: false,
     chunkSizeWarningLimit: 1200
   }
-}));
+});
