@@ -58,6 +58,10 @@ export interface CompanyInfo {
   endorsementShort: string;
   positioning: string;
   descriptor: string;
+  /** Short lockup under the wordmark in signatures. */
+  tagline: string;
+  /** Mission line under the signature rule. */
+  mission: string;
   website: string;
   websiteUrl: string;
   email: string;
@@ -82,20 +86,22 @@ export const defaultCompany: CompanyInfo = {
   endorsementShort: 'A brand of AshBak Industries',
   positioning: 'Infrastructure for African commerce',
   descriptor: 'A trusted, modern platform connecting buyers and sellers across the continent.',
+  tagline: 'Connecting Africa through Commerce and Logistics',
+  mission: 'Building cross-border trade infrastructure for African households and businesses.',
   website: 'nubiago.com',
   websiteUrl: 'https://nubiago.com',
-  email: 'support@nubiago.com',
-  phone: '+234 (0) 000 000 0000',
-  addressLine1: '[Street address]',
-  addressLine2: 'Victoria Island, Lagos',
-  country: 'Nigeria',
+  email: 'moustapha@nubiago.com',
+  phone: '+90 (0) 000 000 0000',
+  addressLine1: '',
+  addressLine2: 'Ankara',
+  country: 'Türkiye',
   registration: 'Reg. No. [company number]',
   taxId: 'VAT / TIN [tax number]',
   linkedin: 'linkedin.com/company/nubiago',
   copyright: '© 2026 NubiaGo. All rights reserved.',
   guidelines: 'Brand Guidelines v1.0',
-  personName: '[Name Surname]',
-  jobTitle: '[Job Title]'
+  personName: 'Moustapha Mohamadou',
+  jobTitle: 'Founder & CEO'
 };
 
 /** Fallback for non-React modules. Prefer `useCompany()` in components. */
@@ -108,6 +114,8 @@ export const editableCompanyFields: Array<{
   { key: 'personName', label: 'Name' },
   { key: 'jobTitle', label: 'Job title' },
   { key: 'legalName', label: 'Legal name' },
+  { key: 'tagline', label: 'Tagline' },
+  { key: 'mission', label: 'Mission line' },
   { key: 'phone', label: 'Phone' },
   { key: 'email', label: 'Email' },
   { key: 'website', label: 'Website' },

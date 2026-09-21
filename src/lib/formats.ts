@@ -95,14 +95,34 @@ function screenSpec(
 export const formats = {
   a4: printSpec('a4', 'A4 · 210 × 297 mm', 210, 297),
   a4Landscape: printSpec('a4Landscape', 'A4 landscape · 297 × 210 mm', 297, 210),
-  card: printSpec('card', '85 × 55 mm', 85, 55),
-  cardBleed: printSpec('cardBleed', '91 × 61 mm · 3 mm bleed', 91, 61),
+  /** Standard business card · 3.5 × 2 in · 300 dpi. */
+  card: printSpec('card', '3.5 × 2 in · 88.9 × 50.8 mm', 88.9, 50.8),
+  cardBleed: printSpec('cardBleed', '3.5 × 2 in + 3 mm bleed · 94.9 × 56.8 mm', 94.9, 56.8),
+  /** @deprecated Alias of card — kept for older references. */
+  cardUs: printSpec('cardUs', '3.5 × 2 in · 88.9 × 50.8 mm', 88.9, 50.8),
+  cardUsBleed: printSpec('cardUsBleed', '3.5 × 2 in + 3 mm bleed · 94.9 × 56.8 mm', 94.9, 56.8),
   slide: screenSpec('slide', 'Slide · 1280 × 720 px', 1280, 720, {
     defaultExports: ['png', 'pdf'],
     targetDpi: SCREEN_DPI
   }),
   linkedIn: screenSpec('linkedIn', 'LinkedIn link post · 1200 × 627 px', 1200, 627),
   square: screenSpec('square', 'Feed post · 1080 × 1080 px', 1080, 1080),
+  /** Facebook Page Cover @2× · 820 × 312 @1×. */
+  fbCover: screenSpec('fbCover', 'Facebook cover · 1640 × 624 px', 1640, 624),
+  /** X / Twitter profile header. */
+  xHeader: screenSpec('xHeader', 'X header · 1500 × 500 px', 1500, 500),
+  /** Instagram / Facebook / unified profile. */
+  profileLg: screenSpec('profileLg', 'Profile · 1080 × 1080 px', 1080, 1080),
+  /** X profile quality. */
+  profileMd: screenSpec('profileMd', 'Profile · 800 × 800 px', 800, 800),
+  /** Google Business Profile avatar. */
+  profileGoogle: screenSpec('profileGoogle', 'Google profile · 720 × 720 px', 720, 720),
+  /** Google Business Profile cover. */
+  googleCover: screenSpec('googleCover', 'Google cover · 1080 × 608 px', 1080, 608),
+  /** Instagram highlight cover. */
+  highlight: screenSpec('highlight', 'IG highlight · 1080 × 1080 px', 1080, 1080),
+  /** Master cover direction canvas. */
+  masterCover: screenSpec('masterCover', 'Master cover · 1920 × 640 px', 1920, 640),
   newsletter: screenSpec('newsletter', 'Email · 600 px column', 600, 1180, {
     defaultExports: ['png']
   }),

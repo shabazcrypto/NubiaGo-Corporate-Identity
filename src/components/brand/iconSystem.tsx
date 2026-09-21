@@ -100,28 +100,42 @@ export function iconByKey(key: string): LucideIcon {
 export function QrPlaceholder({
   size = 64,
   label = 'Website',
-  tone = 'light'
-
-
-
-
-}: {size?: number;label?: string;tone?: 'light' | 'dark';}) {
-  const border = tone === 'light' ? '#E5E5E5' : 'rgba(250,250,250,0.35)';
+  tone = 'light',
+  framed = false
+}: {
+  size?: number;
+  label?: string;
+  tone?: 'light' | 'dark';
+  /** Solid border plate (business card reverse). */
+  framed?: boolean;
+}) {
+  const border = framed
+    ? tone === 'light'
+      ? '#2D5A8A'
+      : '#2D5A8A'
+    : tone === 'light'
+      ? '#E5E5E5'
+      : 'rgba(250,250,250,0.35)';
   const fg = tone === 'light' ? '#1E3A5F' : '#FAFAFA';
   const sub = tone === 'light' ? '#737373' : 'rgba(250,250,250,0.7)';
-  return <div className="inline-flex flex-col items-center" style={{
-    width: size
-  }}>
-      <div className="flex items-center justify-center" style={{
-      width: size,
-      height: size,
-      border: `1px dashed ${border}`
-    }}>
+  const showLabel = Boolean(label && label.trim());
+  return (
+    <div className="inline-flex flex-col items-center" style={{ width: size }}>
+      <div
+        className="flex items-center justify-center"
+        style={{
+          width: size,
+          height: size,
+          border: framed ? `1.5px solid ${border}` : `1px dashed ${border}`,
+          borderRadius: framed ? 2 : 0,
+          background: framed ? '#FFFFFF' : undefined
+        }}
+      >
         <svg width={size * 0.62} height={size * 0.62} viewBox="0 0 24 24" aria-hidden="true">
-          <g fill={fg} opacity="0.55">
-            <rect x="1" y="1" width="7" height="7" fillOpacity="0" stroke={fg} strokeWidth="2" />
-            <rect x="16" y="1" width="7" height="7" fillOpacity="0" stroke={fg} strokeWidth="2" />
-            <rect x="1" y="16" width="7" height="7" fillOpacity="0" stroke={fg} strokeWidth="2" />
+          <g fill={framed ? '#1E3A5F' : fg} opacity="0.55">
+            <rect x="1" y="1" width="7" height="7" fillOpacity="0" stroke={framed ? '#1E3A5F' : fg} strokeWidth="2" />
+            <rect x="16" y="1" width="7" height="7" fillOpacity="0" stroke={framed ? '#1E3A5F' : fg} strokeWidth="2" />
+            <rect x="1" y="16" width="7" height="7" fillOpacity="0" stroke={framed ? '#1E3A5F' : fg} strokeWidth="2" />
             <rect x="11" y="1" width="2" height="2" />
             <rect x="11" y="5" width="2" height="2" />
             <rect x="11" y="9" width="2" height="2" />
@@ -137,13 +151,19 @@ export function QrPlaceholder({
           </g>
         </svg>
       </div>
-      <span className="mt-1 text-center uppercase" style={{
-      fontSize: Math.max(5, size * 0.11),
-      letterSpacing: '0.1em',
-      color: sub,
-      fontWeight: 500
-    }}>
-        QR · {label}
-      </span>
-    </div>;
+      {showLabel ? (
+        <span
+          className="mt-1 text-center uppercase"
+          style={{
+            fontSize: Math.max(5, size * 0.11),
+            letterSpacing: '0.1em',
+            color: sub,
+            fontWeight: 500
+          }}
+        >
+          QR · {label}
+        </span>
+      ) : null}
+    </div>
+  );
 }

@@ -20,7 +20,7 @@ const exportMatrix: [string, string, string][] = [
   ['Presentation slides', 'PNG per slide · deck PDF', '1280 × 720 · multi-page 16:9 PDF from the Presentation page'],
   ['Email signatures', 'HTML only', 'Copy HTML or download .html — never paste a screenshot'],
   ['Newsletter', 'PNG preview', 'Rebuild blocks in your ESP from these values'],
-  ['Business cards', 'PNG + PDF', '85 × 55 mm PDF · bleed variant 91 × 61 mm · ~1004 × 650 px at 300 dpi'],
+  ['Business cards', 'PNG + PDF', '3.5 × 2 in · 88.9 × 50.8 mm · 300 dpi · bleed 94.9 × 56.8 mm'],
   ['Social templates', 'PNG · JPG', '1200 × 627 and 1080 × 1080 · sRGB'],
   ['Logo', 'Outlined SVG · transparent PNG', 'SVG is path-outlined Inter ExtraBold — not foreignObject HTML'],
   ['Icons & patterns', 'PNG', 'Icon sheet optional transparency · patterns are sRGB screen files']

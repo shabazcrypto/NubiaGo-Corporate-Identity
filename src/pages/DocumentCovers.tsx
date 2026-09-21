@@ -4,6 +4,7 @@ import { Logo, BrandRule } from '../components/brand/Logo';
 import { QrPlaceholder } from '../components/brand/iconSystem';
 import { useCompany } from '@/lib/brand-context';
 import { formats } from '@/lib/formats';
+import { enterpriseCovers } from '@/components/documents/CoverLayouts';
 
 const PAD = 64;
 
@@ -16,7 +17,7 @@ export function DocumentCoversPage() {
         code="07"
         title="Document Covers"
         folder="07_DOCUMENT_COVERS"
-        description="Four A4 covers on one grid, distinguished by field rather than by ornament. Every cover carries the document type, title, date and reference in the same positions so a stack of them reads as one library." />
+        description="Fourteen A4 covers on one grid, distinguished by field rather than by ornament. Every cover carries the document type, title, date and reference in the same positions so a stack of them reads as one library." />
       
 
       <GroupLabel note="Company profiles, corporate overviews">Cover 01 — Reversed</GroupLabel>
@@ -72,17 +73,17 @@ export function DocumentCoversPage() {
           <div className="flex flex-1 flex-col justify-between" style={{ padding: PAD, paddingTop: 48 }}>
             <div>
               <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-light">
-                Product catalogue
+                Services catalogue
               </div>
               <h1 className="mt-4 text-[42px] font-bold leading-[1.08] tracking-[-0.03em] text-ink">
-                Industrial equipment &amp; supply
+                Settlement &amp; logistics services
               </h1>
               <div className="mt-6">
                 <BrandRule width={96} thickness={2} />
               </div>
             </div>
             <div className="flex items-end justify-between border-t border-gray-200 pt-5 text-[10px] text-gray-500">
-              <span>Ref. CAT-2025-IND · Volume 01 · {company.endorsement}</span>
+              <span>Ref. CAT-2025-SVC · Volume 01 · {company.endorsement}</span>
               <span>{company.website}</span>
             </div>
           </div>
@@ -179,6 +180,19 @@ export function DocumentCoversPage() {
           </div>
         </div>
       </AssetFrame>
+
+      <GroupLabel note="Enterprise library · same A4 grid · downloadable PNG/PDF">Extended cover suite</GroupLabel>
+      {enterpriseCovers.map((cover) => (
+        <AssetFrame
+          key={cover.fileName}
+          title={cover.title}
+          fileName={cover.fileName}
+          description={cover.description}
+          artboard={formats.a4}
+        >
+          {cover.render()}
+        </AssetFrame>
+      ))}
     </>);
 
 }

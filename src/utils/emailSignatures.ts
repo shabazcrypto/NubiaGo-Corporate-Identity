@@ -1,119 +1,210 @@
 import type { CompanyInfo } from '@/data/brand';
 import { defaultCompany } from '@/data/brand';
+import { WORDMARK_FILLS, WORDMARK_PATH, WORDMARK_VIEW } from '@/lib/wordmarkPath';
 
-const FONT = 'font-family:Inter,Arial,Helvetica,sans-serif;';
-const PRIMARY = '#1E3A5F';
-const GOLD = '#C9A227';
-const GRAY500 = '#737373';
-const GRAY200 = '#E5E5E5';
-const INK = '#1A1A1A';
+/** Body stack — Arial first for Outlook; kit preview may still use Inter via page CSS. */
+const FONT = 'font-family:Arial,Helvetica,sans-serif;';
+const NAVY = '#1E3A5F';
+/** Contact labels — warm copper from the approved lockup (not Gold fill). */
+const COPPER = '#C2410C';
+const SLATE = '#64748B';
+const MUTED = '#94A3B8';
+const RULE = '#E2E8F0';
+const INK = '#0F172A';
 
-const wordmark = (size: number, color: string) =>
-  `<span style="${FONT}font-size:${size}px;font-weight:800;letter-spacing:-0.035em;color:${color};line-height:1;">nubiago</span>`;
-
-const rule = (width: number, color = PRIMARY) =>
-  `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="${width}" style="border-collapse:collapse;"><tr>` +
-  `<td width="${width}" height="2" style="background-color:${color};font-size:0;line-height:0;">&nbsp;</td>` +
-  `</tr></table>`;
-
-const link = (label: string, href: string, color = GRAY500) =>
-  `<a href="${href}" style="${FONT}color:${color};text-decoration:none;">${label}</a>`;
-
-export function standardSignatureHtml(company: CompanyInfo = defaultCompany) {
-  const mailto = `mailto:${company.email}`;
-  return `
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;${FONT}">
-  <tr>
-    <td style="padding:0 0 12px 0;">${wordmark(20, PRIMARY)}</td>
-  </tr>
-  <tr>
-    <td style="padding:0 0 12px 0;">${rule(64)}</td>
-  </tr>
-  <tr>
-    <td style="${FONT}font-size:14px;font-weight:600;color:${INK};padding:0 0 2px 0;">${company.personName.toUpperCase()}</td>
-  </tr>
-  <tr>
-    <td style="${FONT}font-size:12px;color:${GRAY500};padding:0 0 12px 0;">${company.jobTitle} &middot; NubiaGo</td>
-  </tr>
-  <tr>
-    <td style="${FONT}font-size:12px;color:${GRAY500};line-height:1.7;">
-      T ${link(company.phone, `tel:${company.phone.replace(/\s/g, '')}`)}<br />
-      E ${link(company.email, mailto)}<br />
-      W ${link(company.website, company.websiteUrl, PRIMARY)}<br />
-      A ${company.addressLine1}, ${company.addressLine2}, ${company.country}
-    </td>
-  </tr>
-  <tr>
-    <td style="padding:12px 0 0 0;border-top:1px solid ${GRAY200};${FONT}font-size:10px;color:#A3A3A3;line-height:1.6;">
-      ${company.endorsement} This message and any attachments are confidential and intended solely for the addressee.
-    </td>
-  </tr>
-</table>`.trim();
+export function displayPersonName(name: string): string {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return name;
+  if (parts.length === 1) return parts[0];
+  const last = parts[parts.length - 1].toUpperCase();
+  return `${parts.slice(0, -1).join(' ')} ${last}`;
 }
 
-export function compactSignatureHtml(company: CompanyInfo = defaultCompany) {
-  const mailto = `mailto:${company.email}`;
-  return `
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;${FONT}">
-  <tr>
-    <td valign="middle" style="padding:0 14px 0 0;border-right:1px solid ${GRAY200};">
-      ${wordmark(16, PRIMARY)}
-    </td>
-    <td valign="top" style="padding:0 0 0 14px;${FONT}font-size:12px;color:${GRAY500};line-height:1.6;">
-      <span style="font-size:13px;font-weight:600;color:${INK};">${company.personName.toUpperCase()}</span><br />
-      ${company.jobTitle} &middot; NubiaGo<br />
-      ${company.phone} &middot; ${link(company.email, mailto)} &middot; ${link(company.website, company.websiteUrl, PRIMARY)}<br />
-      <span style="font-size:10px;color:#A3A3A3;">${company.endorsement}</span>
-    </td>
-  </tr>
-</table>`.trim();
+export function formatLocation(company: CompanyInfo): string {
+  const city = company.addressLine2?.trim();
+  const country = company.country?.trim();
+  if (city && country) return `${city}, ${country}`;
+  return city || country || '';
 }
 
-export function executiveSignatureHtml(company: CompanyInfo = defaultCompany) {
-  const mailto = `mailto:${company.email}`;
+type WordmarkTone = keyof typeof WORDMARK_FILLS;
+
+/**
+ * Outlined Inter Extra Bold wordmark (same path as logo downloads).
+ * Width is the display width in px; height follows the true aspect ratio.
+ */
+export function wordmarkHtml(widthPx = 128, tone: WordmarkTone | string = 'primary'): string {
+  const fill =
+    tone in WORDMARK_FILLS
+      ? WORDMARK_FILLS[tone as WordmarkTone]
+      : typeof tone === 'string' && tone.startsWith('#')
+        ? tone
+        : WORDMARK_FILLS.primary;
+  const heightPx = Math.max(1, Math.round((widthPx * WORDMARK_VIEW.h) / WORDMARK_VIEW.w));
+  const svg =
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${WORDMARK_VIEW.x} ${WORDMARK_VIEW.y} ${WORDMARK_VIEW.w} ${WORDMARK_VIEW.h}" width="${widthPx}" height="${heightPx}" fill="${fill}" role="img" aria-label="nubiago">` +
+    `<path d="${WORDMARK_PATH}"/></svg>`;
+  const src = `data:image/svg+xml,${encodeURIComponent(svg)}`;
+  return (
+    `<img src="${src}" width="${widthPx}" height="${heightPx}" alt="nubiago" ` +
+    `style="display:block;border:0;outline:none;text-decoration:none;width:${widthPx}px;height:${heightPx}px;margin-left:auto;" />`
+  );
+}
+
+export function linkHtml(label: string, href: string, color = SLATE): string {
+  return `<a href="${href}" style="${FONT}color:${color};text-decoration:none;">${label}</a>`;
+}
+
+export type ContactLine = { label: string; value: string; href?: string };
+
+export type SignatureLayoutOptions = {
+  name?: string;
+  title?: string;
+  contacts?: ContactLine[];
+  tagline?: string;
+  footer?: string;
+  /** Wordmark display width in px (outlined SVG). */
+  markSize?: number;
+  width?: number;
+};
+
+/**
+ * Canonical NubiaGo signature:
+ * name + title + labelled contacts | wordmark + italic tagline
+ * hairline rule · mission footer
+ */
+export function signatureLayoutHtml(
+  company: CompanyInfo,
+  options: SignatureLayoutOptions = {}
+): string {
+  const name = displayPersonName(options.name ?? company.personName);
+  const title = options.title ?? company.jobTitle;
+  const tagline = options.tagline ?? company.tagline;
+  const footer = options.footer ?? company.mission;
+  const markSize = options.markSize ?? 128;
+  const width = options.width ?? 560;
+
+  const contacts =
+    options.contacts ??
+    ([
+      {
+        label: 'E',
+        value: company.email,
+        href: `mailto:${company.email}`
+      },
+      {
+        label: 'W',
+        value: company.website.replace(/^https?:\/\//, ''),
+        href: company.websiteUrl
+      },
+      {
+        label: 'A',
+        value: formatLocation(company)
+      }
+    ].filter((line) => Boolean(line.value)) as ContactLine[]);
+
+  const contactRows = contacts
+    .map((line) => {
+      const value = line.href ? linkHtml(line.value, line.href, SLATE) : line.value;
+      return `<tr>
+      <td valign="top" style="${FONT}padding:0 0 3px 0;font-size:12px;line-height:1.45;white-space:nowrap;">
+        <span style="font-weight:700;color:${COPPER};">${line.label}:</span>&nbsp;<span style="color:${SLATE};">${value}</span>
+      </td>
+    </tr>`;
+    })
+    .join('');
+
   return `
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="540" style="border-collapse:collapse;${FONT}width:540px;">
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="${width}" style="border-collapse:collapse;${FONT}width:${width}px;max-width:100%;">
   <tr>
-    <td style="background-color:${PRIMARY};padding:18px 20px;">
-      ${wordmark(20, '#FAFAFA')}
+    <td valign="top" style="padding:0 28px 0 0;">
+      <div style="${FONT}font-size:18px;font-weight:700;color:${NAVY};letter-spacing:-0.02em;line-height:1.25;">${name}</div>
+      <div style="${FONT}font-size:13px;font-weight:500;color:${SLATE};padding:6px 0 14px 0;line-height:1.35;">${title}</div>
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
+        ${contactRows}
+      </table>
+    </td>
+    <td valign="top" align="right" width="200" style="padding:2px 0 0 0;">
+      ${wordmarkHtml(markSize, 'primary')}
+      <div style="${FONT}font-size:11px;font-style:italic;color:${MUTED};line-height:1.45;padding-top:8px;max-width:190px;margin-left:auto;text-align:right;">
+        ${tagline}
+      </div>
     </td>
   </tr>
   <tr>
-    <td style="padding:0;">${rule(540, GOLD)}</td>
-  </tr>
-  <tr>
-    <td style="padding:16px 20px;border:1px solid ${GRAY200};border-top:0;">
+    <td colspan="2" style="padding:18px 0 0 0;">
       <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;">
-        <tr>
-          <td valign="top" style="${FONT}padding-right:20px;">
-            <div style="font-size:15px;font-weight:600;color:${INK};padding-bottom:2px;">${company.personName.toUpperCase()}</div>
-            <div style="font-size:12px;color:${GRAY500};padding-bottom:12px;">${company.jobTitle}</div>
-            <div style="font-size:12px;color:${GRAY500};line-height:1.8;">
-              T ${link(company.phone, `tel:${company.phone.replace(/\s/g, '')}`)}<br />
-              E ${link(company.email, mailto)}<br />
-              W ${link(company.website, company.websiteUrl, PRIMARY)}<br />
-              A ${company.addressLine1}, ${company.addressLine2}, ${company.country}
-            </div>
-          </td>
-          <td valign="top" width="150" style="${FONT}border-left:1px solid ${GRAY200};padding-left:20px;font-size:11px;color:${GRAY500};line-height:1.8;">
-            <div style="font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:${PRIMARY};font-weight:600;padding-bottom:6px;">
-              Connect
-            </div>
-            ${link('LinkedIn', 'https://' + company.linkedin)}<br />
-            ${link('Company profile', company.websiteUrl)}<br />
-            ${link('Book a meeting', company.websiteUrl)}
-          </td>
-        </tr>
+        <tr><td height="1" style="background-color:${RULE};font-size:0;line-height:0;border:0;">&nbsp;</td></tr>
       </table>
     </td>
   </tr>
   <tr>
-    <td style="${FONT}padding:10px 20px;background-color:#FAFAFA;border:1px solid ${GRAY200};border-top:0;font-size:10px;color:#A3A3A3;line-height:1.6;">
-      ${company.legalName} &middot; ${company.registration} &middot; ${company.taxId}<br />
-      ${company.endorsement} This message and any attachments are confidential and intended solely for the addressee.
+    <td colspan="2" style="${FONT}padding:12px 0 0 0;font-size:11px;color:${MUTED};line-height:1.55;">
+      ${footer}
     </td>
   </tr>
 </table>`.trim();
+}
+
+/** Default staff / founder lockup — matches the approved reference. */
+export function standardSignatureHtml(company: CompanyInfo = defaultCompany) {
+  return signatureLayoutHtml(company);
+}
+
+/** One-line reply variant — same type, compressed. */
+export function compactSignatureHtml(company: CompanyInfo = defaultCompany) {
+  const name = displayPersonName(company.personName);
+  const location = formatLocation(company);
+  const mailto = `mailto:${company.email}`;
+  return `
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;${FONT}">
+  <tr>
+    <td valign="top" style="padding:0 20px 0 0;">
+      <div style="${FONT}font-size:15px;font-weight:700;color:${NAVY};letter-spacing:-0.02em;">${name}</div>
+      <div style="${FONT}font-size:12px;color:${SLATE};padding:4px 0 8px 0;">${company.jobTitle}</div>
+      <div style="${FONT}font-size:12px;line-height:1.55;color:${SLATE};">
+        <span style="font-weight:700;color:${COPPER};">E:</span> ${linkHtml(company.email, mailto)}
+        &nbsp;&nbsp;<span style="font-weight:700;color:${COPPER};">W:</span> ${linkHtml(company.website, company.websiteUrl)}
+        ${location ? `&nbsp;&nbsp;<span style="font-weight:700;color:${COPPER};">A:</span> ${location}` : ''}
+      </div>
+    </td>
+    <td valign="top" align="right">${wordmarkHtml(128, 'primary')}</td>
+  </tr>
+  <tr>
+    <td colspan="2" style="padding:12px 0 0 0;">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;">
+        <tr><td height="1" style="background-color:${RULE};font-size:0;line-height:0;">&nbsp;</td></tr>
+      </table>
+      <div style="${FONT}padding-top:10px;font-size:10px;font-style:italic;color:${MUTED};">${company.tagline}</div>
+    </td>
+  </tr>
+</table>`.trim();
+}
+
+/** Executive — same DNA with phone + LinkedIn, legal footer. */
+export function executiveSignatureHtml(company: CompanyInfo = defaultCompany) {
+  const contacts: ContactLine[] = [
+    { label: 'E', value: company.email, href: `mailto:${company.email}` },
+    { label: 'T', value: company.phone, href: `tel:${company.phone.replace(/\s/g, '')}` },
+    {
+      label: 'W',
+      value: company.website.replace(/^https?:\/\//, ''),
+      href: company.websiteUrl
+    },
+    { label: 'A', value: formatLocation(company) },
+    {
+      label: 'L',
+      value: company.linkedin.replace(/^https?:\/\//, ''),
+      href: `https://${company.linkedin.replace(/^https?:\/\//, '')}`
+    }
+  ].filter((line) => Boolean(line.value));
+
+  return signatureLayoutHtml(company, {
+    contacts,
+    footer: `${company.mission}<br /><span style="color:${MUTED};">${company.legalName} · ${company.registration} · ${company.endorsement}</span>`,
+    width: 580,
+    markSize: 128
+  });
 }
 
 export function wrapAsEmailDocument(body: string, title: string) {
@@ -124,8 +215,10 @@ export function wrapAsEmailDocument(body: string, title: string) {
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>${title}</title>
   </head>
-  <body style="margin:0;padding:24px;background:#ffffff;">
+  <body style="margin:0;padding:32px;background:#ffffff;color:${INK};">
 ${body}
   </body>
 </html>`;
 }
+
+export const signatureTokens = { FONT, NAVY, COPPER, SLATE, MUTED, RULE, INK } as const;

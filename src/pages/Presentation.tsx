@@ -24,6 +24,18 @@ import {
   QuoteSlide,
   ContactSlide } from
 '../components/presentation/slidesData';
+import {
+  AgendaSlide,
+  ProblemOpportunitySlide,
+  SolutionOverviewSlide,
+  MarketMapSlide,
+  CaseStudySlide,
+  RiskComplianceSlide,
+  TeamOrgSlide,
+  RoadmapSlide,
+  PricingMatrixSlide,
+  NextStepsSlide
+} from '../components/presentation/slidesEnterprise';
 import { formats } from '@/lib/formats';
 import { exportDeckPdf } from '@/utils/exportAsset';
 
@@ -136,6 +148,66 @@ export const slides: SlideEntry[] = [
   fileName: 'NubiaGo_Slide_17_Contact',
   description: 'Closing ask, full contact block with icons, QR placeholder and the legal line.',
   render: () => <ContactSlide />
+},
+{
+  title: '18 — Meeting Agenda',
+  fileName: 'NubiaGo_Slide_18_Agenda',
+  description: 'Timed steering-committee agenda with owners — for board and programme reviews.',
+  render: () => <AgendaSlide />
+},
+{
+  title: '19 — Problem & Opportunity',
+  fileName: 'NubiaGo_Slide_19_Problem_Opportunity',
+  description: 'Split frame contrasting the settlement gap with the NubiaGo opportunity.',
+  render: () => <ProblemOpportunitySlide />
+},
+{
+  title: '20 — Solution Overview',
+  fileName: 'NubiaGo_Slide_20_Solution',
+  description: 'Three-layer architecture: access, clearing and reconciliation.',
+  render: () => <SolutionOverviewSlide />
+},
+{
+  title: '21 — Market Coverage Map',
+  fileName: 'NubiaGo_Slide_21_Markets',
+  description: 'Live, pilot and roadmap corridors with map placeholder.',
+  render: () => <MarketMapSlide />
+},
+{
+  title: '22 — Case Study',
+  fileName: 'NubiaGo_Slide_22_Case_Study',
+  description: 'Customer outcome narrative with headline KPIs and quote panel.',
+  render: () => <CaseStudySlide />
+},
+{
+  title: '23 — Risk & Compliance',
+  fileName: 'NubiaGo_Slide_23_Risk_Compliance',
+  description: 'Control matrix for KYC, sanctions, settlement, data and continuity.',
+  render: () => <RiskComplianceSlide />
+},
+{
+  title: '24 — Leadership Team',
+  fileName: 'NubiaGo_Slide_24_Team',
+  description: 'Engagement leadership with portrait placeholders.',
+  render: () => <TeamOrgSlide />
+},
+{
+  title: '25 — Implementation Roadmap',
+  fileName: 'NubiaGo_Slide_25_Roadmap',
+  description: 'Twelve-week delivery phases from discover to scale.',
+  render: () => <RoadmapSlide />
+},
+{
+  title: '26 — Pricing Matrix',
+  fileName: 'NubiaGo_Slide_26_Pricing',
+  description: 'Enterprise commercial matrix across Standard, Growth and Enterprise.',
+  render: () => <PricingMatrixSlide />
+},
+{
+  title: '27 — Next Steps',
+  fileName: 'NubiaGo_Slide_27_Next_Steps',
+  description: 'Decision closing with numbered actions, contact and QR.',
+  render: () => <NextStepsSlide />
 }];
 
 
@@ -165,7 +237,7 @@ export function PresentationPage() {
         code="04"
         title="Corporate Presentation Template"
         folder="04_PRESENTATION"
-        description="A 1280 × 720 master with 17 reusable layouts on one grid: 64 px margins, a fixed heading block, and a footer carrying the wordmark, domain and slide number on every content slide." />
+        description="A 1280 × 720 master with 27 reusable layouts on one grid: 64 px margins, a fixed heading block, and a footer carrying the wordmark, domain and slide number on every content slide." />
       
 
       <div className="mb-12 grid gap-px bg-gray-200 sm:grid-cols-3">
@@ -187,7 +259,7 @@ export function PresentationPage() {
           Download deck PDF
         </Button>
         <p className="text-[13px] text-gray-700">
-          One multi-page 16:9 PDF of all 17 slides. Per-slide PNG remains on each artboard below.
+          One multi-page 16:9 PDF of all 27 slides. Per-slide PNG remains on each artboard below.
         </p>
         {deckError ? <p className="w-full text-[12px] text-state-error">{deckError}</p> : null}
       </div>

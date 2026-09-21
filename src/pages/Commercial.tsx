@@ -13,6 +13,7 @@ import { QrPlaceholder } from '../components/brand/iconSystem';
 import { useCompany } from '@/lib/brand-context';
 import { formats } from '@/lib/formats';
 import { quotationItems, totals, customer, terms, bankDetails } from '../data/commercial';
+import { enterpriseCommercialDocs } from '@/components/documents/CommercialExtra';
 
 const customerLines = [customer.company, customer.attention, customer.address, customer.country, customer.taxId];
 
@@ -26,7 +27,7 @@ export function CommercialPage() {
         code="05"
         title="Commercial Documents"
         folder="05_COMMERCIAL_DOCUMENTS"
-        description="One document engine — header, party blocks, line-item table, totals and terms — restated as quotation, proforma, commercial invoice and order confirmation. Figures are tabular and right-aligned so totals can be checked at a glance." />
+        description="One document engine — header, party blocks, line-item table, totals and terms — across quotation, invoice, credit instruments, logistics and account documents. Figures are tabular and right-aligned so totals can be checked at a glance." />
       
 
       <GroupLabel note="For international B2B customers">Quotation — standard</GroupLabel>
@@ -303,6 +304,19 @@ export function CommercialPage() {
           
         </A4Page>
       </AssetFrame>
+
+      <GroupLabel note="Credit, logistics, account & contract instruments">Extended commercial suite</GroupLabel>
+      {enterpriseCommercialDocs.map((doc) => (
+        <AssetFrame
+          key={doc.fileName}
+          title={doc.title}
+          fileName={doc.fileName}
+          description={doc.description}
+          artboard={formats.a4}
+        >
+          {doc.render()}
+        </AssetFrame>
+      ))}
     </>);
 
 }

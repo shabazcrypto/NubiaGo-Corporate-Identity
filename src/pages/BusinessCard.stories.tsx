@@ -1,10 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import {
-  CorporateCardFront,
-  CorporateCardBack,
-  MinimalCardFront,
-  MinimalCardBack
-} from '@/pages/BusinessCard';
+import { businessCardSets } from '@/components/cards/CardLayouts';
 import { formats } from '@/lib/formats';
 
 const meta: Meta = {
@@ -18,52 +13,40 @@ const meta: Meta = {
 export default meta;
 type Story = StoryObj;
 
-function Card({ children }: { children: React.ReactNode }) {
+function Face({ children }: { children: React.ReactNode }) {
   return <div style={{ width: formats.card.width, height: formats.card.height }}>{children}</div>;
 }
 
-export const CorporateFront: Story = {
-  render: () => (
-    <Card>
-      <CorporateCardFront />
-    </Card>
-  )
-};
-
-export const CorporateBack: Story = {
-  render: () => (
-    <Card>
-      <CorporateCardBack />
-    </Card>
-  )
-};
-
-export const MinimalFront: Story = {
-  render: () => (
-    <Card>
-      <MinimalCardFront />
-    </Card>
-  )
-};
-
-export const MinimalBack: Story = {
-  render: () => (
-    <Card>
-      <MinimalCardBack />
-    </Card>
-  )
-};
-
-export const CorporateFrontBleed: Story = {
-  parameters: { viewport: { defaultViewport: 'card' } },
-  render: () => (
-    <div
-      className="flex items-center justify-center bg-brand"
-      style={{ width: formats.cardBleed.width, height: formats.cardBleed.height }}
-    >
-      <div style={{ width: formats.card.width, height: formats.card.height }}>
-        <CorporateCardFront />
+function Duplex({ setId }: { setId: string }) {
+  const set = businessCardSets.find((s) => s.id === setId)!;
+  return (
+    <div className="flex flex-col gap-6">
+      <div>
+        <div className="mb-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-gray-500">
+          {set.title} · Front · {set.concept}
+        </div>
+        <Face>
+          <set.front.Component />
+        </Face>
+      </div>
+      <div>
+        <div className="mb-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-gray-500">
+          {set.title} · Back
+        </div>
+        <Face>
+          <set.back.Component />
+        </Face>
       </div>
     </div>
-  )
-};
+  );
+}
+
+export const Executive: Story = { render: () => <Duplex setId="executive" /> };
+export const Manifesto: Story = { render: () => <Duplex setId="manifesto" /> };
+export const Split: Story = { render: () => <Duplex setId="split" /> };
+export const Editorial: Story = { render: () => <Duplex setId="editorial" /> };
+export const Horizon: Story = { render: () => <Duplex setId="horizon" /> };
+export const Quiet: Story = { render: () => <Duplex setId="quiet" /> };
+export const Solid: Story = { render: () => <Duplex setId="solid" /> };
+export const Ribbon: Story = { render: () => <Duplex setId="ribbon" /> };
+export const Corner: Story = { render: () => <Duplex setId="corner" /> };

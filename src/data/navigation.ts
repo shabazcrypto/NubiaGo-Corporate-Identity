@@ -47,7 +47,7 @@ export const navigation: NavItem[] = [
   label: 'Business Card',
   path: '/business-card',
   folder: '06_BUSINESS_CARD',
-  description: '85 × 55 mm corporate and minimal card, front and back.'
+  description: '3.5 × 2 in · nine duplex sets (front + back).'
 },
 {
   code: '07',
@@ -83,4 +83,11 @@ export const navigation: NavItem[] = [
   path: '/assets',
   folder: '11_ASSETS',
   description: 'Icon system, brand patterns, QR placeholders and export notes.'
+},
+{
+  code: '12',
+  label: 'Social Covers',
+  path: '/social-covers',
+  folder: '12_SOCIAL_COVERS',
+  description: 'Platform covers, profiles and Instagram highlights for NubiaGo.'
 }];

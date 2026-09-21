@@ -14,6 +14,7 @@ import {
   executiveSignatureHtml,
   wrapAsEmailDocument } from
 '../utils/emailSignatures';
+import { enterpriseSignatureCatalog } from '../utils/emailSignaturesExtra';
 
 function HtmlActions({ html, fileName }: {html: string;fileName: string;}) {
   const [copied, setCopied] = useState(false);
@@ -90,15 +91,15 @@ export function EmailPage() {
         code="03"
         title="Email System"
         folder="03_EMAIL"
-        description="Signatures built as nested tables with inline styles only — no background images, web fonts or flex layout — so they survive Outlook, Gmail and Apple Mail. Each one copies straight into the client as HTML." />
+        description="One approved lockup: name and labelled contacts on the left, wordmark and italic tagline on the right, hairline rule, mission footer. Nested tables and inline styles only — Outlook, Gmail and Apple Mail safe." />
       
 
-      <GroupLabel note="Table-based HTML · Inter with Arial fallback">Signatures</GroupLabel>
+      <GroupLabel note="Approved lockup · copper E / W / A labels · Helvetica Neue">Signatures</GroupLabel>
 
       <AssetFrame
         title="Standard Corporate Signature"
         fileName="NubiaGo_Signature_Standard"
-        description="The default for all staff. Stacked layout survives narrow mobile clients; placeholders in square brackets are replaced per person."
+        description="The master lockup. Use for all external correspondence unless a role variant below is required."
         artboard={formats.signature}
         htmlOnly
         actions={<HtmlActions html={standardHtml} fileName="NubiaGo_Signature_Standard" />}>
@@ -109,7 +110,7 @@ export function EmailPage() {
       <AssetFrame
         title="Compact Signature"
         fileName="NubiaGo_Signature_Compact"
-        description="For replies and internal threads. One rule of Gold separates the mark from the details, keeping three lines of chrome at most."
+        description="Same DNA compressed for replies — contacts on one line, wordmark right, tagline under the rule."
         artboard={formats.signatureCompact}
         htmlOnly
         actions={<HtmlActions html={compactHtml} fileName="NubiaGo_Signature_Compact" />}>
@@ -120,7 +121,7 @@ export function EmailPage() {
       <AssetFrame
         title="Executive / Sales Signature"
         fileName="NubiaGo_Signature_Executive"
-        description="For executives, sales and business development writing to international customers. Adds the reversed brand band, a connect column and the legal line."
+        description="Master lockup plus phone, LinkedIn and legal registration under the mission line."
         artboard={formats.signatureExecutive}
         htmlOnly
         actions={<HtmlActions html={executiveHtml} fileName="NubiaGo_Signature_Executive" />}>
@@ -128,12 +129,29 @@ export function EmailPage() {
         <SignaturePreview html={executiveHtml} />
       </AssetFrame>
 
+      <GroupLabel note="Same lockup · role inboxes only">Role variants</GroupLabel>
+      {enterpriseSignatureCatalog.map((entry) => {
+        const html = entry.html(company);
+        return (
+          <AssetFrame
+            key={entry.id}
+            title={entry.title}
+            fileName={entry.fileName}
+            description={entry.description}
+            artboard={formats[entry.artboard]}
+            htmlOnly
+            actions={<HtmlActions html={html} fileName={entry.fileName} />}
+          >
+            <SignaturePreview html={html} />
+          </AssetFrame>
+        );
+      })}
+
       <div className="mb-14 border-l-2 border-brand-gold bg-gray-50 px-5 py-4 text-[13px] leading-relaxed text-gray-700">
         <strong className="font-semibold text-ink">Implementation.</strong> Copy the HTML and paste it into the
         signature editor, or import the downloaded <code className="text-[12px]">.html</code> file. Never paste a
         screenshot of a signature — it breaks selectable contact details and accessibility.
       </div>
-
       <GroupLabel note="Modular blocks · 600 px email column">Newsletter template</GroupLabel>
       <AssetFrame
         title="Email / Newsletter Master"
