@@ -4,7 +4,8 @@ Living brand system for NubiaGo — browse templates, update company details, do
 
 ## Live site
 
-https://shabazcrypto.github.io/NubiaGo-Corporate-Identity/
+- **Cloudflare Pages:** https://nubiago-corporate-identity.pages.dev/
+- **GitHub Pages:** https://shabazcrypto.github.io/NubiaGo-Corporate-Identity/
 
 Every artboard has **PNG** and/or **PDF** (or **HTML** for email signatures). Use **Brand details** to fill contact fields before downloading.
 
@@ -65,4 +66,14 @@ Print artboards stay custom Tailwind layouts — shadcn is not used inside them 
 
 ## Deploy
 
-Pushes to `main` build and publish to GitHub Pages via `.github/workflows/deploy-pages.yml`.
+### Cloudflare Pages (primary)
+
+```bash
+npm run deploy
+```
+
+Deploys `dist/` to the **NubiaGo** Cloudflare account as project `nubiago-corporate-identity`.
+
+### GitHub Pages
+
+Pushes to `main` also build and publish via `.github/workflows/deploy-pages.yml` (uses `VITE_BASE=/NubiaGo-Corporate-Identity/`).
