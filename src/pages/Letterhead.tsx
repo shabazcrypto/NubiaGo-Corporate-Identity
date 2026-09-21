@@ -2,6 +2,8 @@ import { PageHeader, GroupLabel } from '../components/ui/PageHeader';
 import { AssetFrame } from '../components/ui/AssetFrame';
 import { A4Page, DocumentHeader, DocumentFooter, MARGIN } from '../components/documents/DocumentChrome';
 import { Logo, BrandRule } from '../components/brand/Logo';
+import { EnvelopeDl, EnvelopeC5, WithCompliments } from '../components/documents/Stationery';
+import { LetterheadMemo, LetterheadLegal, LetterheadFr } from '../components/documents/LetterheadExtras';
 import { formats } from '@/lib/formats';
 import { useCompany } from '@/lib/brand-context';
 
@@ -148,7 +150,7 @@ export function LetterheadPage() {
         code="02"
         title="Corporate Letterhead"
         folder="02_LETTERHEAD"
-        description="Three A4 templates on a shared 17 mm margin and 12-column grid. Branding is confined to the header band and footer so the body area stays clean, printable and usable for international correspondence."
+        description="A4 letterheads on a shared 17 mm margin, plus DL / C5 envelopes and with-compliments. Branding stays in the header/footer so the body remains clean for international correspondence."
       />
 
       <GroupLabel note="For official correspondence, commercial letters, declarations and quotations">
@@ -211,6 +213,58 @@ export function LetterheadPage() {
         description="Reversed band for covers, catalogues and proposals where the footer is part of the design rather than administrative chrome."
       >
         <FooterBrandedBand />
+      </AssetFrame>
+
+      <GroupLabel note="220 × 110 mm · 229 × 162 mm · A6">Stationery — envelopes &amp; compliments</GroupLabel>
+      <AssetFrame
+        title="Envelope — DL"
+        fileName="NubiaGo_Envelope_DL"
+        artboard={formats.envelopeDl}
+        description="Standard business envelope face. Return address top-left; dashed recipient window for layout reference (not printed)."
+      >
+        <EnvelopeDl />
+      </AssetFrame>
+      <AssetFrame
+        title="Envelope — C5"
+        fileName="NubiaGo_Envelope_C5"
+        artboard={formats.envelopeC5}
+        description="C5 face on Warm Sand for proposals and board packs. Matches A4 folded once."
+      >
+        <EnvelopeC5 />
+      </AssetFrame>
+      <AssetFrame
+        title="With Compliments"
+        fileName="NubiaGo_With_Compliments"
+        artboard={formats.compliments}
+        description="A6 slip for samples, proposals and hand delivery. Writing space left open above the contact block."
+      >
+        <WithCompliments />
+      </AssetFrame>
+
+      <GroupLabel note="Internal · legal · bilingual">Extended correspondence</GroupLabel>
+      <AssetFrame
+        title="Letterhead — Internal Memo"
+        fileName="NubiaGo_Letterhead_Memo"
+        artboard={formats.a4}
+        description="Meta block for From / To / Date / Ref / Classification. Internal only."
+      >
+        <LetterheadMemo />
+      </AssetFrame>
+      <AssetFrame
+        title="Letterhead — Legal / Privileged"
+        fileName="NubiaGo_Letterhead_Legal"
+        artboard={formats.a4}
+        description="Counsel correspondence — without-prejudice framing and matter reference."
+      >
+        <LetterheadLegal />
+      </AssetFrame>
+      <AssetFrame
+        title="Letterhead — Français (FR)"
+        fileName="NubiaGo_Letterhead_FR"
+        artboard={formats.a4}
+        description="Full-colour twin with French body for West / Central Africa correspondence."
+      >
+        <LetterheadFr />
       </AssetFrame>
     </>
   );

@@ -4,6 +4,14 @@ import { Logo, BrandRule } from '../components/brand/Logo';
 import { NG_STROKE, iconByKey, QrPlaceholder } from '../components/brand/iconSystem';
 import { useCompany } from '@/lib/brand-context';
 import { formats } from '@/lib/formats';
+import { HERO } from '@/components/social/heroCatalog';
+import {
+  CatalogueToc,
+  CatalogueLifestyleTextiles,
+  CatalogueLifestyleAgri,
+  CatalogueLifestyleLogistics,
+  CatalogueSupplierStory
+} from '@/components/catalogue/CatalogueExtras';
 
 const PAD = 56;
 
@@ -61,10 +69,20 @@ export function CataloguePage() {
         code="08"
         title="Product Catalogue"
         folder="08_CATALOGUE"
-        description="A nine-page system for a technical B2B catalogue. Running header and footer are constant; only the content frame changes, so pages can be reordered or a category inserted without redesign." />
+        description="A B2B catalogue system with TOC, photo-led category openers, supplier story, grid, specs and contact — shared running header/footer." />
       
 
-      <GroupLabel note="Opens each category section">Category cover</GroupLabel>
+      <GroupLabel note="Front matter">Contents</GroupLabel>
+      <AssetFrame
+        title="Catalogue — Contents"
+        fileName="NubiaGo_Catalogue_00_Contents"
+        description="Numbered sections with dotted leaders — reorder freely when categories change."
+        artboard={formats.a4}
+      >
+        <CatalogueToc />
+      </AssetFrame>
+
+      <GroupLabel note="Opens each category section">Category covers</GroupLabel>
       <AssetFrame
         title="Catalogue — Category Cover"
         fileName="NubiaGo_Catalogue_01_Category_Cover"
@@ -76,10 +94,18 @@ export function CataloguePage() {
             <Logo size={20} />
             <span className="text-[9px] font-medium uppercase tracking-[0.16em] text-gray-500">Catalogue 2025</span>
           </div>
-          <div className="flex flex-1 items-center justify-center bg-brand-sand">
-            <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-gray-500">
-              Category image area
-            </span>
+          <div
+            className="relative flex flex-1 items-end"
+            style={{
+              backgroundImage: `url(${HERO.warehouse})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center'
+            }}
+          >
+            <div
+              className="absolute inset-0"
+              style={{ background: 'linear-gradient(0deg, rgba(30,58,95,0.55) 0%, transparent 55%)' }}
+            />
           </div>
           <div className="bg-brand px-14 py-12">
             <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-gold">Category 01</div>
@@ -92,6 +118,41 @@ export function CataloguePage() {
             </p>
           </div>
         </div>
+      </AssetFrame>
+
+      <AssetFrame
+        title="Catalogue — Textiles & Apparel"
+        fileName="NubiaGo_Catalogue_Category_Textiles"
+        description="Lifestyle opener — atelier photography with navy title band."
+        artboard={formats.a4}
+      >
+        <CatalogueLifestyleTextiles />
+      </AssetFrame>
+      <AssetFrame
+        title="Catalogue — Agri Commodities"
+        fileName="NubiaGo_Catalogue_Category_Agri"
+        description="Lifestyle opener — market / spices photography."
+        artboard={formats.a4}
+      >
+        <CatalogueLifestyleAgri />
+      </AssetFrame>
+      <AssetFrame
+        title="Catalogue — Logistics & Fulfilment"
+        fileName="NubiaGo_Catalogue_Category_Logistics"
+        description="Lifestyle opener — shipping photography."
+        artboard={formats.a4}
+      >
+        <CatalogueLifestyleLogistics />
+      </AssetFrame>
+
+      <GroupLabel note="Partner narrative">Supplier story</GroupLabel>
+      <AssetFrame
+        title="Catalogue — Supplier Story"
+        fileName="NubiaGo_Catalogue_Supplier_Story"
+        description="Split photo + quote narrative for featured partners."
+        artboard={formats.a4}
+      >
+        <CatalogueSupplierStory />
       </AssetFrame>
 
       <GroupLabel note="Sets context before the product pages">Product introduction</GroupLabel>

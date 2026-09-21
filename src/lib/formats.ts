@@ -106,7 +106,60 @@ export const formats = {
     targetDpi: SCREEN_DPI
   }),
   linkedIn: screenSpec('linkedIn', 'LinkedIn link post · 1200 × 627 px', 1200, 627),
+  /** LinkedIn company page cover. */
+  linkedInCover: screenSpec('linkedInCover', 'LinkedIn cover · 1584 × 396 px', 1584, 396),
   square: screenSpec('square', 'Feed post · 1080 × 1080 px', 1080, 1080),
+  /** Stationery — DL envelope face. */
+  envelopeDl: printSpec('envelopeDl', 'DL envelope · 220 × 110 mm', 220, 110),
+  /** Stationery — C5 envelope face. */
+  envelopeC5: printSpec('envelopeC5', 'C5 envelope · 229 × 162 mm', 229, 162),
+  /** With-compliments slip · A6. */
+  compliments: printSpec('compliments', 'With compliments · A6 · 148 × 105 mm', 148, 105),
+  /** Favicon / app icon masters. */
+  favicon16: screenSpec('favicon16', 'Favicon · 16 × 16', 16, 16, {
+    family: 'logo',
+    defaultExports: ['png'],
+    transparent: false,
+    targetDpi: SCREEN_DPI
+  }),
+  favicon32: screenSpec('favicon32', 'Favicon · 32 × 32', 32, 32, {
+    family: 'logo',
+    defaultExports: ['png'],
+    transparent: false
+  }),
+  appleTouch: screenSpec('appleTouch', 'Apple touch · 180 × 180', 180, 180, {
+    family: 'logo',
+    defaultExports: ['png']
+  }),
+  appIcon192: screenSpec('appIcon192', 'PWA icon · 192 × 192', 192, 192, {
+    family: 'logo',
+    defaultExports: ['png']
+  }),
+  appIcon512: screenSpec('appIcon512', 'App icon · 512 × 512', 512, 512, {
+    family: 'logo',
+    defaultExports: ['png']
+  }),
+  brandMark: screenSpec('brandMark', 'Brand mark · 320 × 320', 320, 320, {
+    family: 'logo',
+    defaultExports: ['png', 'svg'],
+    transparent: true
+  }),
+  brandMarkField: screenSpec('brandMarkField', 'Brand mark on field · 320 × 320', 320, 320, {
+    family: 'logo',
+    defaultExports: ['png']
+  }),
+  clearspace: screenSpec('clearspace', 'Clearspace guide · 960 × 480', 960, 480, {
+    family: 'logo',
+    defaultExports: ['png']
+  }),
+  misuseSheet: screenSpec('misuseSheet', 'Misuse sheet · 1200 × 800', 1200, 800, {
+    family: 'logo',
+    defaultExports: ['png']
+  }),
+  lockupMatrix: screenSpec('lockupMatrix', 'Lockup matrix · 1200 × 720', 1200, 720, {
+    family: 'logo',
+    defaultExports: ['png']
+  }),
   /** Facebook Page Cover @2× · 820 × 312 @1×. */
   fbCover: screenSpec('fbCover', 'Facebook cover · 1640 × 624 px', 1640, 624),
   /** X / Twitter profile header. */
@@ -125,6 +178,9 @@ export const formats = {
   masterCover: screenSpec('masterCover', 'Master cover · 1920 × 640 px', 1920, 640),
   newsletter: screenSpec('newsletter', 'Email · 600 px column', 600, 1180, {
     defaultExports: ['png']
+  }),
+  emailBanner: screenSpec('emailBanner', 'Email banner · 600 × 200', 600, 200, {
+    defaultExports: ['png', 'jpg']
   }),
   signature: screenSpec('signature', 'HTML signature preview', 720, 420, {
     defaultExports: []
@@ -163,6 +219,13 @@ export const formats = {
     defaultExports: ['png']
   }),
   qrRow: screenSpec('qrRow', 'QR placeholders', 960, 220, {
+    defaultExports: ['png']
+  }),
+  seal: screenSpec('seal', 'Corporate seal · 320 × 320', 320, 320, {
+    family: 'logo',
+    defaultExports: ['png']
+  }),
+  packingTape: screenSpec('packingTape', 'Packing tape · 640 × 80', 640, 80, {
     defaultExports: ['png']
   })
 } as const satisfies Record<string, ArtboardSpec>;

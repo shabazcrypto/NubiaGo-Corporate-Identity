@@ -13,6 +13,14 @@ export const brandColors: Swatch[] = [
   { name: 'Gold', hex: '#C9A227', rgb: '201, 162, 39', cmyk: '0 / 19 / 81 / 21', onDark: true }
 ];
 
+/** App icon field + tittle — from the official NubiaGo Icon source. */
+export const iconColors: Swatch[] = [
+  { name: 'Icon Blue Start', hex: '#2B5FD9', rgb: '43, 95, 217', cmyk: '80 / 56 / 0 / 15' },
+  { name: 'Icon Blue End', hex: '#1E4BB8', rgb: '30, 75, 184', cmyk: '84 / 59 / 0 / 28' },
+  { name: 'Icon Gold', hex: '#FFC857', rgb: '255, 200, 87', cmyk: '0 / 22 / 66 / 0', onDark: true },
+  { name: 'Icon Glyph', hex: '#F5F5F5', rgb: '245, 245, 245', cmyk: '0 / 0 / 0 / 4', onDark: true }
+];
+
 export const neutralColors: Swatch[] = [
   { name: 'Black', hex: '#1A1A1A', rgb: '26, 26, 26', cmyk: '0 / 0 / 0 / 90' },
   { name: 'Gray 700', hex: '#404040', rgb: '64, 64, 64', cmyk: '0 / 0 / 0 / 75' },

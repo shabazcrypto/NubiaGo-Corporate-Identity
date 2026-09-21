@@ -15,8 +15,19 @@ import {
   wrapAsEmailDocument } from
 '../utils/emailSignatures';
 import { enterpriseSignatureCatalog } from '../utils/emailSignaturesExtra';
+import { EmailBannerAnnounce, EmailBannerInvite, EmailBannerSystem } from '../components/email/EmailBanners';
+import { htmlEmailCatalog, emailClientNotes } from '@/utils/htmlEmails';
 
-function HtmlActions({ html, fileName }: {html: string;fileName: string;}) {
+function HtmlActions({
+  html,
+  fileName,
+  fullDocument = false
+}: {
+  html: string;
+  fileName: string;
+  /** When true, html is already a complete document — download as-is. */
+  fullDocument?: boolean;
+}) {
   const [copied, setCopied] = useState(false);
   return (
     <>
@@ -41,7 +52,13 @@ function HtmlActions({ html, fileName }: {html: string;fileName: string;}) {
         type="button"
         variant="outline"
         size="sm"
-        onClick={() => downloadText(wrapAsEmailDocument(html, fileName), `${fileName}.html`, 'text/html')}>
+        onClick={() =>
+          downloadText(
+            fullDocument ? html : wrapAsEmailDocument(html, fileName),
+            `${fileName}.html`,
+            'text/html'
+          )
+        }>
         
         <FileCode2Icon strokeWidth={1.5} />
         HTML
@@ -91,15 +108,15 @@ export function EmailPage() {
         code="03"
         title="Email System"
         folder="03_EMAIL"
-        description="One approved lockup: name and labelled contacts on the left, wordmark and italic tagline on the right, hairline rule, mission footer. Nested tables and inline styles only — Outlook, Gmail and Apple Mail safe." />
+        description="Diversified signature layouts — the Standard lockup is the approved master; Compact, Executive and role variants each use a distinct structure. Nested tables and inline styles only — Outlook, Gmail and Apple Mail safe." />
       
 
-      <GroupLabel note="Approved lockup · copper E / W / A labels · Helvetica Neue">Signatures</GroupLabel>
+      <GroupLabel note="Three distinct structures · not reskins of one lockup">Core signatures</GroupLabel>
 
       <AssetFrame
         title="Standard Corporate Signature"
         fileName="NubiaGo_Signature_Standard"
-        description="The master lockup. Use for all external correspondence unless a role variant below is required."
+        description="Master lockup — name + copper E/W/A contacts left, wordmark + italic tagline right, hairline rule, mission footer."
         artboard={formats.signature}
         htmlOnly
         actions={<HtmlActions html={standardHtml} fileName="NubiaGo_Signature_Standard" />}>
@@ -110,7 +127,7 @@ export function EmailPage() {
       <AssetFrame
         title="Compact Signature"
         fileName="NubiaGo_Signature_Compact"
-        description="Same DNA compressed for replies — contacts on one line, wordmark right, tagline under the rule."
+        description="Reply layout — small mark beside name with gold rail, middot contact line. Not a shrunk two-column lockup."
         artboard={formats.signatureCompact}
         htmlOnly
         actions={<HtmlActions html={compactHtml} fileName="NubiaGo_Signature_Compact" />}>
@@ -121,7 +138,7 @@ export function EmailPage() {
       <AssetFrame
         title="Executive / Sales Signature"
         fileName="NubiaGo_Signature_Executive"
-        description="Master lockup plus phone, LinkedIn and legal registration under the mission line."
+        description="Gold left rail · stacked identity · unlabelled link row · navy rule and legal footer. For senior outbound."
         artboard={formats.signatureExecutive}
         htmlOnly
         actions={<HtmlActions html={executiveHtml} fileName="NubiaGo_Signature_Executive" />}>
@@ -129,7 +146,7 @@ export function EmailPage() {
         <SignaturePreview html={executiveHtml} />
       </AssetFrame>
 
-      <GroupLabel note="Same lockup · role inboxes only">Role variants</GroupLabel>
+      <GroupLabel note="Each role has its own layout DNA — rail, band, panel, cascade or split">Role variants</GroupLabel>
       {enterpriseSignatureCatalog.map((entry) => {
         const html = entry.html(company);
         return (
@@ -265,6 +282,78 @@ export function EmailPage() {
           </NewsletterBlock>
         </div>
       </AssetFrame>
-    </>);
+      <GroupLabel note="600 × 200 · ESP header strips">Email banners</GroupLabel>
+      <AssetFrame
+        title="Email Banner — Announcement"
+        fileName="NubiaGo_Email_Banner_Announce"
+        description="Photo-led 600×200 strip for campaign headers in any ESP."
+        artboard={formats.emailBanner}
+      >
+        <EmailBannerAnnounce />
+      </AssetFrame>
+      <AssetFrame
+        title="Email Banner — Invite"
+        fileName="NubiaGo_Email_Banner_Invite"
+        description="Warm Sand invite strip with date and registration path."
+        artboard={formats.emailBanner}
+      >
+        <EmailBannerInvite />
+      </AssetFrame>
+      <AssetFrame
+        title="Email Banner — System"
+        fileName="NubiaGo_Email_Banner_System"
+        description="Transactional notice strip for statements and secure downloads."
+        artboard={formats.emailBanner}
+      >
+        <EmailBannerSystem />
+      </AssetFrame>
 
+      <GroupLabel note="Full messages · nested tables · Arial stack · Outlook-safe">
+        HTML email templates
+      </GroupLabel>
+      {htmlEmailCatalog.map((entry) => {
+        const html = entry.build(company);
+        return (
+          <AssetFrame
+            key={entry.id}
+            title={entry.title}
+            fileName={entry.fileName}
+            description={entry.description}
+            artboard={formats.newsletter}
+            htmlOnly
+            actions={<HtmlActions html={html} fileName={entry.fileName} fullDocument />}
+          >
+            <div className="h-full w-full overflow-auto bg-[#F5F5F5]">
+              <iframe
+                title={entry.title}
+                srcDoc={html}
+                className="h-[720px] w-full border-0 bg-white"
+                sandbox=""
+              />
+            </div>
+          </AssetFrame>
+        );
+      })}
+
+      <GroupLabel note="ESP QA before send">Client notes</GroupLabel>
+      <div className="mb-14 overflow-hidden border border-gray-200">
+        <table className="w-full border-collapse text-[12px]">
+          <thead>
+            <tr className="border-b-2 border-brand bg-gray-50 text-left text-[10px] uppercase tracking-[0.12em] text-gray-500">
+              <th className="px-4 py-2.5 font-medium">Client</th>
+              <th className="px-4 py-2.5 font-medium">Note</th>
+            </tr>
+          </thead>
+          <tbody>
+            {emailClientNotes.map(([client, note]) => (
+              <tr key={client} className="border-b border-gray-200">
+                <td className="whitespace-nowrap px-4 py-2.5 font-medium text-ink">{client}</td>
+                <td className="px-4 py-2.5 text-gray-700">{note}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
+  );
 }

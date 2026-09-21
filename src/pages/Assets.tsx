@@ -8,6 +8,12 @@ import { brandIcons, NG_STROKE, QrPlaceholder } from '../components/brand/iconSy
 import { navigation } from '../data/navigation';
 import { useCompany } from '@/lib/brand-context';
 import { formats } from '@/lib/formats';
+import { faviconDefs } from '../components/brand/AppIcons';
+import {
+  CorporateSeal,
+  PackingTape,
+  unsplashCredits
+} from '../components/brand/EnvironmentalAssets';
 import {
   downloadIconPack,
   downloadLogoPack,
@@ -19,9 +25,12 @@ const exportMatrix: [string, string, string][] = [
   ['Letterhead · covers · reports · catalogue · commercial', 'PNG + PDF', '300 dpi PNG with pHYs · PDF page is true A4'],
   ['Presentation slides', 'PNG per slide · deck PDF', '1280 × 720 · multi-page 16:9 PDF from the Presentation page'],
   ['Email signatures', 'HTML only', 'Copy HTML or download .html — never paste a screenshot'],
+  ['HTML emails (announce / invite / digest / receipt)', 'HTML only', 'Full documents · nested tables · Arial · do not wrap again'],
   ['Newsletter', 'PNG preview', 'Rebuild blocks in your ESP from these values'],
   ['Business cards', 'PNG + PDF', '3.5 × 2 in · 88.9 × 50.8 mm · 300 dpi · bleed 94.9 × 56.8 mm'],
   ['Social templates', 'PNG · JPG', '1200 × 627 and 1080 × 1080 · sRGB'],
+  ['Favicons · app icons', 'SVG + PNG', 'Official brand mark on Icon Blue · favicon.svg + PNG 16–512'],
+  ['Corporate seal · packing tape', 'PNG', '320×320 seal · 640×80 tape strip tile'],
   ['Logo', 'Outlined SVG · transparent PNG', 'SVG is path-outlined Inter ExtraBold — not foreignObject HTML'],
   ['Icons & patterns', 'PNG', 'Icon sheet optional transparency · patterns are sRGB screen files']
 ];
@@ -51,8 +60,82 @@ export function AssetsPage() {
         code="11"
         title="Assets, Patterns & Export"
         folder="11_ASSETS"
-        description="Supporting downloads: icon sheet, brand patterns, QR placeholders, honest export rules, and download packs for handoff."
+        description="Favicons, app icons, icon sheet, brand patterns, QR placeholders, export rules, and download packs for handoff."
       />
+
+      <GroupLabel note="Official mark · Icon Blue field · gold tittle">Favicon &amp; app icons</GroupLabel>
+      <p className="mb-6 max-w-3xl text-[13px] leading-relaxed text-gray-700">
+        Use the NubiaGo brand mark (gold tittle + “n”, reading as “in”) on Icon Blue for browsers, PWA and app stores.
+        Export PNG at each size below; SVG masters live in <code className="text-[12px]">/brand/icon/</code> and{' '}
+        <code className="text-[12px]">/favicon.svg</code>. The wordmark remains the logo for documents and marketing —
+        the mark is for constrained digital tiles only.
+      </p>
+      {faviconDefs.map(({ id, title, file, artboard, Component }) => (
+        <AssetFrame
+          key={id}
+          title={title}
+          fileName={file}
+          description="Icon Blue field · off-white glyph · Icon Gold tittle. Export PNG for browsers, PWA and app stores."
+          artboard={artboard}
+        >
+          <Component />
+        </AssetFrame>
+      ))}
+
+      <GroupLabel note="Print overlays · environmental">Seal &amp; packing</GroupLabel>
+      <AssetFrame
+        title="Corporate Seal"
+        fileName="NubiaGo_Seal_Official"
+        description="Circular official seal for certificates and stamped PDFs — wordmark inside Primary ring."
+        artboard={formats.seal}
+      >
+        <CorporateSeal />
+      </AssetFrame>
+      <AssetFrame
+        title="Packing Tape Pattern"
+        fileName="NubiaGo_Packing_Tape"
+        description="Repeatable 640×80 strip — tile horizontally for carton tape artwork."
+        artboard={formats.packingTape}
+      >
+        <PackingTape />
+      </AssetFrame>
+
+      <GroupLabel note="Required for commercial redistribution of Unsplash photography">
+        Photography attribution ledger
+      </GroupLabel>
+      <div className="mb-14 overflow-hidden border border-gray-200">
+        <table className="w-full border-collapse text-[12px]">
+          <thead>
+            <tr className="border-b-2 border-brand bg-gray-50 text-left text-[10px] uppercase tracking-[0.12em] text-gray-500">
+              <th className="px-4 py-2.5 font-medium">File</th>
+              <th className="px-4 py-2.5 font-medium">Credit</th>
+              <th className="px-4 py-2.5 font-medium">Source</th>
+            </tr>
+          </thead>
+          <tbody>
+            {unsplashCredits.map((row) => (
+              <tr key={row.file} className="border-b border-gray-200">
+                <td className="px-4 py-2.5 font-medium text-ink">{row.file}</td>
+                <td className="px-4 py-2.5 text-gray-700">{row.credit}</td>
+                <td className="px-4 py-2.5">
+                  <a
+                    href={row.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-brand underline-offset-2 hover:underline"
+                  >
+                    Unsplash
+                  </a>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p className="border-t border-gray-200 bg-gray-50 px-4 py-3 text-[11px] leading-relaxed text-gray-500">
+          Studio heroes (<code className="text-[11px]">nubiago-hero-*.png</code>) are kit-generated campaign assets.
+          Confirm Unsplash license terms for your redistribution channel before external publication.
+        </p>
+      </div>
 
       <GroupLabel note="Zip packs for design and marketing handoff">Download packs</GroupLabel>
       <div className="mb-14 space-y-3 border border-gray-200 bg-gray-50 px-5 py-4">

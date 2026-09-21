@@ -1,8 +1,23 @@
 import { PageHeader, GroupLabel } from '../components/ui/PageHeader';
 import { AssetFrame } from '../components/ui/AssetFrame';
 import { Logo, LogoLockup, BrandRule, Endorsement } from '../components/brand/Logo';
+import { BrandMark, BrandMarkApp, BrandMarkAppPrimary, ICON_BLUE_START, ICON_GOLD } from '../components/brand/BrandMark';
+import {
+  ClearspaceGuide,
+  MinimumSizeGuide,
+  MisuseSheet,
+  LockupMatrix
+} from '../components/brand/BrandBook';
 import { brandIcons, NG_STROKE } from '../components/brand/iconSystem';
-import { brandColors, neutralColors, semanticColors, typeScale, voiceAndTone, type Swatch } from '../data/brand';
+import {
+  brandColors,
+  iconColors,
+  neutralColors,
+  semanticColors,
+  typeScale,
+  voiceAndTone,
+  type Swatch
+} from '../data/brand';
 import { useCompany } from '@/lib/brand-context';
 import { formats } from '@/lib/formats';
 import { MailIcon, GlobeIcon, CheckIcon, XIcon } from 'lucide-react';
@@ -50,7 +65,7 @@ export function BrandSystemPage() {
         code="01"
         title="NubiaGo Design System"
         folder="01_BRAND_SYSTEM"
-        description="The single source of truth for every asset in this kit. Logo, colour, type, spacing and components are taken directly from the NubiaGo Brand Guidelines v1.0 and are not reinterpreted anywhere downstream." />
+        description="The single source of truth for every asset in this kit. Logo, colour, type, spacing, brand-book construction sheets and components are taken from the NubiaGo Brand Guidelines v1.0." />
       
 
       <GroupLabel note="Wordmark only — download outlined SVG or transparent PNG">Logo system</GroupLabel>
@@ -95,6 +110,100 @@ export function BrandSystemPage() {
         </div>
       </AssetFrame>
 
+      <GroupLabel note="Official app / favicon mark · reads as “in” · not a substitute for the wordmark">
+        Brand mark
+      </GroupLabel>
+      <p className="mb-6 max-w-3xl text-[13px] leading-relaxed text-gray-700">
+        The NubiaGo brand mark is a stylised lowercase “n” with a gold tittle over the left stem — it reads as
+        “in”. Use it for app icons, favicons and tight digital spaces. The wordmark remains the primary logo for
+        documents, stationery and marketing. Do not redraw, recolour arbitrarily, or lock the mark under the wordmark
+        as a new logo.
+      </p>
+      <AssetFrame
+        title="Brand Mark — On Light"
+        fileName="NubiaGo_Mark_OnLight"
+        description={`Icon Blue gradient glyph (${ICON_BLUE_START} → #1E4BB8) + Icon Gold (${ICON_GOLD}) tittle on transparent. For white and Warm Sand grounds.`}
+        artboard={formats.brandMark}
+        transparent
+        formats={['png', 'svg']}
+      >
+        <div className="flex h-full w-full flex-col items-center justify-center bg-transparent">
+          <BrandMark size={160} tone="onLight" uid="bs-light" />
+          <span className="mt-8 text-[10px] font-medium uppercase tracking-[0.14em] text-gray-500">On light</span>
+        </div>
+      </AssetFrame>
+      <AssetFrame
+        title="Brand Mark — App Icon"
+        fileName="NubiaGo_Mark_App"
+        description={`Official OS / store tile — exact path from the NubiaGo Icon source. Icon Blue gradient (${ICON_BLUE_START} → #1E4BB8), Icon Gold (${ICON_GOLD}) tittle, white social padding.`}
+        artboard={formats.brandMarkField}
+        formats={['png']}
+      >
+        <div className="flex h-full w-full flex-col items-center justify-center bg-white">
+          <BrandMarkApp size={200} uid="bs-app" />
+          <span className="mt-8 text-[10px] font-medium uppercase tracking-[0.14em] text-gray-500">App icon</span>
+        </div>
+      </AssetFrame>
+      <AssetFrame
+        title="Brand Mark — On Primary"
+        fileName="NubiaGo_Mark_OnPrimary"
+        description={`Full-bleed Icon Blue gradient field (${ICON_BLUE_START} → #1E4BB8) with Icon Gold tittle and light glyph — for UI chrome without white social padding.`}
+        artboard={formats.brandMarkField}
+        formats={['png']}
+      >
+        <div className="flex h-full w-full flex-col items-center justify-center bg-white">
+          <BrandMarkAppPrimary size={200} uid="bs-pri" />
+          <span className="mt-8 text-[10px] font-medium uppercase tracking-[0.14em] text-gray-500">On Primary</span>
+        </div>
+      </AssetFrame>
+      <AssetFrame
+        title="Brand Mark — Mono"
+        fileName="NubiaGo_Mark_Mono"
+        description="Single-ink mark for print, engraving and fax. No gold tittle."
+        artboard={formats.brandMark}
+        transparent
+        formats={['png', 'svg']}
+      >
+        <div className="flex h-full w-full flex-col items-center justify-center bg-transparent">
+          <BrandMark size={160} tone="mono" />
+          <span className="mt-8 text-[10px] font-medium uppercase tracking-[0.14em] text-gray-500">Mono</span>
+        </div>
+      </AssetFrame>
+
+      <GroupLabel note="Brand book · downloadable construction sheets">Governance</GroupLabel>
+      <AssetFrame
+        title="Brand Book — Clearspace"
+        fileName="NubiaGo_BrandBook_Clearspace"
+        description="Exclusion zone equal to the height of the lowercase “n” on all four sides."
+        artboard={formats.clearspace}
+      >
+        <ClearspaceGuide />
+      </AssetFrame>
+      <AssetFrame
+        title="Brand Book — Minimum Size"
+        fileName="NubiaGo_BrandBook_MinimumSize"
+        description="14 px on screen · ≈ 12 mm wide in print. Below this, counters close on press."
+        artboard={formats.clearspace}
+      >
+        <MinimumSizeGuide />
+      </AssetFrame>
+      <AssetFrame
+        title="Brand Book — Do Not"
+        fileName="NubiaGo_BrandBook_Misuse"
+        description="Eight prohibited treatments. Any other construction requires brand approval."
+        artboard={formats.misuseSheet}
+      >
+        <MisuseSheet />
+      </AssetFrame>
+      <AssetFrame
+        title="Brand Book — Lockup Matrix"
+        fileName="NubiaGo_BrandBook_Lockups"
+        description="Standalone · descriptor · endorsement-on-footer — the only approved constructions."
+        artboard={formats.lockupMatrix}
+      >
+        <LockupMatrix />
+      </AssetFrame>
+
       <div className="mb-10 grid gap-8 md:grid-cols-3">
         <div className="border border-gray-200 p-6">
           <h3 className="text-[13px] font-semibold text-ink">Clear space</h3>
@@ -133,10 +242,11 @@ export function BrandSystemPage() {
           <ul className="mt-5 space-y-2 text-[12px] text-gray-700">
             {[
             { ok: true, label: 'Reversed wordmark on Primary' },
+            { ok: true, label: 'Brand mark on Icon Blue (app / favicon)' },
             { ok: true, label: 'Primary wordmark on Warm Sand' },
             { ok: false, label: 'Wordmark on Gold or a busy photo' },
-            { ok: false, label: 'Re-lettered, outlined or stretched mark' },
-            { ok: false, label: 'Any line locked under the wordmark — it stands alone' }].
+            { ok: false, label: 'Re-lettered, outlined or stretched wordmark' },
+            { ok: false, label: 'Locking the brand mark under the wordmark as a logo' }].
             map((rule) =>
             <li key={rule.label} className="flex items-start gap-2">
                 {rule.ok ?
@@ -192,6 +302,7 @@ export function BrandSystemPage() {
         Colour palette
       </GroupLabel>
       <SwatchGrid title="Brand colours" swatches={brandColors} />
+      <SwatchGrid title="Icon colours (app / favicon mark)" swatches={iconColors} />
       <SwatchGrid title="Neutral colours" swatches={neutralColors} />
       <SwatchGrid title="Semantic colours" swatches={semanticColors} />
       <div className="mb-14 border-l-2 border-brand-gold bg-gray-50 px-5 py-4 text-[13px] leading-relaxed text-gray-700">

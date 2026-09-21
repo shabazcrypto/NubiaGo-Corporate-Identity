@@ -293,6 +293,58 @@ export function ReportsPage() {
         </A4Page>
       </AssetFrame>
 
+      <GroupLabel note="Chart vocabulary">KPI &amp; chart system</GroupLabel>
+      <AssetFrame
+        title="Report — KPI Strip + Charts"
+        fileName="NubiaGo_Report_Chart_System"
+        description="Four KPI tiles, bar + line chart pairing, and source lines — the chart language for all board packs."
+        artboard={formats.a4}
+      >
+        <A4Page
+          header={<DocumentHeader variant="continuation" documentTitle="QBR-2024-Q4 · Performance" />}
+          footer={<DocumentFooter variant="minimal" page="8 / 24" />}
+        >
+          <div className="pt-9">
+            <h1 className="text-[22px] font-bold leading-[1.2] tracking-[-0.02em] text-ink">Performance</h1>
+            <BrandRule width={56} thickness={3} />
+            <div className="mt-6 grid grid-cols-4 gap-3">
+              {[
+                ['$96M', 'Q4 volume'],
+                ['18,400', 'Active merchants'],
+                ['99.95%', 'Network uptime'],
+                ['3.8 d', 'Median onboard']
+              ].map(([v, l]) => (
+                <div key={l} className="border border-gray-200 bg-gray-50 px-3 py-3">
+                  <div className="text-[22px] font-bold tracking-[-0.02em] text-brand">{v}</div>
+                  <div className="mt-1 text-[8px] font-semibold uppercase tracking-[0.12em] text-gray-500">{l}</div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-8 grid grid-cols-2 gap-8">
+              <div>
+                <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-gray-500">
+                  Quarterly volume
+                </div>
+                <div className="mt-3">
+                  <MiniBarChart />
+                </div>
+              </div>
+              <div>
+                <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-gray-500">
+                  Trailing twelve months
+                </div>
+                <div className="mt-3">
+                  <MiniLineChart />
+                </div>
+              </div>
+            </div>
+            <p className="mt-4 text-[8.5px] text-gray-500">
+              Source: internal settlement ledger · Gold marks the current period · Primary Light for series.
+            </p>
+          </div>
+        </A4Page>
+      </AssetFrame>
+
       <GroupLabel note="Findings, recommendations, next steps">Conclusions</GroupLabel>
       <AssetFrame
         title="Report — Conclusions"

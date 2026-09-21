@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1104 1104" fill="none" role="img" aria-label="NubiaGo">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2B5FD9"/>
+      <stop offset="100%" stop-color="#1E4BB8"/>
+    </linearGradient>
+  </defs>
+  <rect width="1104" height="1104" fill="white"/>
+  <rect x="40" y="40" width="1024" height="1024" fill="url(#bgGradient)"/>
+  <circle cx="310" cy="200" r="85" fill="#FFC857"/>
+  <path d="M220 330 L220 880 L380 880 L380 600 C380 500 440 410 580 410 C720 410 760 500 760 600 L760 880 L920 880 L920 540 C920 360 820 240 620 240 C520 240 440 290 380 370 L380 330 L220 330 Z" fill="#F5F5F5"/>
+</svg>

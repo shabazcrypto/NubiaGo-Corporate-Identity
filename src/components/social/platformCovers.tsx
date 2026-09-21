@@ -544,3 +544,83 @@ export const googleCoverDefs = [
   { id: 'Logistics', Component: GoogleCoverLogistics },
   { id: 'Exchange', Component: GoogleCoverExchange }
 ] as const;
+
+/* ─── LinkedIn company covers (3) ──────────────────────────── */
+
+export function LinkedInCoverCorporate() {
+  const company = useCompany();
+  const { width, height } = formats.linkedInCover;
+  const p = coverPad(width, height);
+
+  return (
+    <AliveFrame width={width} height={height} hero={HERO.corporate} tone="navy" focus="14% center" rail={0.4}>
+      <div
+        className="absolute bottom-0 right-0 top-0 z-[1] flex flex-col justify-between"
+        style={{ width: width * 0.4, padding: `${p}px ${p}px ${p}px ${Math.round(p * 0.6)}px` }}
+      >
+        <CoverMark size={20} light />
+        <div className="text-right">
+          <Eyebrow light>LinkedIn</Eyebrow>
+          <p className="mt-2 text-[22px] font-semibold leading-snug tracking-[-0.02em] text-white">
+            Where Businesses Connect.
+          </p>
+          <CoverRule width={44} />
+          <p className="mt-2 text-[11px] text-white/50">{company.linkedin}</p>
+        </div>
+      </div>
+    </AliveFrame>
+  );
+}
+
+export function LinkedInCoverTrade() {
+  const { width, height } = formats.linkedInCover;
+  const p = coverPad(width, height);
+
+  return (
+    <AliveFrame width={width} height={height} hero={HERO.spices} tone="ink" mode="band" focus="38% 40%">
+      <div className="relative z-[1] flex h-full flex-col justify-between" style={{ padding: p }}>
+        <div className="flex justify-between">
+          <Eyebrow light>Trade</Eyebrow>
+          <CoverMark size={18} light />
+        </div>
+        <div className="max-w-[48%]">
+          <p className="text-[22px] font-semibold leading-tight tracking-[-0.02em] text-white">
+            Built for African commerce.
+          </p>
+          <CoverRule width={44} />
+        </div>
+      </div>
+    </AliveFrame>
+  );
+}
+
+export function LinkedInCoverTrust() {
+  const company = useCompany();
+  const { width, height } = formats.linkedInCover;
+  const p = coverPad(width, height);
+
+  return (
+    <AliveFrame width={width} height={height} hero={HERO.womanCeo} tone="navy" mode="veil" focus="28% center">
+      <div
+        className="absolute bottom-0 right-0 top-0 z-[1] flex flex-col justify-between"
+        style={{ width: width * 0.42, padding: p }}
+      >
+        <CoverMark size={18} light />
+        <div className="text-right">
+          <Eyebrow light>Trust</Eyebrow>
+          <p className="mt-2 text-[20px] font-semibold leading-snug tracking-[-0.02em] text-white">
+            Reliable partners. Real opportunity.
+          </p>
+          <CoverRule width={40} />
+          <p className="mt-2 text-[11px] text-white/50">{company.website}</p>
+        </div>
+      </div>
+    </AliveFrame>
+  );
+}
+
+export const linkedInCoverDefs = [
+  { id: 'Corporate', Component: LinkedInCoverCorporate },
+  { id: 'Trade', Component: LinkedInCoverTrade },
+  { id: 'Trust', Component: LinkedInCoverTrust }
+] as const;

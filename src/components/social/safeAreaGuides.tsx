@@ -69,6 +69,31 @@ function GuideCanvas({
   );
 }
 
+/** LinkedIn company cover — keep type in right 40%; avoid bottom logo strip. */
+export function SafeAreaLinkedIn() {
+  const { width, height } = formats.linkedInCover;
+  return (
+    <GuideCanvas width={width} height={height} caption="LinkedIn Cover · 1584 × 396">
+      <GuideBox
+        left={Math.round(width * 0.52)}
+        top={28}
+        width={Math.round(width * 0.42)}
+        height={height - 56}
+        label="Type rail"
+        color="rgba(30, 58, 95, 0.9)"
+      />
+      <GuideBox
+        left={24}
+        top={24}
+        width={Math.round(width * 0.45)}
+        height={height - 48}
+        label="Photography"
+        color="rgba(201, 162, 39, 0.75)"
+      />
+    </GuideCanvas>
+  );
+}
+
 /** Facebook cover safe regions — full 1640×624 with desktop + mobile crops. */
 export function SafeAreaFacebook() {
   const { width, height } = formats.fbCover;

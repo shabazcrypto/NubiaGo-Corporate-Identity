@@ -10,9 +10,8 @@ import { BusinessCardPage } from './pages/BusinessCard';
 import { DocumentCoversPage } from './pages/DocumentCovers';
 import { CataloguePage } from './pages/Catalogue';
 import { ReportsPage } from './pages/Reports';
-import { DigitalSocialPage } from './pages/DigitalSocial';
+import { DigitalPage } from './pages/Digital';
 import { AssetsPage } from './pages/Assets';
-import { SocialCoversPage } from './pages/SocialCovers';
 
 export function App() {
   const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || undefined;
@@ -31,9 +30,10 @@ export function App() {
             <Route path="/document-covers" element={<DocumentCoversPage />} />
             <Route path="/catalogue" element={<CataloguePage />} />
             <Route path="/reports" element={<ReportsPage />} />
-            <Route path="/digital-social" element={<DigitalSocialPage />} />
+            <Route path="/digital" element={<DigitalPage />} />
+            <Route path="/digital-social" element={<Navigate to="/digital" replace />} />
+            <Route path="/social-covers" element={<Navigate to="/digital" replace />} />
             <Route path="/assets" element={<AssetsPage />} />
-            <Route path="/social-covers" element={<SocialCoversPage />} />
             <Route path="*" element={<Navigate to="/brand-system" replace />} />
           </Routes>
         </AppShell>
