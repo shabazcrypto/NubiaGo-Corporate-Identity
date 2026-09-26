@@ -1,6 +1,6 @@
 import { SlideShell, DarkSlide, StatBlock } from './SlideChrome';
 import { Logo, BrandRule } from '../brand/Logo';
-import { NG_STROKE, iconByKey, QrPlaceholder } from '../brand/iconSystem';
+import { AB_STROKE, iconByKey, QrPlaceholder } from '../brand/iconSystem';
 import { company } from '../../data/brand';
 
 export function TwoColumnSlide() {
@@ -273,7 +273,7 @@ export function ContactSlide() {
               const Component = Icon as typeof Phone;
               return (
                 <div key={index} className="flex items-center gap-3">
-                  <Component className="h-4 w-4 shrink-0 text-brand-gold" strokeWidth={NG_STROKE} />
+                  <Component className="h-4 w-4 shrink-0 text-brand-gold" strokeWidth={AB_STROKE} />
                   <span>{value as string}</span>
                 </div>);
 

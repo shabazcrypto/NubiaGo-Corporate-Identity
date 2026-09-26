@@ -15,7 +15,7 @@ import {
   ChartNoAxesCombinedIcon,
   RocketIcon
 } from 'lucide-react';
-import { NG_STROKE } from '@/components/brand/iconSystem';
+import { AB_STROKE } from '@/components/brand/iconSystem';
 import { formats } from '@/lib/formats';
 
 export interface HighlightDef {
@@ -62,7 +62,7 @@ export function HighlightCover({ label, Icon, field }: Omit<HighlightDef, 'id'>)
         className={`flex flex-col items-center justify-center rounded-full ${discClass}`}
         style={{ width: circle, height: circle }}
       >
-        <Icon className={inkClass} style={{ width: iconSize, height: iconSize }} strokeWidth={NG_STROKE} />
+        <Icon className={inkClass} style={{ width: iconSize, height: iconSize }} strokeWidth={AB_STROKE} />
         <span
           className={`mt-4 font-semibold uppercase tracking-[0.16em] ${inkClass}`}
           style={{ fontSize: Math.round(circle * 0.055) }}

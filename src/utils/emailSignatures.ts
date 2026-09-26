@@ -1,25 +1,59 @@
 import type { CompanyInfo } from '@/data/brand';
 import { defaultCompany } from '@/data/brand';
-import { WORDMARK_FILLS, WORDMARK_PATH, WORDMARK_VIEW } from '@/lib/wordmarkPath';
+import { WORDMARK_FILLS } from '@/lib/wordmarkPath';
 
-/** Body stack — Arial first for Outlook; kit preview may still use Inter via page CSS. */
-const FONT = 'font-family:Arial,Helvetica,sans-serif;';
-const NAVY = '#1E3A5F';
-/** Contact labels — warm copper from the approved lockup (not Gold fill). */
-const COPPER = '#C2410C';
-const GOLD = '#C9A227';
-const SAND = '#F5F0E8';
-const SLATE = '#64748B';
-const MUTED = '#94A3B8';
-const RULE = '#E2E8F0';
-const INK = '#0F172A';
+/** Body stack — Arial first for Outlook. */
+export const FONT = 'font-family:Arial,Helvetica,sans-serif;';
 
+export type SigPalette = {
+  ink: string;
+  contact: string;
+  muted: string;
+  rule: string;
+  accent: string;
+  markTone: keyof typeof WORDMARK_FILLS | string;
+  markOnAccent: string;
+};
+
+/** Restrained corporate palette — Primary accent only; no copper / sand / gold. */
+export function sigPalette(company: CompanyInfo): SigPalette {
+  const isAshBak = /ashbak/i.test(company.name);
+  if (isAshBak) {
+    return {
+      ink: '#000000',
+      contact: '#737373',
+      muted: '#A3A3A3',
+      rule: '#E5E5E5',
+      accent: '#000000',
+      markTone: 'black',
+      markOnAccent: '#FAFAFA'
+    };
+  }
+  return {
+    ink: '#1E3A5F',
+    contact: '#64748B',
+    muted: '#94A3B8',
+    rule: '#E5E5E5',
+    accent: '#1E3A5F',
+    markTone: 'primary',
+    markOnAccent: '#FAFAFA'
+  };
+}
+
+/** Org suffixes — do not shout as a personal surname (e.g. AshBak Industries). */
+const CORPORATE_LAST =
+  /^(industries|inc\.?|ltd\.?|llc\.?|gmbh|corp\.?|co\.?|limited|plc|sa|sas|group|holdings)$/i;
+
+/**
+ * Personal lockup: last token uppercased. Company-style names keep natural casing.
+ */
 export function displayPersonName(name: string): string {
   const parts = name.trim().split(/\s+/).filter(Boolean);
   if (parts.length === 0) return name;
   if (parts.length === 1) return parts[0];
-  const last = parts[parts.length - 1].toUpperCase();
-  return `${parts.slice(0, -1).join(' ')} ${last}`;
+  const last = parts[parts.length - 1];
+  if (CORPORATE_LAST.test(last)) return parts.join(' ');
+  return `${parts.slice(0, -1).join(' ')} ${last.toUpperCase()}`;
 }
 
 export function formatLocation(company: CompanyInfo): string {
@@ -31,39 +65,111 @@ export function formatLocation(company: CompanyInfo): string {
 
 type WordmarkTone = keyof typeof WORDMARK_FILLS;
 
+function resolveMarkFill(tone: WordmarkTone | string, isAshBak: boolean): string {
+  if (typeof tone === 'string' && tone.startsWith('#')) return tone;
+  if (tone in WORDMARK_FILLS) {
+    const mapped = WORDMARK_FILLS[tone as WordmarkTone];
+    if (isAshBak && tone === 'primary') return '#000000';
+    if (isAshBak && tone === 'light') return '#FFFFFF';
+    return mapped;
+  }
+  return isAshBak ? '#000000' : WORDMARK_FILLS.primary;
+}
+
 /**
- * Outlined Inter Extra Bold wordmark (same path as logo downloads).
- * Width is the display width in px; height follows the true aspect ratio.
+ * Brand wordmark for HTML signatures — Outlook-safe text (no SVG data-URI).
+ * Outlined SVG downloads live on Brand System / Logo pack.
  */
 export function wordmarkHtml(
   widthPx = 128,
   tone: WordmarkTone | string = 'primary',
-  align: 'left' | 'right' | 'center' = 'right'
+  align: 'left' | 'right' | 'center' = 'right',
+  company?: CompanyInfo
 ): string {
-  const fill =
-    tone in WORDMARK_FILLS
-      ? WORDMARK_FILLS[tone as WordmarkTone]
-      : typeof tone === 'string' && tone.startsWith('#')
-        ? tone
-        : WORDMARK_FILLS.primary;
-  const heightPx = Math.max(1, Math.round((widthPx * WORDMARK_VIEW.h) / WORDMARK_VIEW.w));
-  const svg =
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${WORDMARK_VIEW.x} ${WORDMARK_VIEW.y} ${WORDMARK_VIEW.w} ${WORDMARK_VIEW.h}" width="${widthPx}" height="${heightPx}" fill="${fill}" role="img" aria-label="nubiago">` +
-    `<path d="${WORDMARK_PATH}"/></svg>`;
-  const src = `data:image/svg+xml,${encodeURIComponent(svg)}`;
+  const isAshBak = company ? /ashbak/i.test(company.name) : false;
+  const fill = resolveMarkFill(tone, isAshBak);
   const margin =
     align === 'right' ? 'margin-left:auto;' : align === 'center' ? 'margin-left:auto;margin-right:auto;' : '';
+  const label = isAshBak ? 'ashbak' : 'nubiago';
+  const fontSize = Math.max(14, Math.round(widthPx * (isAshBak ? 0.28 : 0.26)));
+  const heightPx = Math.round(fontSize * 1.15);
+  const weight = isAshBak ? 700 : 800;
   return (
-    `<img src="${src}" width="${widthPx}" height="${heightPx}" alt="nubiago" ` +
-    `style="display:block;border:0;outline:none;text-decoration:none;width:${widthPx}px;height:${heightPx}px;${margin}" />`
+    `<div role="img" aria-label="${label}" ` +
+    `style="display:block;${FONT}font-size:${fontSize}px;font-weight:${weight};letter-spacing:-0.04em;` +
+    `line-height:1.15;color:${fill};width:${widthPx}px;height:${heightPx}px;${margin}">${label}</div>`
   );
 }
 
-export function linkHtml(label: string, href: string, color = SLATE): string {
+export function linkHtml(label: string, href: string, color: string): string {
   return `<a href="${href}" style="${FONT}color:${color};text-decoration:none;">${label}</a>`;
 }
 
-export type ContactLine = { label: string; value: string; href?: string };
+export type ContactLine = { label?: string; value: string; href?: string };
+
+/* ── Shared primitives (0 / 4 / 8 / 12 / 16 rhythm) ── */
+
+export function sigName(text: string, color: string, size = 17): string {
+  return `<div style="${FONT}font-size:${size}px;font-weight:700;color:${color};letter-spacing:-0.02em;line-height:1.25;">${text}</div>`;
+}
+
+export function sigTitle(text: string, color: string): string {
+  return `<div style="${FONT}font-size:12px;color:${color};padding-top:4px;line-height:1.35;">${text}</div>`;
+}
+
+export function sigRule(color: string, height = 1): string {
+  return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;">
+  <tr><td height="${height}" style="background-color:${color};font-size:0;line-height:0;border:0;">&nbsp;</td></tr>
+</table>`;
+}
+
+export function sigFooter(text: string, color: string): string {
+  return `<div style="${FONT}font-size:11px;color:${color};line-height:1.55;">${text}</div>`;
+}
+
+/** Labelled contact stack (muted uppercase labels) or bare links. */
+export function sigContactStack(
+  lines: ContactLine[],
+  colors: { label: string; value: string },
+  mode: 'labelled' | 'plain' = 'labelled'
+): string {
+  if (mode === 'plain') {
+    const bits = lines.map((line) =>
+      line.href ? linkHtml(line.value, line.href, colors.value) : line.value
+    );
+    return `<div style="${FONT}font-size:12px;line-height:1.7;color:${colors.value};">${bits.join(
+      `&nbsp;&nbsp;<span style="color:${colors.label};">·</span>&nbsp;&nbsp;`
+    )}</div>`;
+  }
+  const rows = lines
+    .map((line) => {
+      const value = line.href ? linkHtml(line.value, line.href, colors.value) : line.value;
+      const label = line.label
+        ? `<td valign="top" style="${FONT}padding:0 12px 4px 0;font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:${colors.label};white-space:nowrap;">${line.label}</td>`
+        : '';
+      return `<tr>${label}<td valign="top" style="${FONT}padding:0 0 4px 0;font-size:12px;line-height:1.45;color:${colors.value};">${value}</td></tr>`;
+    })
+    .join('');
+  return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">${rows}</table>`;
+}
+
+export function sigShell(width: number, inner: string): string {
+  return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="${width}" style="border-collapse:collapse;${FONT}width:${width}px;max-width:100%;">${inner}</table>`;
+}
+
+export function defaultContacts(company: CompanyInfo): ContactLine[] {
+  const location = formatLocation(company);
+  return [
+    { label: 'Email', value: company.email, href: `mailto:${company.email}` },
+    { label: 'Phone', value: company.phone, href: `tel:${company.phone.replace(/\s/g, '')}` },
+    {
+      label: 'Web',
+      value: company.website.replace(/^https?:\/\//, ''),
+      href: company.websiteUrl
+    },
+    ...(location ? [{ label: 'Base', value: location }] : [])
+  ];
+}
 
 export type SignatureLayoutOptions = {
   name?: string;
@@ -71,166 +177,134 @@ export type SignatureLayoutOptions = {
   contacts?: ContactLine[];
   tagline?: string;
   footer?: string;
-  /** Wordmark display width in px (outlined SVG). */
   markSize?: number;
   width?: number;
 };
 
 /**
- * Canonical NubiaGo signature (master lockup):
- * name + title + labelled contacts | wordmark + italic tagline
- * hairline rule · mission footer
+ * Standard — Layout #1: two-column identity | mark · hairline · mission footer.
  */
 export function signatureLayoutHtml(
   company: CompanyInfo,
   options: SignatureLayoutOptions = {}
 ): string {
+  const p = sigPalette(company);
   const name = displayPersonName(options.name ?? company.personName);
   const title = options.title ?? company.jobTitle;
-  const tagline = options.tagline ?? company.tagline;
   const footer = options.footer ?? company.mission;
-  const markSize = options.markSize ?? 128;
-  const width = options.width ?? 560;
+  const markSize = options.markSize ?? 112;
+  const width = options.width ?? 540;
 
-  const contacts =
-    options.contacts ??
+  const contactLines: ContactLine[] = (options.contacts ??
     ([
-      {
-        label: 'E',
-        value: company.email,
-        href: `mailto:${company.email}`
-      },
+      { label: 'E', value: company.email, href: `mailto:${company.email}` },
       {
         label: 'W',
         value: company.website.replace(/^https?:\/\//, ''),
         href: company.websiteUrl
       },
-      {
-        label: 'A',
-        value: formatLocation(company)
-      }
-    ].filter((line) => Boolean(line.value)) as ContactLine[]);
+      ...(formatLocation(company) ? [{ label: 'A', value: formatLocation(company) }] : [])
+    ] as ContactLine[])).filter((line) => Boolean(line.value));
 
-  const contactRows = contacts
-    .map((line) => {
-      const value = line.href ? linkHtml(line.value, line.href, SLATE) : line.value;
-      return `<tr>
-      <td valign="top" style="${FONT}padding:0 0 3px 0;font-size:12px;line-height:1.45;white-space:nowrap;">
-        <span style="font-weight:700;color:${COPPER};">${line.label}:</span>&nbsp;<span style="color:${SLATE};">${value}</span>
-      </td>
-    </tr>`;
-    })
-    .join('');
-
-  return `
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="${width}" style="border-collapse:collapse;${FONT}width:${width}px;max-width:100%;">
+  return sigShell(
+    width,
+    `
   <tr>
-    <td valign="top" style="padding:0 28px 0 0;">
-      <div style="${FONT}font-size:18px;font-weight:700;color:${NAVY};letter-spacing:-0.02em;line-height:1.25;">${name}</div>
-      <div style="${FONT}font-size:13px;font-weight:500;color:${SLATE};padding:6px 0 14px 0;line-height:1.35;">${title}</div>
-      <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
-        ${contactRows}
-      </table>
-    </td>
-    <td valign="top" align="right" width="200" style="padding:2px 0 0 0;">
-      ${wordmarkHtml(markSize, 'primary', 'right')}
-      <div style="${FONT}font-size:11px;font-style:italic;color:${MUTED};line-height:1.45;padding-top:8px;max-width:190px;margin-left:auto;text-align:right;">
-        ${tagline}
+    <td valign="top" style="padding:0 24px 0 0;">
+      ${sigName(name, p.ink, 17)}
+      ${sigTitle(title, p.contact)}
+      <div style="padding-top:12px;">
+        ${sigContactStack(contactLines, { label: p.muted, value: p.contact }, 'labelled')}
       </div>
     </td>
-  </tr>
-  <tr>
-    <td colspan="2" style="padding:18px 0 0 0;">
-      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;">
-        <tr><td height="1" style="background-color:${RULE};font-size:0;line-height:0;border:0;">&nbsp;</td></tr>
-      </table>
+    <td valign="top" align="right" width="180" style="padding:2px 0 0 0;">
+      ${wordmarkHtml(markSize, p.markTone, 'right', company)}
     </td>
   </tr>
   <tr>
-    <td colspan="2" style="${FONT}padding:12px 0 0 0;font-size:11px;color:${MUTED};line-height:1.55;">
-      ${footer}
-    </td>
+    <td colspan="2" style="padding:16px 0 0 0;">${sigRule(p.rule)}</td>
   </tr>
-</table>`.trim();
+  <tr>
+    <td colspan="2" style="padding:12px 0 0 0;">${sigFooter(footer, p.muted)}</td>
+  </tr>`
+  );
 }
 
-/** Default staff / founder lockup — matches the approved reference. */
+/** Default staff lockup. */
 export function standardSignatureHtml(company: CompanyInfo = defaultCompany) {
   return signatureLayoutHtml(company);
 }
 
 /**
- * Compact reply — single column: small mark + name on one row, title, middot contacts.
- * Intentionally not a shrunk two-column lockup.
+ * Compact — Layout #3: mark + name · Primary rail · middot contacts.
  */
 export function compactSignatureHtml(company: CompanyInfo = defaultCompany) {
+  const p = sigPalette(company);
   const name = displayPersonName(company.personName);
   const location = formatLocation(company);
-  const mailto = `mailto:${company.email}`;
   const bits = [
-    linkHtml(company.email, mailto, SLATE),
-    linkHtml(company.website.replace(/^https?:\/\//, ''), company.websiteUrl, SLATE),
+    linkHtml(company.email, `mailto:${company.email}`, p.contact),
+    linkHtml(company.website.replace(/^https?:\/\//, ''), company.websiteUrl, p.contact),
     location || null
   ].filter(Boolean);
 
-  return `
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="480" style="border-collapse:collapse;${FONT}width:480px;max-width:100%;">
+  return sigShell(
+    480,
+    `
   <tr>
     <td valign="middle" width="72" style="padding:0 12px 0 0;">
-      ${wordmarkHtml(72, 'primary', 'left')}
+      ${wordmarkHtml(72, p.markTone, 'left', company)}
     </td>
-    <td valign="middle" style="border-left:2px solid ${GOLD};padding:0 0 0 12px;">
-      <div style="${FONT}font-size:14px;font-weight:700;color:${NAVY};letter-spacing:-0.02em;line-height:1.3;">${name}</div>
-      <div style="${FONT}font-size:11px;color:${SLATE};padding-top:2px;">${company.jobTitle}</div>
+    <td valign="middle" style="border-left:2px solid ${p.accent};padding:0 0 0 12px;">
+      ${sigName(name, p.ink, 14)}
+      ${sigTitle(company.jobTitle, p.contact)}
     </td>
   </tr>
   <tr>
-    <td colspan="2" style="${FONT}padding:10px 0 0 0;font-size:11px;line-height:1.55;color:${SLATE};">
-      ${bits.join(`&nbsp;&nbsp;<span style="color:${MUTED};">·</span>&nbsp;&nbsp;`)}
+    <td colspan="2" style="${FONT}padding:12px 0 0 0;font-size:11px;line-height:1.55;color:${p.contact};">
+      ${bits.join(`&nbsp;&nbsp;<span style="color:${p.muted};">·</span>&nbsp;&nbsp;`)}
     </td>
-  </tr>
-</table>`.trim();
+  </tr>`
+  );
 }
 
 /**
- * Executive — left gold rail, stacked identity, unlabelled link row, legal underline.
- * Distinct from the master two-column copper-label lockup.
+ * Executive — Layout #7: Primary rail · name · title · mark · links · legal.
  */
 export function executiveSignatureHtml(company: CompanyInfo = defaultCompany) {
+  const p = sigPalette(company);
   const name = displayPersonName(company.personName);
   const location = formatLocation(company);
   const linkedinHref = `https://${company.linkedin.replace(/^https?:\/\//, '')}`;
   const linkedinLabel = company.linkedin.replace(/^https?:\/\//, '');
 
   const links = [
-    linkHtml(company.email, `mailto:${company.email}`, NAVY),
-    linkHtml(company.phone, `tel:${company.phone.replace(/\s/g, '')}`, NAVY),
-    linkHtml(company.website.replace(/^https?:\/\//, ''), company.websiteUrl, NAVY),
-    linkHtml(linkedinLabel, linkedinHref, NAVY)
+    linkHtml(company.email, `mailto:${company.email}`, p.ink),
+    linkHtml(company.phone, `tel:${company.phone.replace(/\s/g, '')}`, p.ink),
+    linkHtml(company.website.replace(/^https?:\/\//, ''), company.websiteUrl, p.ink),
+    linkHtml(linkedinLabel, linkedinHref, p.ink)
   ];
 
-  return `
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="540" style="border-collapse:collapse;${FONT}width:540px;max-width:100%;">
+  return sigShell(
+    520,
+    `
   <tr>
-    <td width="4" style="background-color:${GOLD};font-size:0;line-height:0;width:4px;">&nbsp;</td>
+    <td width="3" style="background-color:${p.accent};font-size:0;line-height:0;width:3px;">&nbsp;</td>
     <td style="padding:0 0 0 16px;">
-      <div style="${FONT}font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:${GOLD};padding-bottom:8px;">Executive</div>
-      <div style="${FONT}font-size:22px;font-weight:700;color:${NAVY};letter-spacing:-0.03em;line-height:1.2;">${name}</div>
-      <div style="${FONT}font-size:13px;color:${SLATE};padding:6px 0 14px 0;">${company.jobTitle}</div>
-      ${wordmarkHtml(110, 'primary', 'left')}
-      <div style="${FONT}font-size:12px;line-height:1.7;color:${SLATE};padding-top:14px;">
-        ${links.join(`&nbsp;&nbsp;<span style="color:${MUTED};">|</span>&nbsp;&nbsp;`)}
+      ${sigName(name, p.ink, 18)}
+      ${sigTitle(company.jobTitle, p.contact)}
+      <div style="padding-top:12px;">${wordmarkHtml(100, p.markTone, 'left', company)}</div>
+      <div style="${FONT}font-size:12px;line-height:1.7;color:${p.contact};padding-top:12px;">
+        ${links.join(`&nbsp;&nbsp;<span style="color:${p.muted};">|</span>&nbsp;&nbsp;`)}
       </div>
-      ${location ? `<div style="${FONT}font-size:11px;color:${MUTED};padding-top:6px;">${location}</div>` : ''}
-      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;margin-top:16px;">
-        <tr><td height="2" style="background-color:${NAVY};font-size:0;line-height:0;">&nbsp;</td></tr>
-      </table>
-      <div style="${FONT}padding-top:10px;font-size:10px;color:${MUTED};line-height:1.55;">
-        ${company.legalName} · ${company.registration} · ${company.endorsement}
+      ${location ? `<div style="${FONT}font-size:11px;color:${p.muted};padding-top:4px;">${location}</div>` : ''}
+      <div style="padding-top:16px;">${sigRule(p.rule)}</div>
+      <div style="padding-top:12px;">
+        ${sigFooter(`${company.legalName} · ${company.registration} · ${company.endorsement}`, p.muted)}
       </div>
     </td>
-  </tr>
-</table>`.trim();
+  </tr>`
+  );
 }
 
 export function wrapAsEmailDocument(body: string, title: string) {
@@ -241,20 +315,18 @@ export function wrapAsEmailDocument(body: string, title: string) {
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>${title}</title>
   </head>
-  <body style="margin:0;padding:32px;background:#ffffff;color:${INK};">
+  <body style="margin:0;padding:32px;background:#ffffff;color:#0F172A;">
 ${body}
   </body>
 </html>`;
 }
 
+/** @deprecated Prefer sigPalette(company). Kept for legacy imports. */
 export const signatureTokens = {
   FONT,
-  NAVY,
-  COPPER,
-  GOLD,
-  SAND,
-  SLATE,
-  MUTED,
-  RULE,
-  INK
+  NAVY: '#1E3A5F',
+  SLATE: '#64748B',
+  MUTED: '#94A3B8',
+  RULE: '#E5E5E5',
+  INK: '#1E3A5F'
 } as const;

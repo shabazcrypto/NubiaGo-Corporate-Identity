@@ -5,219 +5,221 @@ import {
   displayPersonName,
   wordmarkHtml,
   linkHtml,
-  signatureTokens
+  sigPalette,
+  sigName,
+  sigTitle,
+  sigRule,
+  sigFooter,
+  sigContactStack,
+  sigShell,
+  FONT
 } from './emailSignatures';
-
-const { FONT, NAVY, COPPER, GOLD, SAND, SLATE, MUTED, RULE, INK } = signatureTokens;
 
 function domain(company: CompanyInfo) {
   return company.website.replace(/^www\./, '').replace(/^https?:\/\//, '');
 }
 
 /**
- * Corridor Lead — navy left rail + stacked contacts as plain links (no copper labels).
- * Relationship-manager voice for field correspondence.
+ * Corridor Lead — Layout #2: Primary rail + labelled contact stack.
  */
 export function photoSignatureHtml(company: CompanyInfo = defaultCompany) {
+  const p = sigPalette(company);
   const name = displayPersonName(company.personName);
   const location = formatLocation(company);
-  const rows = [
-    ['Email', linkHtml(company.email, `mailto:${company.email}`, SLATE)],
-    ['Phone', linkHtml(company.phone, `tel:${company.phone.replace(/\s/g, '')}`, SLATE)],
-    ['Web', linkHtml(company.website.replace(/^https?:\/\//, ''), company.websiteUrl, SLATE)],
-    location ? ['Base', location] : null
-  ].filter(Boolean) as [string, string][];
+  const lines = [
+    { label: 'Email', value: company.email, href: `mailto:${company.email}` },
+    { label: 'Phone', value: company.phone, href: `tel:${company.phone.replace(/\s/g, '')}` },
+    {
+      label: 'Web',
+      value: company.website.replace(/^https?:\/\//, ''),
+      href: company.websiteUrl
+    },
+    ...(location ? [{ label: 'Base', value: location }] : [])
+  ];
 
-  return `
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="520" style="border-collapse:collapse;${FONT}width:520px;max-width:100%;">
+  return sigShell(
+    520,
+    `
   <tr>
-    <td width="6" style="background-color:${NAVY};font-size:0;line-height:0;width:6px;">&nbsp;</td>
-    <td style="padding:0 0 0 18px;">
-      <div style="${FONT}font-size:9px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:${GOLD};">Corridor · West Africa</div>
-      <div style="${FONT}font-size:17px;font-weight:700;color:${NAVY};letter-spacing:-0.02em;padding-top:6px;">${name}</div>
-      <div style="${FONT}font-size:12px;color:${SLATE};padding:4px 0 12px 0;">Corridor Lead</div>
-      <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
-        ${rows
-          .map(
-            ([k, v]) => `<tr>
-          <td valign="top" style="${FONT}padding:0 14px 4px 0;font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:${MUTED};white-space:nowrap;">${k}</td>
-          <td valign="top" style="${FONT}padding:0 0 4px 0;font-size:12px;color:${SLATE};">${v}</td>
-        </tr>`
-          )
-          .join('')}
-      </table>
-      <div style="padding-top:14px;">${wordmarkHtml(96, 'primary', 'left')}</div>
+    <td width="3" style="background-color:${p.accent};font-size:0;line-height:0;width:3px;">&nbsp;</td>
+    <td style="padding:0 0 0 16px;">
+      ${sigName(name, p.ink, 17)}
+      ${sigTitle('Corridor Lead', p.contact)}
+      <div style="padding-top:12px;">
+        ${sigContactStack(lines, { label: p.muted, value: p.contact }, 'labelled')}
+      </div>
+      <div style="padding-top:16px;">${wordmarkHtml(96, p.markTone, 'left', company)}</div>
     </td>
-  </tr>
-</table>`.trim();
+  </tr>`
+  );
 }
 
 /**
- * Legal — formal centred-left stack with privilege sand banner (no side wordmark column).
+ * Legal — Layout #4: mark · rule · name · title · contacts · privilege line.
  */
 export function legalSignatureHtml(company: CompanyInfo = defaultCompany) {
+  const p = sigPalette(company);
   const legal = `legal@${domain(company)}`;
   const name = displayPersonName(company.personName);
+  const lines = [
+    { value: legal, href: `mailto:${legal}` },
+    { value: company.phone, href: `tel:${company.phone.replace(/\s/g, '')}` },
+    {
+      value: company.website.replace(/^https?:\/\//, ''),
+      href: company.websiteUrl
+    }
+  ];
 
-  return `
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="500" style="border-collapse:collapse;${FONT}width:500px;max-width:100%;">
+  return sigShell(
+    500,
+    `
   <tr>
-    <td style="padding:0 0 12px 0;">
-      ${wordmarkHtml(100, 'primary', 'left')}
-    </td>
+    <td style="padding:0 0 12px 0;">${wordmarkHtml(100, p.markTone, 'left', company)}</td>
   </tr>
   <tr>
-    <td>
-      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;">
-        <tr><td height="1" style="background-color:${INK};font-size:0;line-height:0;">&nbsp;</td></tr>
-      </table>
-    </td>
+    <td>${sigRule(p.rule)}</td>
   </tr>
   <tr>
-    <td style="${FONT}padding:14px 0 0 0;">
-      <div style="font-size:16px;font-weight:700;color:${INK};letter-spacing:-0.02em;">${name}</div>
-      <div style="font-size:12px;color:${SLATE};padding:4px 0 10px 0;">Legal &amp; Compliance</div>
-      <div style="font-size:12px;line-height:1.65;color:${SLATE};">
-        ${linkHtml(legal, `mailto:${legal}`, INK)}
-        &nbsp;·&nbsp;
-        ${linkHtml(company.phone, `tel:${company.phone.replace(/\s/g, '')}`, INK)}
-        &nbsp;·&nbsp;
-        ${linkHtml(company.website.replace(/^https?:\/\//, ''), company.websiteUrl, INK)}
+    <td style="padding:12px 0 0 0;">
+      ${sigName(name, p.ink, 16)}
+      ${sigTitle('Legal &amp; Compliance', p.contact)}
+      <div style="padding-top:12px;">
+        ${sigContactStack(lines, { label: p.muted, value: p.contact }, 'plain')}
+      </div>
+      <div style="padding-top:16px;">
+        ${sigFooter(
+          `Privileged &amp; confidential — for the named recipient only. ${company.legalName} · ${company.registration}`,
+          p.muted
+        )}
       </div>
     </td>
+  </tr>`
+  );
+}
+
+/**
+ * Support desk — Layout #8: thin Primary top rule · desk identity · contacts.
+ */
+export function supportSignatureHtml(company: CompanyInfo = defaultCompany) {
+  const p = sigPalette(company);
+  const support = `support@${domain(company)}`;
+  const lines = [
+    { value: support, href: `mailto:${support}` },
+    { value: company.phone, href: `tel:${company.phone.replace(/\s/g, '')}` },
+    {
+      value: company.website.replace(/^https?:\/\//, ''),
+      href: company.websiteUrl
+    }
+  ];
+
+  return sigShell(
+    480,
+    `
+  <tr>
+    <td>${sigRule(p.accent, 2)}</td>
   </tr>
   <tr>
     <td style="padding:16px 0 0 0;">
-      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;background-color:${SAND};">
-        <tr>
-          <td style="${FONT}padding:10px 14px;font-size:10px;line-height:1.55;color:${SLATE};">
-            <strong style="color:${NAVY};">Privileged &amp; confidential</strong> — for the named recipient only.
-            ${company.legalName} · ${company.registration}
-          </td>
-        </tr>
-      </table>
-    </td>
-  </tr>
-</table>`.trim();
-}
-
-/**
- * Support desk — sand panel with navy header band (ticket / case voice).
- */
-export function supportSignatureHtml(company: CompanyInfo = defaultCompany) {
-  const support = `support@${domain(company)}`;
-
-  return `
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="480" style="border-collapse:collapse;${FONT}width:480px;max-width:100%;">
-  <tr>
-    <td style="background-color:${NAVY};padding:12px 18px;">
       <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;">
         <tr>
-          <td valign="middle">${wordmarkHtml(88, '#FAFAFA', 'left')}</td>
-          <td valign="middle" align="right" style="${FONT}font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:${GOLD};">
-            Merchant Success
+          <td valign="middle">${wordmarkHtml(88, p.markTone, 'left', company)}</td>
+          <td valign="middle" align="right" style="${FONT}font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:${p.muted};">
+            Support
           </td>
         </tr>
       </table>
-    </td>
-  </tr>
-  <tr>
-    <td style="background-color:${SAND};padding:16px 18px;">
-      <div style="${FONT}font-size:15px;font-weight:700;color:${NAVY};">NubiaGo Support</div>
-      <div style="${FONT}font-size:11px;color:${SLATE};padding:4px 0 12px 0;">Mon–Fri 08:00–18:00 WAT · Case ID: [CASE-XXXX]</div>
-      <div style="${FONT}font-size:12px;line-height:1.7;color:${SLATE};">
-        ${linkHtml(support, `mailto:${support}`, NAVY)}
-        &nbsp;&nbsp;·&nbsp;&nbsp;
-        ${linkHtml(company.phone, `tel:${company.phone.replace(/\s/g, '')}`, NAVY)}
-        &nbsp;&nbsp;·&nbsp;&nbsp;
-        ${linkHtml(company.website.replace(/^https?:\/\//, ''), company.websiteUrl, NAVY)}
+      <div style="padding-top:12px;">
+        ${sigName(`${company.name} Support`, p.ink, 15)}
+        ${sigTitle('Mon–Fri 08:00–18:00 WAT · Case ID: [CASE-XXXX]', p.contact)}
+      </div>
+      <div style="padding-top:12px;">
+        ${sigContactStack(lines, { label: p.muted, value: p.ink }, 'plain')}
       </div>
     </td>
-  </tr>
-</table>`.trim();
+  </tr>`
+  );
 }
 
 /**
- * Press — wordmark left, identity right (inverted from master lockup).
+ * Press — Layout #5: mark left · vertical rule · identity right.
  */
 export function pressSignatureHtml(company: CompanyInfo = defaultCompany) {
+  const p = sigPalette(company);
   const press = `press@${domain(company)}`;
   const name = displayPersonName(company.personName);
+  const location = formatLocation(company);
 
-  return `
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="540" style="border-collapse:collapse;${FONT}width:540px;max-width:100%;">
+  return sigShell(
+    540,
+    `
   <tr>
-    <td valign="top" width="150" style="padding:0 24px 0 0;">
-      ${wordmarkHtml(120, 'primary', 'left')}
-      <div style="${FONT}font-size:10px;font-style:italic;color:${MUTED};padding-top:8px;line-height:1.45;">Media relations</div>
+    <td valign="top" width="140" style="padding:0 20px 0 0;">
+      ${wordmarkHtml(112, p.markTone, 'left', company)}
+      <div style="${FONT}font-size:11px;color:${p.muted};padding-top:8px;line-height:1.45;">Media relations</div>
     </td>
-    <td valign="top" width="1" style="background-color:${GOLD};font-size:0;line-height:0;">&nbsp;</td>
+    <td valign="top" width="1" style="background-color:${p.rule};font-size:0;line-height:0;">&nbsp;</td>
     <td valign="top" style="padding:0 0 0 20px;">
-      <div style="${FONT}font-size:16px;font-weight:700;color:${NAVY};letter-spacing:-0.02em;">${name}</div>
-      <div style="${FONT}font-size:12px;color:${SLATE};padding:4px 0 12px 0;">${company.jobTitle} · Media Relations</div>
-      <div style="${FONT}font-size:12px;line-height:1.65;color:${SLATE};">
-        ${linkHtml(press, `mailto:${press}`, COPPER)}<br />
-        ${linkHtml(`${company.website}/press`, `${company.websiteUrl}/press`, SLATE)}<br />
-        ${formatLocation(company)}
+      ${sigName(name, p.ink, 16)}
+      ${sigTitle(`${company.jobTitle} · Media Relations`, p.contact)}
+      <div style="${FONT}font-size:12px;line-height:1.7;color:${p.contact};padding-top:12px;">
+        ${linkHtml(press, `mailto:${press}`, p.ink)}<br />
+        ${linkHtml(`${company.website}/press`, `${company.websiteUrl}/press`, p.contact)}
+        ${location ? `<br />${location}` : ''}
       </div>
-      <div style="${FONT}font-size:10px;color:${MUTED};padding-top:12px;line-height:1.5;">
-        Embargo policy applies. Media kit on request.
+      <div style="padding-top:12px;">
+        ${sigFooter('Embargo policy applies. Media kit on request.', p.muted)}
       </div>
     </td>
-  </tr>
-</table>`.trim();
+  </tr>`
+  );
 }
 
 /**
- * Bilingual EN / FR — split columns under a shared name header.
+ * Bilingual EN / FR — Layout #10: shared name · two mission columns · contacts.
  */
 export function bilingualSignatureHtml(company: CompanyInfo = defaultCompany) {
+  const p = sigPalette(company);
   const name = displayPersonName(company.personName);
 
-  return `
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="560" style="border-collapse:collapse;${FONT}width:560px;max-width:100%;">
+  return sigShell(
+    560,
+    `
   <tr>
     <td colspan="3" style="padding:0 0 12px 0;">
-      <div style="${FONT}font-size:17px;font-weight:700;color:${NAVY};letter-spacing:-0.02em;">${name}</div>
-      <div style="${FONT}font-size:12px;color:${SLATE};padding-top:4px;">
-        ${company.jobTitle}
-        <span style="color:${MUTED};">&nbsp;/&nbsp;</span>
-        Fondateur &amp; PDG
-      </div>
+      ${sigName(name, p.ink, 17)}
+      ${sigTitle(`${company.jobTitle} / Fondateur &amp; PDG`, p.contact)}
     </td>
   </tr>
   <tr>
     <td valign="top" width="48%" style="padding:0 16px 0 0;">
-      <div style="${FONT}font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:${GOLD};padding-bottom:8px;">English</div>
-      <div style="${FONT}font-size:11px;font-style:italic;color:${SLATE};line-height:1.5;padding-bottom:10px;">${company.tagline}</div>
-      <div style="${FONT}font-size:11px;color:${MUTED};line-height:1.55;">${company.mission}</div>
+      <div style="${FONT}font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:${p.muted};padding-bottom:8px;">EN</div>
+      <div style="${FONT}font-size:12px;color:${p.contact};line-height:1.55;">${company.mission}</div>
     </td>
-    <td width="1" style="background-color:${RULE};font-size:0;line-height:0;">&nbsp;</td>
+    <td width="1" style="background-color:${p.rule};font-size:0;line-height:0;">&nbsp;</td>
     <td valign="top" width="48%" style="padding:0 0 0 16px;">
-      <div style="${FONT}font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:${GOLD};padding-bottom:8px;">Français</div>
-      <div style="${FONT}font-size:11px;font-style:italic;color:${SLATE};line-height:1.5;padding-bottom:10px;">Relier l&rsquo;Afrique par le commerce et la logistique</div>
-      <div style="${FONT}font-size:11px;color:${MUTED};line-height:1.55;">Construire l&rsquo;infrastructure du commerce transfrontalier pour les ménages et entreprises africains.</div>
+      <div style="${FONT}font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:${p.muted};padding-bottom:8px;">FR</div>
+      <div style="${FONT}font-size:12px;color:${p.contact};line-height:1.55;">Construire l&rsquo;infrastructure du commerce transfrontalier pour les ménages et entreprises africains.</div>
     </td>
   </tr>
   <tr>
     <td colspan="3" style="padding:16px 0 0 0;">
       <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;">
         <tr>
-          <td valign="middle">${wordmarkHtml(90, 'primary', 'left')}</td>
-          <td valign="middle" align="right" style="${FONT}font-size:11px;color:${SLATE};">
-            ${linkHtml(company.email, `mailto:${company.email}`, SLATE)}
+          <td valign="middle">${wordmarkHtml(90, p.markTone, 'left', company)}</td>
+          <td valign="middle" align="right" style="${FONT}font-size:12px;color:${p.contact};">
+            ${linkHtml(company.email, `mailto:${company.email}`, p.contact)}
             &nbsp;·&nbsp;
-            ${linkHtml(company.website.replace(/^https?:\/\//, ''), company.websiteUrl, SLATE)}
+            ${linkHtml(company.website.replace(/^https?:\/\//, ''), company.websiteUrl, p.contact)}
           </td>
         </tr>
       </table>
     </td>
-  </tr>
-</table>`.trim();
+  </tr>`
+  );
 }
 
 /**
- * Mono print-safe — single-column typewriter stack, black ink only.
+ * Mono print-safe — Layout #4: black-ink stack only.
  */
 export function monoSignatureHtml(company: CompanyInfo = defaultCompany) {
   const name = displayPersonName(company.personName);
@@ -225,170 +227,174 @@ export function monoSignatureHtml(company: CompanyInfo = defaultCompany) {
   const ink = '#1A1A1A';
   const gray = '#525252';
 
-  return `
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="420" style="border-collapse:collapse;${FONT}width:420px;max-width:100%;">
+  return sigShell(
+    420,
+    `
   <tr>
     <td>
-      ${wordmarkHtml(100, 'black', 'left')}
-      <div style="${FONT}font-size:15px;font-weight:700;color:${ink};letter-spacing:0.02em;padding-top:14px;text-transform:uppercase;">${name}</div>
-      <div style="${FONT}font-size:11px;color:${gray};padding:4px 0 12px 0;letter-spacing:0.04em;">${company.jobTitle}</div>
-      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="48" style="border-collapse:collapse;">
-        <tr><td height="2" style="background-color:${ink};font-size:0;line-height:0;">&nbsp;</td></tr>
-      </table>
-      <div style="${FONT}font-size:11px;line-height:1.75;color:${gray};padding-top:12px;">
+      ${wordmarkHtml(100, 'black', 'left', company)}
+      <div style="padding-top:12px;">${sigName(name, ink, 15)}</div>
+      ${sigTitle(company.jobTitle, gray)}
+      <div style="padding-top:12px;">${sigRule(ink, 2)}</div>
+      <div style="${FONT}font-size:12px;line-height:1.75;color:${gray};padding-top:12px;">
         ${company.email}<br />
-        ${company.website}<br />
-        ${location || ''}
+        ${company.website}
+        ${location ? `<br />${location}` : ''}
       </div>
-      <div style="${FONT}font-size:10px;color:${gray};padding-top:14px;line-height:1.55;">${company.mission}</div>
+      <div style="padding-top:12px;">${sigFooter(company.mission, gray)}</div>
     </td>
-  </tr>
-</table>`.trim();
+  </tr>`
+  );
 }
 
 /**
- * Enterprise sales — full-width navy band identity (shared desk, not a personal lockup).
+ * Enterprise sales — Layout #8: narrow Primary strip + white field (single accent).
  */
 export function teamSignatureHtml(company: CompanyInfo = defaultCompany) {
+  const p = sigPalette(company);
   const sales = `sales@${domain(company)}`;
+  const lines = [
+    { value: sales, href: `mailto:${sales}` },
+    { value: company.phone, href: `tel:${company.phone.replace(/\s/g, '')}` },
+    {
+      value: company.website.replace(/^https?:\/\//, ''),
+      href: company.websiteUrl
+    }
+  ];
 
-  return `
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="520" style="border-collapse:collapse;${FONT}width:520px;max-width:100%;">
+  return sigShell(
+    520,
+    `
   <tr>
-    <td style="background-color:${NAVY};padding:20px 22px;">
-      ${wordmarkHtml(112, '#FAFAFA', 'left')}
-      <div style="${FONT}font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:${GOLD};padding-top:10px;">Enterprise Sales</div>
-      <div style="${FONT}font-size:16px;font-weight:700;color:#FAFAFA;padding-top:4px;">NubiaGo Enterprise Sales</div>
-      <div style="${FONT}font-size:12px;color:rgba(250,250,250,0.65);padding-top:4px;">Cross-border settlement</div>
+    <td style="background-color:${p.accent};padding:12px 20px;">
+      ${wordmarkHtml(100, p.markOnAccent, 'left', company)}
     </td>
   </tr>
   <tr>
-    <td style="border:1px solid ${RULE};border-top:0;padding:14px 22px;">
-      <div style="${FONT}font-size:12px;line-height:1.7;color:${SLATE};">
-        ${linkHtml(sales, `mailto:${sales}`, NAVY)}
-        &nbsp;&nbsp;·&nbsp;&nbsp;
-        ${linkHtml(company.phone, `tel:${company.phone.replace(/\s/g, '')}`, NAVY)}
-        &nbsp;&nbsp;·&nbsp;&nbsp;
-        ${linkHtml(company.website.replace(/^https?:\/\//, ''), company.websiteUrl, NAVY)}
+    <td style="padding:16px 20px 0 20px;">
+      ${sigName(`${company.name} Enterprise Sales`, p.ink, 15)}
+      ${sigTitle('Shared desk · response within one business day', p.contact)}
+      <div style="padding-top:12px;">
+        ${sigContactStack(lines, { label: p.muted, value: p.ink }, 'plain')}
       </div>
-      <div style="${FONT}font-size:10px;color:${MUTED};padding-top:8px;">Response within one business day</div>
+      <div style="padding:16px 0 0 0;">${sigRule(p.rule)}</div>
     </td>
-  </tr>
-</table>`.trim();
+  </tr>`
+  );
 }
 
 /**
- * Out of office — notice-first sand callout, then minimal identity row.
+ * Out of office — Layout #9: notice · rule · mini identity.
  */
 export function outOfOfficeSignatureHtml(company: CompanyInfo = defaultCompany) {
+  const p = sigPalette(company);
   const name = displayPersonName(company.personName);
+  const coverEmail = `colleague@${domain(company)}`;
 
-  return `
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="520" style="border-collapse:collapse;${FONT}width:520px;max-width:100%;">
+  return sigShell(
+    520,
+    `
   <tr>
-    <td style="background-color:${SAND};border-left:4px solid ${GOLD};padding:14px 18px;">
-      <div style="${FONT}font-size:9px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:${NAVY};">Out of office</div>
-      <div style="${FONT}font-size:13px;color:${SLATE};line-height:1.65;padding-top:8px;">
-        Away until <strong style="color:${NAVY};">[Return date]</strong> with limited access to email.
-        For urgent corridor or settlement matters, contact
-        <strong style="color:${NAVY};">[Covering colleague]</strong> at
-        ${linkHtml('[colleague@nubiago.com]', 'mailto:colleague@nubiago.com', COPPER)}.
+    <td style="padding:0 0 12px 0;">
+      <div style="${FONT}font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:${p.muted};">Out of office</div>
+      <div style="${FONT}font-size:12px;color:${p.contact};line-height:1.65;padding-top:8px;">
+        Away until <strong style="color:${p.ink};font-weight:600;">[Return date]</strong> with limited access to email.
+        For urgent matters, contact
+        <strong style="color:${p.ink};font-weight:600;">[Covering colleague]</strong>
+        (${linkHtml(coverEmail, `mailto:${coverEmail}`, p.ink)}).
       </div>
     </td>
   </tr>
   <tr>
-    <td style="padding:16px 0 0 0;">
+    <td>${sigRule(p.rule)}</td>
+  </tr>
+  <tr>
+    <td style="padding:12px 0 0 0;">
       <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;">
         <tr>
           <td valign="middle">
-            <div style="${FONT}font-size:14px;font-weight:700;color:${NAVY};">${name}</div>
-            <div style="${FONT}font-size:11px;color:${SLATE};padding-top:2px;">${company.jobTitle}</div>
+            ${sigName(name, p.ink, 14)}
+            ${sigTitle(company.jobTitle, p.contact)}
           </td>
-          <td valign="middle" align="right">${wordmarkHtml(88, 'primary', 'right')}</td>
+          <td valign="middle" align="right">${wordmarkHtml(88, p.markTone, 'right', company)}</td>
         </tr>
       </table>
     </td>
-  </tr>
-</table>`.trim();
+  </tr>`
+  );
 }
 
 /**
- * Director / board — vertical cascade with parent affiliation and dual rules.
+ * Director — Layout #7 variant: cascade · dual affiliation · contacts · legal.
  */
 export function directorSignatureHtml(company: CompanyInfo = defaultCompany) {
+  const p = sigPalette(company);
   const name = displayPersonName(company.personName);
   const location = formatLocation(company);
+  const lines = [
+    { value: company.email, href: `mailto:${company.email}` },
+    { value: company.phone, href: `tel:${company.phone.replace(/\s/g, '')}` },
+    {
+      value: company.website.replace(/^https?:\/\//, ''),
+      href: company.websiteUrl
+    },
+    ...(location ? [{ value: location }] : [])
+  ];
 
-  return `
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="480" style="border-collapse:collapse;${FONT}width:480px;max-width:100%;">
+  return sigShell(
+    480,
+    `
   <tr>
-    <td align="left">
-      ${wordmarkHtml(108, 'primary', 'left')}
-    </td>
+    <td>${wordmarkHtml(100, p.markTone, 'left', company)}</td>
   </tr>
   <tr>
-    <td style="padding:14px 0 0 0;">
-      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;">
-        <tr>
-          <td width="40" height="2" style="background-color:${GOLD};font-size:0;line-height:0;">&nbsp;</td>
-          <td height="2" style="background-color:${RULE};font-size:0;line-height:0;">&nbsp;</td>
-        </tr>
-      </table>
-    </td>
+    <td style="padding:12px 0 0 0;">${sigRule(p.accent, 2)}</td>
   </tr>
   <tr>
-    <td style="${FONT}padding:14px 0 0 0;">
-      <div style="font-size:18px;font-weight:700;color:${NAVY};letter-spacing:-0.02em;">${name}</div>
-      <div style="font-size:12px;color:${SLATE};padding-top:6px;">${company.jobTitle}</div>
-      <div style="font-size:11px;color:${MUTED};padding-top:2px;">Director · ${company.parent}</div>
-    </td>
-  </tr>
-  <tr>
-    <td style="${FONT}padding:14px 0 0 0;font-size:12px;line-height:1.75;color:${SLATE};">
-      ${linkHtml(company.email, `mailto:${company.email}`, NAVY)}<br />
-      ${linkHtml(company.phone, `tel:${company.phone.replace(/\s/g, '')}`, NAVY)}<br />
-      ${linkHtml(company.website.replace(/^https?:\/\//, ''), company.websiteUrl, NAVY)}
-      ${location ? `<br />${location}` : ''}
-    </td>
-  </tr>
-  <tr>
-    <td style="padding:16px 0 0 0;">
-      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;">
-        <tr><td height="1" style="background-color:${RULE};font-size:0;line-height:0;">&nbsp;</td></tr>
-      </table>
-      <div style="${FONT}padding-top:10px;font-size:10px;color:${MUTED};line-height:1.55;">
-        ${company.legalName} · ${company.registration} · ${company.taxId}
+    <td style="padding:12px 0 0 0;">
+      ${sigName(name, p.ink, 17)}
+      ${sigTitle(company.jobTitle, p.contact)}
+      <div style="${FONT}font-size:11px;color:${p.muted};padding-top:2px;">Director · ${company.parent}</div>
+      <div style="padding-top:12px;">
+        ${sigContactStack(lines, { label: p.muted, value: p.contact }, 'plain')}
+      </div>
+      <div style="padding-top:16px;">${sigRule(p.rule)}</div>
+      <div style="padding-top:12px;">
+        ${sigFooter(`${company.legalName} · ${company.registration} · ${company.taxId}`, p.muted)}
       </div>
     </td>
-  </tr>
-</table>`.trim();
+  </tr>`
+  );
 }
 
 /**
- * Partner success — horizontal three-cell: mark | name | contact stack.
+ * Partner — Layout #6: three cells mark | role | contacts.
  */
 export function partnerSignatureHtml(company: CompanyInfo = defaultCompany) {
+  const p = sigPalette(company);
   const partners = `partners@${domain(company)}`;
 
-  return `
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="560" style="border-collapse:collapse;${FONT}width:560px;max-width:100%;">
+  return sigShell(
+    560,
+    `
   <tr>
     <td valign="middle" width="120" style="padding:0 16px 0 0;">
-      ${wordmarkHtml(108, 'primary', 'left')}
+      ${wordmarkHtml(100, p.markTone, 'left', company)}
     </td>
-    <td valign="middle" width="1" style="background-color:${GOLD};font-size:0;line-height:0;">&nbsp;</td>
-    <td valign="middle" style="padding:0 18px;">
-      <div style="${FONT}font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:${GOLD};">Partners</div>
-      <div style="${FONT}font-size:14px;font-weight:700;color:${NAVY};padding-top:4px;">Partner Success</div>
-      <div style="${FONT}font-size:11px;color:${SLATE};padding-top:2px;">Merchant &amp; logistics channels</div>
+    <td valign="middle" width="1" style="background-color:${p.rule};font-size:0;line-height:0;">&nbsp;</td>
+    <td valign="middle" style="padding:0 16px;">
+      <div style="${FONT}font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:${p.muted};">Partners</div>
+      <div style="padding-top:4px;">${sigName('Partner Success', p.ink, 14)}</div>
+      ${sigTitle('Merchant &amp; logistics channels', p.contact)}
     </td>
-    <td valign="middle" style="${FONT}font-size:12px;line-height:1.7;color:${SLATE};white-space:nowrap;">
-      ${linkHtml(partners, `mailto:${partners}`, COPPER)}<br />
-      ${linkHtml(company.phone, `tel:${company.phone.replace(/\s/g, '')}`, SLATE)}<br />
-      ${linkHtml(`${company.website}/partners`, `${company.websiteUrl}/partners`, SLATE)}
+    <td valign="middle" width="1" style="background-color:${p.rule};font-size:0;line-height:0;">&nbsp;</td>
+    <td valign="middle" style="${FONT}padding:0 0 0 16px;font-size:12px;line-height:1.7;color:${p.contact};white-space:nowrap;">
+      ${linkHtml(partners, `mailto:${partners}`, p.ink)}<br />
+      ${linkHtml(company.phone, `tel:${company.phone.replace(/\s/g, '')}`, p.contact)}<br />
+      ${linkHtml(`${company.website}/partners`, `${company.websiteUrl}/partners`, p.contact)}
     </td>
-  </tr>
-</table>`.trim();
+  </tr>`
+  );
 }
 
 export const enterpriseSignatureCatalog: Array<{
@@ -402,80 +408,80 @@ export const enterpriseSignatureCatalog: Array<{
   {
     id: 'corridor',
     title: 'Corridor Lead Signature',
-    fileName: 'NubiaGo_Signature_Corridor',
-    description: 'Navy left rail · labelled field rows · mark under contacts — for relationship managers.',
+    fileName: 'Signature_Corridor',
+    description: 'Primary left rail · labelled contacts · mark under stack — relationship managers.',
     html: photoSignatureHtml,
     artboard: 'signature'
   },
   {
     id: 'legal',
     title: 'Legal & Compliance Signature',
-    fileName: 'NubiaGo_Signature_Legal',
-    description: 'Stacked formal layout with sand privilege banner — not the two-column lockup.',
+    fileName: 'Signature_Legal',
+    description: 'Single-column formal stack with muted privilege line — no filled banners.',
     html: legalSignatureHtml,
     artboard: 'signature'
   },
   {
     id: 'support',
     title: 'Support Desk Signature',
-    fileName: 'NubiaGo_Signature_Support',
-    description: 'Navy header band + sand panel — shared desk voice with case ID placeholder.',
+    fileName: 'Signature_Support',
+    description: 'Thin Primary rule · shared desk identity · case ID placeholder.',
     html: supportSignatureHtml,
     artboard: 'signature'
   },
   {
     id: 'press',
     title: 'Press & Media Signature',
-    fileName: 'NubiaGo_Signature_Press',
-    description: 'Inverted lockup: wordmark left, gold divider, identity and press@ on the right.',
+    fileName: 'Signature_Press',
+    description: 'Mark left · hairline · identity and press@ on the right.',
     html: pressSignatureHtml,
     artboard: 'signature'
   },
   {
     id: 'bilingual',
     title: 'Bilingual EN / FR Signature',
-    fileName: 'NubiaGo_Signature_Bilingual',
-    description: 'Shared name header with EN | FR mission columns for Francophone corridors.',
+    fileName: 'Signature_Bilingual',
+    description: 'Shared name · EN | FR mission columns · one contact row.',
     html: bilingualSignatureHtml,
     artboard: 'signatureExecutive'
   },
   {
     id: 'mono',
     title: 'Mono Print-Safe Signature',
-    fileName: 'NubiaGo_Signature_Mono',
-    description: 'Single-column black-ink stack for PDF and print — no copper, no navy fill.',
+    fileName: 'Signature_Mono',
+    description: 'Black-ink single column for PDF and print — no colour fills.',
     html: monoSignatureHtml,
     artboard: 'signature'
   },
   {
     id: 'team',
     title: 'Enterprise Sales Signature',
-    fileName: 'NubiaGo_Signature_Team',
-    description: 'Full navy identity band with white wordmark — shared sales@ desk, not a personal lockup.',
+    fileName: 'Signature_Team',
+    description: 'Narrow Primary mark strip · white desk field · sales@ contacts.',
     html: teamSignatureHtml,
     artboard: 'signature'
   },
   {
     id: 'ooo',
     title: 'Out-of-Office Signature',
-    fileName: 'NubiaGo_Signature_OutOfOffice',
-    description: 'Notice-first sand callout, then a minimal name + mark row underneath.',
+    fileName: 'Signature_OutOfOffice',
+    description: 'Notice first · hairline · minimal name and mark row.',
     html: outOfOfficeSignatureHtml,
     artboard: 'signature'
   },
   {
     id: 'director',
     title: 'Director / Board Signature',
-    fileName: 'NubiaGo_Signature_Director',
-    description: 'Vertical cascade with gold/rule accent and dual affiliation under the name.',
+    fileName: 'Signature_Director',
+    description: 'Cascade with dual affiliation · contacts · legal footer.',
     html: directorSignatureHtml,
     artboard: 'signatureExecutive'
   },
   {
     id: 'partner',
     title: 'Partner Success Signature',
-    fileName: 'NubiaGo_Signature_Partner',
-    description: 'Three-cell horizontal: mark · role · contact stack with gold divider.',
+    fileName: 'Signature_Partner',
+    description: 'Three-cell horizontal: mark · role · contacts with hairline dividers.',
     html: partnerSignatureHtml,
     artboard: 'signatureCompact'
   }

@@ -83,5 +83,12 @@ export const navigation: NavItem[] = [
     path: '/assets',
     folder: '11_ASSETS',
     description: 'Favicons, app icons, brand mark, icon system, patterns, QR and export packs.'
+  },
+  {
+    code: '12',
+    label: 'Business Plan',
+    path: '/business-plan',
+    folder: '12_BUSINESS_PLAN',
+    description: 'AshBak Industries master business plan — $0 → $250M annual revenue.'
   }
 ];

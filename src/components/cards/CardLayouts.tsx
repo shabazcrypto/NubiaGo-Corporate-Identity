@@ -1,7 +1,7 @@
-import type { ReactNode } from 'react';
+﻿import type { ReactNode } from 'react';
 import { LinkedinIcon } from 'lucide-react';
 import { Logo } from '@/components/brand/Logo';
-import { NG_STROKE, iconByKey, QrPlaceholder } from '@/components/brand/iconSystem';
+import { AB_STROKE, iconByKey, QrPlaceholder } from '@/components/brand/iconSystem';
 import { useCompany } from '@/lib/brand-context';
 
 /** 4 mm safe margin · 3.5 × 2 in artboard. */
@@ -144,12 +144,12 @@ export function CardManifesto() {
           <div className="text-[5px] font-semibold uppercase tracking-[0.2em] text-white/35">Connect</div>
           <div className="mt-2 space-y-1.5">
             <div className="flex items-center gap-1.5">
-              <LinkedinIcon className="h-[7px] w-[7px] text-white/60" strokeWidth={NG_STROKE} />
+              <LinkedinIcon className="h-[7px] w-[7px] text-white/60" strokeWidth={AB_STROKE} />
               <span className="text-[6px] text-white/80">{linkedIn}</span>
             </div>
             <div className="flex items-center gap-1.5">
               <span className="text-[6px] font-semibold leading-none text-white/60">X</span>
-              <span className="text-[6px] text-white/80">@nubiago</span>
+              <span className="text-[6px] text-white/80">@{company.website.replace(/\.[^.]+$/, '')}</span>
             </div>
           </div>
         </div>
@@ -515,7 +515,7 @@ export function CardEditorialBack() {
         </div>
         <div className="space-y-1.5 pl-3 pt-1 text-[6px]" style={{ color: SECONDARY, gridColumn: 3, gridRow: 2 }}>
           <div className="flex items-center gap-1">
-            <LinkedinIcon className="h-[7px] w-[7px]" style={{ color: CARD_ACCENT }} strokeWidth={NG_STROKE} />
+            <LinkedinIcon className="h-[7px] w-[7px]" style={{ color: CARD_ACCENT }} strokeWidth={AB_STROKE} />
             <span>{linkedIn}</span>
           </div>
           <QrPlaceholder size={34} label="" tone="light" framed />
@@ -707,6 +707,9 @@ export type CardSet = {
   concept: string;
   front: CardSide;
   back: CardSide;
+  /** Bleed pad colour behind the front (defaults to white). */
+  frontBleedBg?: string;
+  /** Bleed pad colour behind the back. */
   bleedBg?: string;
 };
 
@@ -728,7 +731,8 @@ export const businessCardSets: CardSet[] = [
       fileName: 'NubiaGo_Card_Executive_Back',
       description: 'Brand face. Mark, Africa mission, CONNECT and QR.'
     },
-    bleedBg: '#0A0A0A'
+    bleedBg: '#0A0A0A',
+    frontBleedBg: '#FFFFFF'
   },
   {
     id: 'manifesto',
@@ -746,7 +750,8 @@ export const businessCardSets: CardSet[] = [
       fileName: 'NubiaGo_Card_Manifesto_Back',
       description: 'White scan face. Oversized QR to the website.'
     },
-    bleedBg: '#0A0A0A'
+    bleedBg: '#0A0A0A',
+    frontBleedBg: '#0A0A0A'
   },
   {
     id: 'split',
@@ -764,7 +769,8 @@ export const businessCardSets: CardSet[] = [
       fileName: 'NubiaGo_Card_Split_Back',
       description: 'Inverted: white rail, navy mission + QR.'
     },
-    bleedBg: '#1E3A5F'
+    bleedBg: '#1E3A5F',
+    frontBleedBg: '#1E3A5F'
   },
   {
     id: 'editorial',
@@ -781,7 +787,9 @@ export const businessCardSets: CardSet[] = [
       Component: CardEditorialBack,
       fileName: 'NubiaGo_Card_Editorial_Back',
       description: 'Mission left, CONNECT + QR right — same spine.'
-    }
+    },
+    frontBleedBg: '#FFFFFF',
+    bleedBg: '#FFFFFF'
   },
   {
     id: 'horizon',
@@ -799,7 +807,8 @@ export const businessCardSets: CardSet[] = [
       fileName: 'NubiaGo_Card_Horizon_Back',
       description: 'Identical zoning on Primary — night side.'
     },
-    bleedBg: '#1E3A5F'
+    bleedBg: '#1E3A5F',
+    frontBleedBg: '#FFFFFF'
   },
   {
     id: 'quiet',
@@ -817,7 +826,8 @@ export const businessCardSets: CardSet[] = [
       fileName: 'NubiaGo_Card_Quiet_Back',
       description: 'Matte black echo. Centred mission.'
     },
-    bleedBg: '#0A0A0A'
+    bleedBg: '#0A0A0A',
+    frontBleedBg: '#F5F0E8'
   },
   {
     id: 'solid',
@@ -835,7 +845,8 @@ export const businessCardSets: CardSet[] = [
       fileName: 'NubiaGo_Card_Solid_Back',
       description: 'White void. Gold rule, mission, QR.'
     },
-    bleedBg: '#1E3A5F'
+    bleedBg: '#1E3A5F',
+    frontBleedBg: '#1E3A5F'
   },
   {
     id: 'ribbon',
@@ -853,7 +864,8 @@ export const businessCardSets: CardSet[] = [
       fileName: 'NubiaGo_Card_Ribbon_Back',
       description: 'Navy body, white header ribbon — continuous wrap.'
     },
-    bleedBg: '#1E3A5F'
+    bleedBg: '#1E3A5F',
+    frontBleedBg: '#FFFFFF'
   },
   {
     id: 'corner',
@@ -870,7 +882,9 @@ export const businessCardSets: CardSet[] = [
       Component: CardCornerBack,
       fileName: 'NubiaGo_Card_Corner_Back',
       description: 'L-mark bottom-right — registers with the front when flipped.'
-    }
+    },
+    frontBleedBg: '#FFFFFF',
+    bleedBg: '#FFFFFF'
   }
 ];
 

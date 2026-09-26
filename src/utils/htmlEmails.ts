@@ -1,5 +1,9 @@
 import { company as fallbackCompany, type CompanyInfo } from '@/data/brand';
 
+function wordmarkLabel(c: CompanyInfo) {
+  return c.name.replace(/\s+Industries$/i, '').trim().toLowerCase();
+}
+
 function esc(s: string) {
   return s
     .replace(/&/g, '&amp;')
@@ -32,7 +36,7 @@ ${body}
   <p style="margin:0;font-size:11px;line-height:1.6;color:rgba(250,250,250,0.55);font-family:Arial,Helvetica,sans-serif;">
     ${esc(c.legalName)} · ${esc(c.endorsement)}<br />
     <a href="${esc(c.websiteUrl)}" style="color:${GOLD};text-decoration:none;">${esc(c.website)}</a>
-    · You received this because you work with NubiaGo.
+    · You received this because you work with ${esc(c.name)}.
     <a href="#" style="color:rgba(250,250,250,0.55);">Unsubscribe</a>
   </p>
 </td></tr>
@@ -47,7 +51,7 @@ ${body}
 export function htmlEmailAnnounce(c: CompanyInfo = fallbackCompany) {
   const body = `
 <tr><td style="background:${NAVY};padding:28px 32px;">
-  <p style="margin:0;font-size:22px;font-weight:800;letter-spacing:-0.04em;color:#FAFAFA;font-family:Arial,Helvetica,sans-serif;">nubiago</p>
+  <p style="margin:0;font-size:22px;font-weight:800;letter-spacing:-0.04em;color:#FAFAFA;font-family:Arial,Helvetica,sans-serif;">${esc(wordmarkLabel(c))}</p>
   <p style="margin:8px 0 0;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:${GOLD};font-family:Arial,Helvetica,sans-serif;">Announcement</p>
 </td></tr>
 <tr><td style="padding:32px;">
@@ -63,14 +67,14 @@ export function htmlEmailAnnounce(c: CompanyInfo = fallbackCompany) {
   </td></tr>
   </table>
 </td></tr>`;
-  return shell('NubiaGo — Announcement', body, c);
+  return shell(`${c.name} — Announcement`, body, c);
 }
 
 /** 2 — Event invite */
 export function htmlEmailInvite(c: CompanyInfo = fallbackCompany) {
   const body = `
 <tr><td style="background:${SAND};padding:28px 32px;">
-  <p style="margin:0;font-size:22px;font-weight:800;letter-spacing:-0.04em;color:${NAVY};font-family:Arial,Helvetica,sans-serif;">nubiago</p>
+  <p style="margin:0;font-size:22px;font-weight:800;letter-spacing:-0.04em;color:${NAVY};font-family:Arial,Helvetica,sans-serif;">${esc(wordmarkLabel(c))}</p>
   <p style="margin:8px 0 0;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:${MUTED};font-family:Arial,Helvetica,sans-serif;">Invite</p>
 </td></tr>
 <tr><td style="padding:32px;">
@@ -101,7 +105,7 @@ export function htmlEmailInvite(c: CompanyInfo = fallbackCompany) {
   </td></tr>
   </table>
 </td></tr>`;
-  return shell('NubiaGo — Event invite', body, c);
+  return shell(`${c.name} — Event invite`, body, c);
 }
 
 /** 3 — Quarterly digest */
@@ -113,7 +117,7 @@ export function htmlEmailDigest(c: CompanyInfo = fallbackCompany) {
   ];
   const body = `
 <tr><td style="background:${NAVY};padding:28px 32px;">
-  <p style="margin:0;font-size:22px;font-weight:800;letter-spacing:-0.04em;color:#FAFAFA;font-family:Arial,Helvetica,sans-serif;">nubiago</p>
+  <p style="margin:0;font-size:22px;font-weight:800;letter-spacing:-0.04em;color:#FAFAFA;font-family:Arial,Helvetica,sans-serif;">${esc(wordmarkLabel(c))}</p>
   <p style="margin:8px 0 0;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:${GOLD};font-family:Arial,Helvetica,sans-serif;">Quarterly digest · Q4</p>
 </td></tr>
 <tr><td style="padding:32px;">
@@ -132,14 +136,14 @@ export function htmlEmailDigest(c: CompanyInfo = fallbackCompany) {
     )
     .join('')}
 </td></tr>`;
-  return shell('NubiaGo — Quarterly digest', body, c);
+  return shell(`${c.name} — Quarterly digest`, body, c);
 }
 
 /** 4 — Transactional receipt / statement ready */
 export function htmlEmailReceipt(c: CompanyInfo = fallbackCompany) {
   const body = `
 <tr><td style="background:${NAVY};padding:24px 32px;">
-  <p style="margin:0;font-size:20px;font-weight:800;letter-spacing:-0.04em;color:#FAFAFA;font-family:Arial,Helvetica,sans-serif;">nubiago</p>
+  <p style="margin:0;font-size:20px;font-weight:800;letter-spacing:-0.04em;color:#FAFAFA;font-family:Arial,Helvetica,sans-serif;">${esc(wordmarkLabel(c))}</p>
 </td></tr>
 <tr><td style="padding:32px;">
   <p style="margin:0;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:${MUTED};font-family:Arial,Helvetica,sans-serif;">Statement ready</p>
@@ -161,35 +165,35 @@ export function htmlEmailReceipt(c: CompanyInfo = fallbackCompany) {
   </td></tr>
   </table>
 </td></tr>`;
-  return shell('NubiaGo — Statement ready', body, c);
+  return shell(`${c.name} — Statement ready`, body, c);
 }
 
 export const htmlEmailCatalog = [
   {
     id: 'announce',
     title: 'HTML Email — Announcement',
-    fileName: 'NubiaGo_Email_HTML_Announce',
+    fileName: 'Email_HTML_Announce',
     description: 'Outlook-safe table layout for company news with CTA.',
     build: htmlEmailAnnounce
   },
   {
     id: 'invite',
     title: 'HTML Email — Event Invite',
-    fileName: 'NubiaGo_Email_HTML_Invite',
+    fileName: 'Email_HTML_Invite',
     description: 'Invite with labelled date / time / format block.',
     build: htmlEmailInvite
   },
   {
     id: 'digest',
     title: 'HTML Email — Quarterly Digest',
-    fileName: 'NubiaGo_Email_HTML_Digest',
+    fileName: 'Email_HTML_Digest',
     description: 'Three-fact partner digest — markets, platform, network.',
     build: htmlEmailDigest
   },
   {
     id: 'receipt',
     title: 'HTML Email — Statement Ready',
-    fileName: 'NubiaGo_Email_HTML_Receipt',
+    fileName: 'Email_HTML_Receipt',
     description: 'Transactional notice with reference and secure download CTA.',
     build: htmlEmailReceipt
   }

@@ -2,8 +2,7 @@ import { BrandMarkApp } from '@/components/brand/BrandMark';
 import { formats } from '@/lib/formats';
 
 /**
- * Official NubiaGo app icon / favicon set.
- * Exact SVG from Downloads/NubiaGo Icon/src/components/AppIcon.tsx.
+ * Official app icon / favicon set — filenames get the active brand prefix at render.
  */
 
 export function Favicon16() {
@@ -27,26 +26,26 @@ export function AppIcon512() {
 }
 
 export const faviconDefs = [
-  { id: '16', title: 'Favicon 16×16', file: 'NubiaGo_Favicon_16', artboard: formats.favicon16, Component: Favicon16 },
-  { id: '32', title: 'Favicon 32×32', file: 'NubiaGo_Favicon_32', artboard: formats.favicon32, Component: Favicon32 },
+  { id: '16', title: 'Favicon 16×16', file: 'Favicon_16', artboard: formats.favicon16, Component: Favicon16 },
+  { id: '32', title: 'Favicon 32×32', file: 'Favicon_32', artboard: formats.favicon32, Component: Favicon32 },
   {
     id: '180',
     title: 'Apple Touch 180×180',
-    file: 'NubiaGo_AppleTouch_180',
+    file: 'AppleTouch_180',
     artboard: formats.appleTouch,
     Component: AppleTouchIcon
   },
   {
     id: '192',
     title: 'PWA 192×192',
-    file: 'NubiaGo_AppIcon_192',
+    file: 'AppIcon_192',
     artboard: formats.appIcon192,
     Component: AppIcon192
   },
   {
     id: '512',
     title: 'App Icon 512×512',
-    file: 'NubiaGo_AppIcon_512',
+    file: 'AppIcon_512',
     artboard: formats.appIcon512,
     Component: AppIcon512
   }

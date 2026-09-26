@@ -13,7 +13,7 @@ export function CorporateSeal() {
       >
         <div className="rounded-full border border-brand/40 px-6 py-8 text-center">
           <Logo size={22} />
-          <BrandRule width={36} thickness={1.5} tone="gold" />
+          <BrandRule width={36} thickness={1.5} tone="primary" />
           <p className="mt-2 max-w-[140px] text-[8px] font-semibold uppercase tracking-[0.14em] text-gray-500">
             {company.legalName}
           </p>
@@ -32,13 +32,13 @@ export function PackingTape() {
     <div className="relative overflow-hidden bg-brand" style={{ width: w, height: h }}>
       <div className="absolute inset-0 flex items-center gap-10 px-4">
         {Array.from({ length: 6 }).map((_, i) => (
-          <span key={i} className="ng-wordmark whitespace-nowrap text-[18px] text-white/35">
-            nubiago
+          <span key={i} className="ab-wordmark whitespace-nowrap text-[18px] text-white/35">
+            ashbak
           </span>
         ))}
       </div>
-      <div className="absolute inset-y-0 left-0 w-1 bg-brand-gold" />
-      <div className="absolute inset-y-0 right-0 w-1 bg-brand-gold" />
+      <div className="absolute inset-y-0 left-0 w-1 bg-white" />
+      <div className="absolute inset-y-0 right-0 w-1 bg-white" />
     </div>
   );
 }

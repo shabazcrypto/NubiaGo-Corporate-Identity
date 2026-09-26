@@ -5,17 +5,18 @@ export default {
     extend: {
       colors: {
         brand: {
-          DEFAULT: '#1E3A5F',
-          light: '#2D5A8A',
-          sand: '#F5F0E8',
-          gold: '#C9A227'
+          DEFAULT: 'var(--brand-primary)',
+          light: 'var(--brand-light)',
+          sand: 'var(--brand-sand)',
+          secondary: 'var(--brand-secondary)',
+          gold: 'var(--brand-gold)'
         },
-        ink: '#1A1A1A',
+        ink: 'var(--brand-ink)',
         gray: {
-          700: '#404040',
-          500: '#737373',
-          200: '#E5E5E5',
-          50: '#FAFAFA'
+          700: 'var(--brand-gray-700)',
+          500: 'var(--brand-gray-500)',
+          200: 'var(--brand-gray-200)',
+          50: 'var(--brand-gray-50)'
         },
         state: {
           success: '#22C55E',
@@ -63,7 +64,7 @@ export default {
         sm: 'var(--radius)'
       },
       fontFamily: {
-        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif']
+        sans: ['Inter Tight', 'ui-sans-serif', 'system-ui', 'sans-serif']
       }
     }
   },

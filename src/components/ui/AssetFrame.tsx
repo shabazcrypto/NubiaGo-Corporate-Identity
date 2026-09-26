@@ -3,7 +3,6 @@ import { CheckIcon, DownloadIcon, Loader2Icon, PrinterIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button';
 import type { ArtboardSpec, ExportKind } from '@/lib/formats';
 import { specLabel } from '@/lib/formats';
-import { exportNode, printNode } from '@/utils/exportAsset';
 
 export interface AssetFrameProps {
   title: string;
@@ -14,6 +13,10 @@ export interface AssetFrameProps {
   transparent?: boolean;
   htmlOnly?: boolean;
   printable?: boolean;
+  /** Tone for outlined wordmark SVG downloads. */
+  wordmarkTone?: 'primary' | 'light' | 'black' | 'gold';
+  /** What the SVG button exports (defaults to wordmark). */
+  svgKind?: 'wordmark' | 'icon-mark' | 'icon-app';
   actions?: React.ReactNode;
   children: React.ReactNode;
 }
@@ -27,6 +30,8 @@ export function AssetFrame({
   transparent,
   htmlOnly = false,
   printable = false,
+  wordmarkTone,
+  svgKind,
   actions,
   children
 }: AssetFrameProps) {
@@ -39,25 +44,38 @@ export function AssetFrame({
 
   const exportFormats = htmlOnly ? [] : (formats ?? artboard.defaultExports);
   const useTransparent = transparent ?? Boolean(artboard.transparent);
+  const isSmall = artboard.width < 200;
 
   React.useEffect(() => {
     const el = measureRef.current;
     if (!el) return;
     const measure = () => {
-      if (el.clientWidth > 0) setScale(Math.min(1, el.clientWidth / artboard.width));
+      if (el.clientWidth <= 0) return;
+      const fit = el.clientWidth / artboard.width;
+      if (isSmall) {
+        const target = Math.min(200, el.clientWidth);
+        setScale(Math.min(fit, target / artboard.width));
+      } else {
+        setScale(Math.min(1, fit));
+      }
     };
     measure();
     const observer = new ResizeObserver(measure);
     observer.observe(el);
     return () => observer.disconnect();
-  }, [artboard.width]);
+  }, [artboard.width, isSmall]);
 
   const handleExport = async (format: ExportKind) => {
     if (!artboardRef.current) return;
     setBusy(format);
     setError(null);
     try {
-      await exportNode(artboardRef.current, fileName, format, artboard, { transparent: useTransparent });
+      const { exportNode } = await import('@/utils/exportAsset');
+      await exportNode(artboardRef.current, fileName, format, artboard, {
+        transparent: useTransparent,
+        wordmarkTone,
+        svgKind
+      });
       setDone(format);
       window.setTimeout(() => setDone(null), 1600);
     } catch (err) {
@@ -67,19 +85,43 @@ export function AssetFrame({
     }
   };
 
+  const handlePrint = async () => {
+    if (!artboardRef.current) return;
+    const { printNode } = await import('@/utils/exportAsset');
+    printNode(artboardRef.current);
+  };
+
+  const metaChips = [
+    `${artboard.width} × ${artboard.height} px`,
+    artboard.dpiLabel ?? `${artboard.targetDpi} dpi`,
+    artboard.family,
+    ...(useTransparent ? ['transparent'] : [])
+  ];
+
   return (
-    <section className="mb-14" aria-label={title}>
-      <div className="mb-3 flex flex-wrap items-end justify-between gap-3 border-b border-gray-200 pb-2.5">
-        <div>
-          <h3 className="text-[15px] font-semibold tracking-[-0.01em] text-ink">{title}</h3>
-          <p className="mt-0.5 text-[11px] font-medium uppercase tracking-[0.1em] text-gray-500">
-            {specLabel(artboard)} · {fileName}
-            {useTransparent ? ' · transparent PNG' : ''}
+    <section className="mb-16" aria-label={title}>
+      <div className="mb-4 flex flex-col gap-3 border-b border-gray-200 pb-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0 flex-1 space-y-2">
+          <h3 className="text-[16px] font-semibold tracking-[-0.015em] text-ink">{title}</h3>
+          <p className="break-all font-mono text-[11px] font-medium tracking-[-0.01em] text-gray-500">
+            {fileName}
+            {htmlOnly ? ' · HTML' : ''}
           </p>
-          {description ? <p className="mt-1.5 max-w-2xl text-[13px] leading-relaxed text-gray-700">{description}</p> : null}
-          {error ? <p className="mt-1.5 text-[12px] text-state-error">{error}</p> : null}
+          <ul className="flex flex-wrap gap-1.5">
+            {metaChips.map((chip) => (
+              <li
+                key={chip}
+                className="border border-gray-200 bg-gray-50 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.08em] text-gray-700"
+              >
+                {chip}
+              </li>
+            ))}
+          </ul>
+          <p className="text-[11px] text-gray-500">{specLabel(artboard)}</p>
+          {description ? <p className="max-w-2xl text-[13px] leading-relaxed text-gray-700">{description}</p> : null}
+          {error ? <p className="text-[12px] text-state-error">{error}</p> : null}
         </div>
-        <div className="flex flex-wrap items-center gap-1.5 print:hidden">
+        <div className="flex shrink-0 flex-wrap items-center gap-1.5 print:hidden">
           {actions}
           {exportFormats.map((format) => (
             <Button
@@ -101,12 +143,7 @@ export function AssetFrame({
             </Button>
           ))}
           {printable ? (
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => artboardRef.current && printNode(artboardRef.current)}
-            >
+            <Button type="button" variant="outline" size="sm" onClick={() => void handlePrint()}>
               <PrinterIcon strokeWidth={1.5} />
               Print
             </Button>
@@ -114,24 +151,46 @@ export function AssetFrame({
         </div>
       </div>
 
-      <div ref={measureRef} className="w-full">
-        <div className="asset-clip" style={{ height: artboard.height * scale, overflow: 'hidden' }}>
+      <div
+        ref={measureRef}
+        className={`w-full border border-gray-200 p-5 sm:p-7 ${
+          useTransparent ? 'kit-checker' : ''
+        }`}
+        style={useTransparent ? undefined : { background: 'var(--kit-stage)' }}
+      >
+        <div
+          className={`mx-auto ${isSmall ? 'flex justify-center' : ''}`}
+          style={isSmall ? undefined : { maxWidth: artboard.width * scale }}
+        >
           <div
-            className="asset-scale"
-            style={{ transform: `scale(${scale})`, transformOrigin: 'top left', width: artboard.width, height: artboard.height }}
+            className="asset-clip"
+            style={{
+              height: artboard.height * scale,
+              width: isSmall ? artboard.width * scale : '100%',
+              overflow: 'hidden'
+            }}
           >
             <div
-              ref={artboardRef}
-              data-artboard={fileName}
-              className="bg-white shadow-[0_1px_0_0_rgba(0,0,0,0.06),0_8px_24px_-12px_rgba(30,58,95,0.25)] ring-1 ring-gray-200"
+              className="asset-scale"
               style={{
+                transform: `scale(${scale})`,
+                transformOrigin: 'top left',
                 width: artboard.width,
-                height: artboard.height,
-                overflow: 'hidden',
-                backgroundColor: useTransparent ? 'transparent' : '#ffffff'
+                height: artboard.height
               }}
             >
-              {children}
+              <div
+                ref={artboardRef}
+                data-artboard={fileName}
+                className="overflow-hidden ring-1 ring-black/10"
+                style={{
+                  width: artboard.width,
+                  height: artboard.height,
+                  backgroundColor: useTransparent ? 'transparent' : '#ffffff'
+                }}
+              >
+                {children}
+              </div>
             </div>
           </div>
         </div>

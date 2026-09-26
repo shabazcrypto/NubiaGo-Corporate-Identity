@@ -1,5 +1,5 @@
 import { Logo, BrandRule } from '../brand/Logo';
-import { company } from '../../data/brand';
+import { useCompany } from '@/lib/brand-context';
 import { type LineItem } from '../../data/commercial';
 
 export function DocumentTypeHeader({
@@ -13,6 +13,7 @@ export function DocumentTypeHeader({
 
 
 }: {type: string;reference: string;meta: [string, string][];tone?: 'light' | 'dark';}) {
+  const company = useCompany();
   if (tone === 'dark') {
     return (
       <header className="-mx-16 -mt-0 bg-brand px-16 pb-7 pt-10">
@@ -187,10 +188,12 @@ export function TermsGrid({ items, columns = 2 }: {items: [string, string][];col
 
 }
 
-export function SignatureRow({ left = 'For NubiaGo', right = 'Accepted by customer' }: {left?: string;right?: string;}) {
+export function SignatureRow({ left, right = 'Accepted by customer' }: {left?: string;right?: string;}) {
+  const company = useCompany();
+  const leftLabel = left ?? `For ${company.name}`;
   return (
     <div className="mt-8 grid grid-cols-2 gap-10">
-      {[left, right].map((label) =>
+      {[leftLabel, right].map((label) =>
       <div key={label}>
           <div className="h-10 border-b border-gray-700" />
           <div className="mt-1.5 text-[8.5px] uppercase tracking-[0.12em] text-gray-500">{label}</div>

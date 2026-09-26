@@ -89,9 +89,9 @@ export interface CompanyInfo {
 export const defaultCompany: CompanyInfo = {
   name: 'NubiaGo',
   legalName: 'NubiaGo Commerce Ltd.',
-  parent: 'AshBak Industries',
-  endorsement: 'NubiaGo is a brand of AshBak Industries.',
-  endorsementShort: 'A brand of AshBak Industries',
+  parent: 'NubiaGo',
+  endorsement: 'Infrastructure for African commerce.',
+  endorsementShort: 'Infrastructure for African commerce',
   positioning: 'Infrastructure for African commerce',
   descriptor: 'A trusted, modern platform connecting buyers and sellers across the continent.',
   tagline: 'Connecting Africa through Commerce and Logistics',

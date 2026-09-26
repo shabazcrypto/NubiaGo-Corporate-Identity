@@ -26,9 +26,9 @@ export function CatalogueToc() {
         <span className="text-[8.5px] font-medium uppercase tracking-[0.14em] text-gray-500">Contents</span>
       </header>
       <div className="flex-1 pt-10">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-gold">Catalogue 2025</p>
+        <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-ink">Catalogue 2025</p>
         <h1 className="mt-2 text-[28px] font-bold tracking-[-0.03em] text-ink">Contents</h1>
-        <BrandRule width={48} thickness={1.5} tone="gold" />
+        <BrandRule width={48} thickness={1.5} tone="secondary" />
         <div className="mt-8 space-y-0">
           {rows.map(([n, title, page]) => (
             <div

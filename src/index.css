@@ -1,9 +1,9 @@
-@import '@fontsource/inter/300.css';
-@import '@fontsource/inter/400.css';
-@import '@fontsource/inter/500.css';
-@import '@fontsource/inter/600.css';
-@import '@fontsource/inter/700.css';
-@import '@fontsource/inter/800.css';
+/* Latin-only subsets for the weights used in the UI (faster than full unicode packs). */
+@import '@fontsource/inter-tight/latin-400.css';
+@import '@fontsource/inter-tight/latin-500.css';
+@import '@fontsource/inter-tight/latin-600.css';
+@import '@fontsource/inter-tight/latin-700.css';
+@import '@fontsource/inter-tight/latin-800.css';
 
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
@@ -32,6 +32,64 @@
   --radius: 0px;
 }
 
+/* Brand + kit chrome — set via theme class on <html> */
+:root {
+  --brand-primary: #1E3A5F;
+  --brand-light: #2D5A8A;
+  --brand-sand: #F5F0E8;
+  --brand-secondary: #FFFFFF;
+  --brand-gold: #C9A227;
+  --brand-ink: #000000;
+  --brand-gray-700: #111112;
+  --brand-gray-500: #737373;
+  --brand-gray-200: #E5E5E5;
+  --brand-gray-50: #FAFAFA;
+  --kit-stage: #F4F3F0;
+  --kit-rail: #F7F6F4;
+}
+
+.ashbak-theme {
+  --brand-primary: #000000;
+  --brand-light: #111112;
+  --brand-sand: #F4F3F9;
+  --brand-secondary: #FFFFFF;
+  --brand-gold: #111112;
+  --brand-ink: #000000;
+  --brand-gray-700: #111112;
+  --brand-gray-500: #737373;
+  --brand-gray-200: #E5E5E5;
+  --brand-gray-50: #FFFFFF;
+  --kit-stage: #F1F0F5;
+  --kit-rail: #F6F5F9;
+}
+
+.nubiago-theme {
+  --brand-primary: #1E3A5F;
+  --brand-light: #2D5A8A;
+  --brand-sand: #F5F0E8;
+  --brand-secondary: #FFFFFF;
+  --brand-gold: #C9A227;
+  --brand-ink: #000000;
+  --brand-gray-700: #1A1A1A;
+  --brand-gray-500: #737373;
+  --brand-gray-200: #E5E5E5;
+  --brand-gray-50: #FAFAFA;
+  --kit-stage: #F4F3F0;
+  --kit-rail: #F7F6F4;
+}
+
+/* Transparent artboard preview well */
+.kit-checker {
+  background-color: #ffffff;
+  background-image:
+    linear-gradient(45deg, #ececec 25%, transparent 25%),
+    linear-gradient(-45deg, #ececec 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #ececec 75%),
+    linear-gradient(-45deg, transparent 75%, #ececec 75%);
+  background-size: 16px 16px;
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+}
+
 html,
 body,
 #root {
@@ -40,9 +98,15 @@ body,
   background-color: #ffffff;
 }
 body {
-  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-family: 'Inter Tight', ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   font-feature-settings: 'cv11', 'ss01';
+}
+.ab-wordmark {
+  font-family: 'Inter Tight', ui-sans-serif, system-ui, sans-serif;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1;
 }
 .ng-wordmark {
   font-weight: 800;
@@ -50,8 +114,12 @@ body {
   line-height: 1;
 }
 .ng-wordmark,
-.asset-scale {
+.ab-wordmark,
+.asset-scale,
+[data-artboard],
+[data-bp-page] {
   text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
 }
 @page {
   margin: 0;

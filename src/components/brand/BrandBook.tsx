@@ -2,7 +2,7 @@ import { Logo, LogoLockup, BrandRule, Endorsement } from '@/components/brand/Log
 import { formats } from '@/lib/formats';
 import { useCompany } from '@/lib/brand-context';
 import { CheckIcon, XIcon } from 'lucide-react';
-import { NG_STROKE } from '@/components/brand/iconSystem';
+import { AB_STROKE } from '@/components/brand/iconSystem';
 
 /** Downloadable clearspace construction — n-height exclusion zone. */
 export function ClearspaceGuide() {
@@ -12,12 +12,13 @@ export function ClearspaceGuide() {
   return (
     <div className="relative flex h-full w-full items-center justify-center bg-white" style={{ width, height }}>
       <div
-        className="relative border border-dashed border-brand-gold bg-brand-sand/40"
+        className="relative border border-dashed border-brand-ink bg-brand-gray-50/40"
         style={{ padding: n }}
       >
         <Logo size={mark} />
         <span
-          className="absolute left-1 top-1 text-[9px] font-semibold uppercase tracking-[0.14em] text-brand-gold"
+          className="absolute left-1 top-1 text-[9px] font-semibold uppercase tracking-[0.14em] text-brand-ink"
+          style={{ color: 'var(--brand-ink)' }}
         >
           n
         </span>
@@ -55,7 +56,7 @@ const DONT = [
   { title: 'Rotate', desc: 'Never rotate or skew the wordmark', rotate: true },
   { title: 'Box', desc: 'Never enclose in a decorative container', box: true },
   { title: 'Busy photo', desc: 'Never place primary mark on a busy image', busy: true },
-  { title: 'Stack endorsement', desc: 'Never lock AshBak under the wordmark', stack: true }
+  { title: 'Stack endorsement', desc: 'Never lock endorsement copy under the wordmark', stack: true }
 ];
 
 /** Eight misuse tiles — brand book don’ts. */
@@ -64,18 +65,16 @@ export function MisuseSheet() {
   const company = useCompany();
 
   return (
-    <div className="bg-white p-8" style={{ width, height }}>
-      <div className="mb-5 flex items-end justify-between">
-        <div>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-gold">Brand book</p>
-          <h2 className="mt-1 text-[22px] font-semibold tracking-[-0.02em] text-ink">Wordmark — do not</h2>
-        </div>
+    <div className="flex flex-col bg-white p-8" style={{ width, height }}>
+      <div className="mb-5 shrink-0">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-ink">Brand book</p>
+        <h2 className="mt-1 text-[22px] font-semibold tracking-[-0.02em] text-ink">Wordmark — do not</h2>
         <p className="text-[11px] text-gray-500">{company.guidelines}</p>
       </div>
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid min-h-0 flex-1 grid-cols-4 grid-rows-2 gap-3">
         {DONT.map((item) => (
-          <div key={item.title} className="border border-gray-200 bg-gray-50 p-4">
-            <div className="relative flex h-20 items-center justify-center overflow-hidden bg-white">
+          <div key={item.title} className="flex min-h-0 flex-col border border-gray-200 bg-gray-50 p-3">
+            <div className="relative flex h-20 shrink-0 items-center justify-center overflow-hidden bg-white">
               {item.busy ? (
                 <div
                   className="absolute inset-0 opacity-80"
@@ -86,7 +85,7 @@ export function MisuseSheet() {
                 />
               ) : null}
               <div
-                className={item.box ? 'border-2 border-brand px-3 py-1' : undefined}
+                className={item.box ? 'border-2 border-brand-ink px-3 py-1' : undefined}
                 style={{
                   transform: item.distort
                     ? 'scaleX(1.45)'
@@ -94,15 +93,15 @@ export function MisuseSheet() {
                       ? 'rotate(-12deg)'
                       : undefined,
                   filter: item.shadow ? 'drop-shadow(0 4px 6px rgba(0,0,0,0.35))' : undefined,
-                  WebkitTextStroke: item.outline ? '1px #1E3A5F' : undefined,
+                  WebkitTextStroke: item.outline ? '1px var(--brand-ink)' : undefined,
                   color: item.outline ? 'transparent' : undefined
                 }}
               >
                 {item.stack ? (
-                  <div className="text-center">
-                    <Logo size={18} />
-                    <p className="mt-1 text-[7px] uppercase tracking-[0.12em] text-gray-500">
-                      A brand of AshBak
+                  <div className="max-w-full px-1 text-center">
+                    <Logo size={16} />
+                    <p className="mt-1 truncate text-[6px] uppercase tracking-[0.08em] text-gray-500">
+                      {company.endorsementShort}
                     </p>
                   </div>
                 ) : (
@@ -113,8 +112,10 @@ export function MisuseSheet() {
                 <XIcon className="h-3 w-3" strokeWidth={2.5} />
               </div>
             </div>
-            <p className="mt-2 text-[12px] font-semibold text-ink">{item.title}</p>
-            <p className="mt-0.5 text-[10px] leading-snug text-gray-500">{item.desc}</p>
+            <p className="mt-2 shrink-0 text-[12px] font-semibold text-ink">{item.title}</p>
+            <p className="mt-0.5 min-h-0 flex-1 overflow-hidden text-[10px] leading-snug text-gray-500 line-clamp-2">
+              {item.desc}
+            </p>
           </div>
         ))}
       </div>
@@ -131,11 +132,11 @@ export function LockupMatrix() {
     <div className="bg-white p-8" style={{ width, height }}>
       <div className="mb-6 flex items-end justify-between">
         <div>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-gold">Brand book</p>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-ink">Brand book</p>
           <h2 className="mt-1 text-[22px] font-semibold tracking-[-0.02em] text-ink">Approved lockups</h2>
         </div>
         <div className="flex items-center gap-1.5 text-[11px] text-state-success">
-          <CheckIcon className="h-3.5 w-3.5" strokeWidth={NG_STROKE} />
+          <CheckIcon className="h-3.5 w-3.5" strokeWidth={AB_STROKE} />
           Use only these constructions
         </div>
       </div>

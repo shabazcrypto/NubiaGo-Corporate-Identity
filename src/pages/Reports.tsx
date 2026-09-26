@@ -3,7 +3,7 @@ import { AssetFrame } from '../components/ui/AssetFrame';
 import { A4Page, DocumentHeader, DocumentFooter } from '../components/documents/DocumentChrome';
 import { Logo, BrandRule } from '../components/brand/Logo';
 import { QrPlaceholder } from '../components/brand/iconSystem';
-import { useCompany } from '@/lib/brand-context';
+import { useBrandMeta } from '@/lib/brand-context';
 import { formats } from '@/lib/formats';
 
 const PAD = 64;
@@ -59,7 +59,8 @@ function MiniLineChart() {
 }
 
 export function ReportsPage() {
-  const company = useCompany();
+  const { company, prefix } = useBrandMeta();
+  const domain = company.website.replace(/^www\./, '');
 
   return (
     <>
@@ -73,7 +74,7 @@ export function ReportsPage() {
       <GroupLabel note="Company · technical · sales · project">Report cover</GroupLabel>
       <AssetFrame
         title="Report — Cover"
-        fileName="NubiaGo_Report_01_Cover"
+        fileName={`${prefix}_Report_01_Cover`}
         description="Reporting period and classification sit above the title; the metadata block below records author, reference and distribution."
         artboard={formats.a4}>
         
@@ -118,7 +119,7 @@ export function ReportsPage() {
       <GroupLabel note="One page, four findings">Executive summary</GroupLabel>
       <AssetFrame
         title="Report — Executive Summary"
-        fileName="NubiaGo_Report_02_Executive_Summary"
+        fileName={`${prefix}_Report_02_Executive_Summary`}
         description="Headline figures, then findings as numbered statements. Written so a reader who stops here still has the argument."
         artboard={formats.a4}>
         
@@ -179,7 +180,7 @@ export function ReportsPage() {
       <GroupLabel note="Charts, commentary and source lines">Data page</GroupLabel>
       <AssetFrame
         title="Report — Data Page"
-        fileName="NubiaGo_Report_03_Data_Page"
+        fileName={`${prefix}_Report_03_Data_Page`}
         description="Two charts with commentary beside each, and a source line under every exhibit. Figures never appear without an attribution."
         artboard={formats.a4}>
         
@@ -236,7 +237,7 @@ export function ReportsPage() {
       <GroupLabel note="Dense figures, scannable rows">Table page</GroupLabel>
       <AssetFrame
         title="Report — Table Page"
-        fileName="NubiaGo_Report_04_Table_Page"
+        fileName={`${prefix}_Report_04_Table_Page`}
         description="Market-level table with status marked in semantic colour. Semantic colours appear only as status, never as decoration."
         artboard={formats.a4}>
         
@@ -296,7 +297,7 @@ export function ReportsPage() {
       <GroupLabel note="Chart vocabulary">KPI &amp; chart system</GroupLabel>
       <AssetFrame
         title="Report — KPI Strip + Charts"
-        fileName="NubiaGo_Report_Chart_System"
+        fileName={`${prefix}_Report_Chart_System`}
         description="Four KPI tiles, bar + line chart pairing, and source lines — the chart language for all board packs."
         artboard={formats.a4}
       >
@@ -348,7 +349,7 @@ export function ReportsPage() {
       <GroupLabel note="Findings, recommendations, next steps">Conclusions</GroupLabel>
       <AssetFrame
         title="Report — Conclusions"
-        fileName="NubiaGo_Report_05_Conclusions"
+        fileName={`${prefix}_Report_05_Conclusions`}
         description="Recommendations with an owner and a date against each one, closing on a decision requested from the reader."
         artboard={formats.a4}>
         
@@ -389,7 +390,7 @@ export function ReportsPage() {
       <GroupLabel note="Closes every report">Contact page</GroupLabel>
       <AssetFrame
         title="Report — Contact Page"
-        fileName="NubiaGo_Report_06_Contact"
+        fileName={`${prefix}_Report_06_Contact`}
         description="Author, department contacts and a QR placeholder for the online version, over the reversed closing band."
         artboard={formats.a4}>
         
@@ -405,9 +406,9 @@ export function ReportsPage() {
             <div className="mt-8 grid grid-cols-2 gap-10">
               {[
               ['Report author', '[Name Surname]', '[Job Title]', company.email],
-              ['Investor relations', '[Name Surname]', '[Job Title]', 'ir@nubiago.com'],
-              ['Commercial enquiries', '[Name Surname]', '[Job Title]', 'sales@nubiago.com'],
-              ['Press', '[Name Surname]', '[Job Title]', 'press@nubiago.com']].
+              ['Investor relations', '[Name Surname]', '[Job Title]', `ir@${domain}`],
+              ['Commercial enquiries', '[Name Surname]', '[Job Title]', `sales@${domain}`],
+              ['Press', '[Name Surname]', '[Job Title]', `press@${domain}`]].
               map(([label, name, title, email]) =>
               <div key={label} className="border-t border-gray-200 pt-4">
                   <div className="text-[9px] font-semibold uppercase tracking-[0.14em] text-brand">{label}</div>

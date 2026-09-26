@@ -1,6 +1,6 @@
 import { SlideShell, DarkSlide, StatBlock } from './SlideChrome';
 import { Logo, BrandRule } from '../brand/Logo';
-import { NG_STROKE, iconByKey, QrPlaceholder } from '../brand/iconSystem';
+import { AB_STROKE, iconByKey, QrPlaceholder } from '../brand/iconSystem';
 import { useCompany } from '@/lib/brand-context';
 
 /** 18 — Formal meeting agenda */
@@ -73,10 +73,11 @@ export function ProblemOpportunitySlide() {
 
 /** 20 — Solution architecture overview */
 export function SolutionOverviewSlide() {
+  const company = useCompany();
   return (
     <SlideShell
       eyebrow="Solution"
-      title="How NubiaGo settles"
+      title={`How ${company.name} settles`}
       lead="Three layers — access, clearing, and reconciliation — under one commercial contract."
       number="20"
     >
@@ -160,13 +161,14 @@ export function MarketMapSlide() {
 
 /** 22 — Case study narrative */
 export function CaseStudySlide() {
+  const company = useCompany();
   return (
     <SlideShell eyebrow="Case study" title="Continental Trade Partners" number="22">
       <div className="grid h-full grid-cols-12 gap-10">
         <div className="col-span-7 flex flex-col">
           <p className="text-[16px] leading-[1.75] text-gray-700">
-            A regional importer needed next-day settlement in four markets without standing up local entities. NubiaGo
-            integrated their ERP in six weeks and cut average settlement time from five days to one.
+            A regional importer needed next-day settlement in four markets without standing up local entities.{' '}
+            {company.name} integrated their ERP in six weeks and cut average settlement time from five days to one.
           </p>
           <div className="mt-10 grid grid-cols-3 gap-8">
             <StatBlock value="6 wks" label="Time to first live" />
@@ -237,7 +239,7 @@ export function TeamOrgSlide() {
     <SlideShell eyebrow="Organisation" title="Leadership for this engagement" number="24">
       <div className="grid h-full grid-cols-4 gap-5">
         {[
-          { role: 'Executive sponsor', name: 'Group CEO', title: 'AshBak Industries', placeholder: false },
+          { role: 'Executive sponsor', name: 'Group CEO', title: company.name, placeholder: false },
           { role: 'Account lead', name: company.personName, title: company.jobTitle, placeholder: false },
           { role: 'Delivery lead', name: '[Name]', title: 'Integration', placeholder: true },
           { role: 'Compliance lead', name: '[Name]', title: 'Risk & Legal', placeholder: true }
@@ -376,10 +378,10 @@ export function NextStepsSlide() {
         <div className="mt-10 flex items-end justify-between">
           <div className="space-y-2 text-[13px] text-white/70">
             <div className="flex items-center gap-2">
-              <Mail className="h-4 w-4" strokeWidth={NG_STROKE} /> {company.email}
+              <Mail className="h-4 w-4" strokeWidth={AB_STROKE} /> {company.email}
             </div>
             <div className="flex items-center gap-2">
-              <Phone className="h-4 w-4" strokeWidth={NG_STROKE} /> {company.phone}
+              <Phone className="h-4 w-4" strokeWidth={AB_STROKE} /> {company.phone}
             </div>
           </div>
           <QrPlaceholder size={72} label="Book kick-off" />

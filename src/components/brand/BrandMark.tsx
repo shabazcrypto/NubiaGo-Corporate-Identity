@@ -1,231 +1,144 @@
-/**
- * NubiaGo brand mark — exact geometry from the official icon source
- * (`Downloads/NubiaGo Icon/src/components/AppIcon.tsx`).
- *
- * viewBox 0 0 1104 1104
- * — white padding frame
- * — Icon Blue gradient field (square, inset 40)
- * — gold tittle + soft glow
- * — “n” path (reads with tittle as “in”)
- */
+import { useBrandSettings } from '@/lib/brand-context';
+import { NubiaGoIcon, NubiaGoIconMark } from '@/components/brand/NubiaGoIcon';
 
-export const ICON_BLUE_START = '#2B5FD9';
-export const ICON_BLUE_END = '#1E4BB8';
-/** Solid mid for swatches / CSS tokens. */
-export const ICON_BLUE = '#2255C8';
-export const ICON_GOLD = '#FFC857';
-export const ICON_GLYPH = '#F5F5F5';
+export const BRAND_MARK_VIEW = { w: 640, h: 280 } as const;
 
-/** Exact path from the official AppIcon source. */
-export const BRAND_MARK_N_PATH =
-  'M220 330 L220 880 L380 880 L380 600 C380 500 440 410 580 410 C720 410 760 500 760 600 L760 880 L920 880 L920 540 C920 360 820 240 620 240 C520 240 440 290 380 370 L380 330 L220 330 Z';
-
-export const BRAND_MARK_VIEW = { w: 1104, h: 1104 } as const;
-
-export type BrandMarkTone = 'app' | 'onLight' | 'mono' | 'monoLight';
-
-const glyphFill: Record<BrandMarkTone, string> = {
-  app: ICON_GLYPH,
-  /** Filled via gradient in BrandMark — placeholder unused for onLight. */
-  onLight: ICON_BLUE_START,
-  mono: '#1A1A1A',
-  monoLight: '#FAFAFA'
-};
-
-const tittleFill: Record<BrandMarkTone, string> = {
-  app: ICON_GOLD,
-  onLight: ICON_GOLD,
-  mono: '#1A1A1A',
-  monoLight: '#FAFAFA'
-};
+export type BrandMarkTone = 'onLight' | 'onDark' | 'mono' | 'monoLight';
 
 type BrandMarkProps = {
   size?: number;
   tone?: BrandMarkTone;
   className?: string;
   title?: string;
-  /** Unique suffix so gradient ids do not collide when many icons render. */
   uid?: string;
+  /**
+   * When true (default for NubiaGo onLight), render the official icon mark
+   * instead of the wordmark. Set false to force the wordmark.
+   */
+  asIcon?: boolean;
 };
 
-/**
- * Glyph only (tittle + n) — transparent ground.
- * onLight uses Icon Blue gradient (#2B5FD9 → #1E4BB8) + Icon Gold tittle.
- */
+function useWordmarkStyle() {
+  const { brand } = useBrandSettings();
+  const isAshBak = brand === 'ashbak';
+  return {
+    isAshBak,
+    word: isAshBak ? 'ashbak' : 'nubiago',
+    cls: isAshBak ? 'ab-wordmark' : 'ng-wordmark',
+    weight: isAshBak ? 500 : 800,
+    tracking: isAshBak ? '-0.02em' : '-0.035em',
+    primary: isAshBak ? '#000000' : '#1E3A5F'
+  };
+}
+
+/** Wordmark (or NubiaGo icon mark when tone is onLight). */
 export function BrandMark({
   size = 128,
   tone = 'onLight',
   className = '',
-  title = 'NubiaGo',
-  uid = 'mark'
+  title = 'Brand',
+  uid = 'bm',
+  asIcon
 }: BrandMarkProps) {
-  const t = tittleFill[tone];
-  const gradId = `markGlyphGrad-${uid}`;
-  const useIconGradient = tone === 'onLight';
+  const { word, cls, weight, tracking, primary, isAshBak } = useWordmarkStyle();
+  const useIcon = asIcon ?? (!isAshBak && tone === 'onLight');
 
+  if (useIcon) {
+    return <NubiaGoIconMark size={size} className={className} uid={uid} />;
+  }
+
+  const color = tone === 'onLight' ? primary : tone === 'onDark' ? '#FFFFFF' : '#1A1A1A';
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox={`0 0 ${BRAND_MARK_VIEW.w} ${BRAND_MARK_VIEW.h}`}
-      width={size}
-      height={size}
-      className={className}
+    <span
+      className={`${cls} inline-block select-none ${className}`}
+      style={{ fontSize: size, color, fontWeight: weight, letterSpacing: tracking, lineHeight: 1 }}
       role="img"
       aria-label={title}
-      fill="none"
     >
-      {useIconGradient ? (
-        <defs>
-          <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor={ICON_BLUE_START} />
-            <stop offset="100%" stopColor={ICON_BLUE_END} />
-          </linearGradient>
-        </defs>
-      ) : null}
-      <circle cx="310" cy="200" r="85" fill={t} />
-      <path
-        d={BRAND_MARK_N_PATH}
-        fill={useIconGradient ? `url(#${gradId})` : glyphFill[tone]}
-      />
-    </svg>
+      {word}
+    </span>
   );
 }
 
 type BrandMarkAppProps = {
   size?: number;
   className?: string;
-  /** Include white social padding (official). */
   padded?: boolean;
-  /** Soft glow behind the gold tittle (official). */
-  glow?: boolean;
   uid?: string;
+  glow?: boolean;
 };
 
 /**
- * Official app / favicon tile — exact structure from AppIcon.tsx:
- * white pad · gradient field · gold glow · gold tittle · light “n”.
+ * App / favicon tile.
+ * NubiaGo → official Icon Blue “n” + gold tittle.
+ * AshBak → wordmark / monogram on Primary.
  */
 export function BrandMarkApp({
   size = 128,
   className = '',
   padded = true,
-  glow = true,
-  uid = 'ng'
+  uid = 'app',
+  glow = false
 }: BrandMarkAppProps) {
-  const gradId = `bgGradient-${uid}`;
-  const shadowId = `innerShadow-${uid}`;
-  const glowId = `tittleGlow-${uid}`;
+  void glow;
+  const { word, cls, weight, tracking, primary, isAshBak } = useWordmarkStyle();
+
+  if (!isAshBak) {
+    return <NubiaGoIcon size={size} className={className} variant="app" uid={uid} />;
+  }
+
+  const inset = Math.max(3, Math.round(size * 0.24));
+  const inner = Math.max(4, size - inset * 2);
+  const useMono = size < 48;
+  const glyph = useMono ? word.charAt(0) : word;
+  const charEm = useMono ? 0.72 : 0.62;
+  const fontSize = useMono
+    ? Math.max(7, Math.floor(inner * 0.56))
+    : Math.max(5, Math.floor(inner / (glyph.length * charEm)));
+  const letterSpacing = useMono ? '0' : tracking;
 
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox={`0 0 ${BRAND_MARK_VIEW.w} ${BRAND_MARK_VIEW.h}`}
-      width={size}
-      height={size}
-      className={className}
-      role="img"
-      aria-label="NubiaGo app icon"
-      fill="none"
+    <div
+      className={`box-border flex items-center justify-center overflow-hidden ${className}`}
+      style={{
+        width: size,
+        height: size,
+        background: padded ? primary : 'transparent',
+        padding: inset,
+        boxShadow:
+          padded && size >= 32
+            ? `inset 0 0 0 ${Math.max(1, Math.round(size * 0.02))}px rgba(255,255,255,0.12)`
+            : undefined
+      }}
     >
-      <defs>
-        <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor={ICON_BLUE_START} />
-          <stop offset="100%" stopColor={ICON_BLUE_END} />
-        </linearGradient>
-        <filter id={shadowId}>
-          <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
-          <feOffset dx="0" dy="2" result="offsetblur" />
-          <feComponentTransfer>
-            <feFuncA type="linear" slope="0.2" />
-          </feComponentTransfer>
-          <feMerge>
-            <feMergeNode />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
-        <filter id={glowId} x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur in="SourceGraphic" stdDeviation="20" />
-        </filter>
-      </defs>
-
-      {padded ? <rect width="1104" height="1104" fill="white" /> : null}
-      <rect
-        x={padded ? 40 : 0}
-        y={padded ? 40 : 0}
-        width={padded ? 1024 : 1104}
-        height={padded ? 1024 : 1104}
-        fill={`url(#${gradId})`}
-        filter={`url(#${shadowId})`}
-      />
-      {glow ? (
-        <circle
-          cx="310"
-          cy="200"
-          r="85"
-          fill={ICON_GOLD}
-          opacity="0.15"
-          filter={`url(#${glowId})`}
-        />
-      ) : null}
-      <circle cx="310" cy="200" r="85" fill={ICON_GOLD} />
-      <path d={BRAND_MARK_N_PATH} fill={ICON_GLYPH} />
-    </svg>
+      <span
+        className={`${cls} block select-none text-center`}
+        style={{
+          fontSize,
+          color: '#FFFFFF',
+          fontWeight: weight,
+          letterSpacing,
+          lineHeight: 1,
+          whiteSpace: 'nowrap',
+          maxWidth: '100%'
+        }}
+      >
+        {glyph}
+      </span>
+    </div>
   );
 }
 
-/**
- * Mark on Icon Blue gradient field (#2B5FD9 → #1E4BB8) — full-bleed, no white pad.
- * For navy / dark UI chrome when the padded app tile is not required.
- */
 export function BrandMarkAppPrimary({
   size = 128,
   className = '',
-  uid = 'ngp',
-  glow = true
+  uid = 'abp',
+  glow = false
 }: {
   size?: number;
   className?: string;
   uid?: string;
   glow?: boolean;
 }) {
-  const gradId = `bgGradient-${uid}`;
-  const glowId = `tittleGlow-${uid}`;
-
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox={`0 0 ${BRAND_MARK_VIEW.w} ${BRAND_MARK_VIEW.h}`}
-      width={size}
-      height={size}
-      className={className}
-      role="img"
-      aria-label="NubiaGo mark on Icon Blue"
-      fill="none"
-    >
-      <defs>
-        <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor={ICON_BLUE_START} />
-          <stop offset="100%" stopColor={ICON_BLUE_END} />
-        </linearGradient>
-        {glow ? (
-          <filter id={glowId} x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="20" />
-          </filter>
-        ) : null}
-      </defs>
-      <rect width="1104" height="1104" fill={`url(#${gradId})`} />
-      {glow ? (
-        <circle
-          cx="310"
-          cy="200"
-          r="85"
-          fill={ICON_GOLD}
-          opacity="0.15"
-          filter={`url(#${glowId})`}
-        />
-      ) : null}
-      <circle cx="310" cy="200" r="85" fill={ICON_GOLD} />
-      <path d={BRAND_MARK_N_PATH} fill={ICON_GLYPH} />
-    </svg>
-  );
+  return <BrandMarkApp size={size} className={className} padded uid={uid} glow={glow} />;
 }

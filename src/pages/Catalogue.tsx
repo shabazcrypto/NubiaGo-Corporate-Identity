@@ -1,8 +1,8 @@
 import { PageHeader, GroupLabel } from '../components/ui/PageHeader';
 import { AssetFrame } from '../components/ui/AssetFrame';
 import { Logo, BrandRule } from '../components/brand/Logo';
-import { NG_STROKE, iconByKey, QrPlaceholder } from '../components/brand/iconSystem';
-import { useCompany } from '@/lib/brand-context';
+import { AB_STROKE, iconByKey, QrPlaceholder } from '../components/brand/iconSystem';
+import { useCompany, useBrandSettings } from '@/lib/brand-context';
 import { formats } from '@/lib/formats';
 import { HERO } from '@/components/social/heroCatalog';
 import {
@@ -57,6 +57,9 @@ const specRows: [string, string][] = [
 
 export function CataloguePage() {
   const company = useCompany();
+  const { brand } = useBrandSettings();
+  const isAshBak = brand === 'ashbak';
+  const prefix = isAshBak ? 'AshBak' : 'NubiaGo';
 
   const Product = iconByKey('product');
   const Spec = iconByKey('spec');
@@ -75,7 +78,7 @@ export function CataloguePage() {
       <GroupLabel note="Front matter">Contents</GroupLabel>
       <AssetFrame
         title="Catalogue — Contents"
-        fileName="NubiaGo_Catalogue_00_Contents"
+        fileName={`${prefix}_Catalogue_00_Contents`}
         description="Numbered sections with dotted leaders — reorder freely when categories change."
         artboard={formats.a4}
       >
@@ -85,7 +88,7 @@ export function CataloguePage() {
       <GroupLabel note="Opens each category section">Category covers</GroupLabel>
       <AssetFrame
         title="Catalogue — Category Cover"
-        fileName="NubiaGo_Catalogue_01_Category_Cover"
+        fileName={`${prefix}_Catalogue_01_Category_Cover`}
         description="Reversed lower field carrying the category number and name, with the image band above."
         artboard={formats.a4}>
         
@@ -122,7 +125,7 @@ export function CataloguePage() {
 
       <AssetFrame
         title="Catalogue — Textiles & Apparel"
-        fileName="NubiaGo_Catalogue_Category_Textiles"
+        fileName={`${prefix}_Catalogue_Category_Textiles`}
         description="Lifestyle opener — atelier photography with navy title band."
         artboard={formats.a4}
       >
@@ -130,7 +133,7 @@ export function CataloguePage() {
       </AssetFrame>
       <AssetFrame
         title="Catalogue — Agri Commodities"
-        fileName="NubiaGo_Catalogue_Category_Agri"
+        fileName={`${prefix}_Catalogue_Category_Agri`}
         description="Lifestyle opener — market / spices photography."
         artboard={formats.a4}
       >
@@ -138,7 +141,7 @@ export function CataloguePage() {
       </AssetFrame>
       <AssetFrame
         title="Catalogue — Logistics & Fulfilment"
-        fileName="NubiaGo_Catalogue_Category_Logistics"
+        fileName={`${prefix}_Catalogue_Category_Logistics`}
         description="Lifestyle opener — shipping photography."
         artboard={formats.a4}
       >
@@ -148,7 +151,7 @@ export function CataloguePage() {
       <GroupLabel note="Partner narrative">Supplier story</GroupLabel>
       <AssetFrame
         title="Catalogue — Supplier Story"
-        fileName="NubiaGo_Catalogue_Supplier_Story"
+        fileName={`${prefix}_Catalogue_Supplier_Story`}
         description="Split photo + quote narrative for featured partners."
         artboard={formats.a4}
       >
@@ -158,7 +161,7 @@ export function CataloguePage() {
       <GroupLabel note="Sets context before the product pages">Product introduction</GroupLabel>
       <AssetFrame
         title="Catalogue — Product Introduction"
-        fileName="NubiaGo_Catalogue_02_Introduction"
+        fileName={`${prefix}_Catalogue_02_Introduction`}
         description="Narrative column beside four capability marks, closing on the category index so buyers can jump straight to a range."
         artboard={formats.a4}>
         
@@ -192,7 +195,7 @@ export function CataloguePage() {
                 const Component = Icon as typeof Product;
                 return (
                   <div key={index} className="flex gap-3.5 border-t border-gray-200 pt-4">
-                    <Component className="mt-0.5 h-4 w-4 shrink-0 text-brand" strokeWidth={NG_STROKE} />
+                    <Component className="mt-0.5 h-4 w-4 shrink-0 text-brand" strokeWidth={AB_STROKE} />
                     <div>
                       <div className="text-[11px] font-semibold text-ink">{title as string}</div>
                       <div className="mt-0.5 text-[9.5px] leading-[1.6] text-gray-500">{body as string}</div>
@@ -224,7 +227,7 @@ export function CataloguePage() {
       <GroupLabel note="Six products per page">Product grid</GroupLabel>
       <AssetFrame
         title="Catalogue — Product Grid"
-        fileName="NubiaGo_Catalogue_03_Product_Grid"
+        fileName={`${prefix}_Catalogue_03_Product_Grid`}
         description="A 2 × 3 grid with shared baselines: image, model code, name, one-line description and a key figure in the same position on every card."
         artboard={formats.a4}>
         
@@ -260,7 +263,7 @@ export function CataloguePage() {
       <GroupLabel note="One product, full detail">Single product</GroupLabel>
       <AssetFrame
         title="Catalogue — Single Product"
-        fileName="NubiaGo_Catalogue_04_Single_Product"
+        fileName={`${prefix}_Catalogue_04_Single_Product`}
         description="Hero image, model code, key figures and a short technical extract. Full data continues on the specification page."
         artboard={formats.a4}>
         
@@ -328,7 +331,7 @@ export function CataloguePage() {
       <GroupLabel note="Full technical data">Specification &amp; technical table</GroupLabel>
       <AssetFrame
         title="Catalogue — Specification Page"
-        fileName="NubiaGo_Catalogue_05_Specification"
+        fileName={`${prefix}_Catalogue_05_Specification`}
         description="Two-column technical table with zebra rows, a dimensional diagram area and the certification block beneath."
         artboard={formats.a4}>
         
@@ -378,7 +381,7 @@ export function CataloguePage() {
       <GroupLabel note="Ranges side by side">Comparison &amp; product family</GroupLabel>
       <AssetFrame
         title="Catalogue — Product Comparison"
-        fileName="NubiaGo_Catalogue_06_Comparison"
+        fileName={`${prefix}_Catalogue_06_Comparison`}
         description="Three models compared on the same attributes, with the recommended configuration held in Warm Sand."
         artboard={formats.a4}>
         
@@ -440,7 +443,7 @@ export function CataloguePage() {
       <GroupLabel note="Closes the catalogue">Contact page</GroupLabel>
       <AssetFrame
         title="Catalogue — Contact Page"
-        fileName="NubiaGo_Catalogue_07_Contact"
+        fileName={`${prefix}_Catalogue_07_Contact`}
         description="How to order, regional contacts and QR placeholders for the full catalogue and company profile."
         artboard={formats.a4}>
         

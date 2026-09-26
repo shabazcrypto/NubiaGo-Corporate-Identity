@@ -16,10 +16,10 @@ import {
 } from 'lucide-react';
 
 /**
- * One icon family, one weight. NubiaGo uses Lucide line icons at 1.5px stroke
- * on a 24px grid, rendered in Primary or Gray 500 only.
+ * One icon family, one weight. AshBak uses Lucide line icons at 1.5px stroke
+ * on a 24px grid, rendered in Primary (#000000) or Gray 500 (#F4F3F9) only.
  */
-export const NG_STROKE = 1.5;
+export const AB_STROKE = 1.5;
 export interface BrandIcon {
   key: string;
   label: string;
@@ -111,13 +111,13 @@ export function QrPlaceholder({
 }) {
   const border = framed
     ? tone === 'light'
-      ? '#2D5A8A'
-      : '#2D5A8A'
+      ? '#000000'
+      : '#000000'
     : tone === 'light'
       ? '#E5E5E5'
-      : 'rgba(250,250,250,0.35)';
-  const fg = tone === 'light' ? '#1E3A5F' : '#FAFAFA';
-  const sub = tone === 'light' ? '#737373' : 'rgba(250,250,250,0.7)';
+      : 'rgba(255,255,255,0.35)';
+  const fg = tone === 'light' ? '#000000' : '#FFFFFF';
+  const sub = tone === 'light' ? '#737373' : 'rgba(255,255,255,0.7)';
   const showLabel = Boolean(label && label.trim());
   return (
     <div className="inline-flex flex-col items-center" style={{ width: size }}>
@@ -132,10 +132,10 @@ export function QrPlaceholder({
         }}
       >
         <svg width={size * 0.62} height={size * 0.62} viewBox="0 0 24 24" aria-hidden="true">
-          <g fill={framed ? '#1E3A5F' : fg} opacity="0.55">
-            <rect x="1" y="1" width="7" height="7" fillOpacity="0" stroke={framed ? '#1E3A5F' : fg} strokeWidth="2" />
-            <rect x="16" y="1" width="7" height="7" fillOpacity="0" stroke={framed ? '#1E3A5F' : fg} strokeWidth="2" />
-            <rect x="1" y="16" width="7" height="7" fillOpacity="0" stroke={framed ? '#1E3A5F' : fg} strokeWidth="2" />
+          <g fill={framed ? '#000000' : fg} opacity="0.55">
+            <rect x="1" y="1" width="7" height="7" fillOpacity="0" stroke={framed ? '#000000' : fg} strokeWidth="2" />
+            <rect x="16" y="1" width="7" height="7" fillOpacity="0" stroke={framed ? '#000000' : fg} strokeWidth="2" />
+            <rect x="1" y="16" width="7" height="7" fillOpacity="0" stroke={framed ? '#000000' : fg} strokeWidth="2" />
             <rect x="11" y="1" width="2" height="2" />
             <rect x="11" y="5" width="2" height="2" />
             <rect x="11" y="9" width="2" height="2" />

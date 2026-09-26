@@ -10,7 +10,7 @@ import {
   SignatureRow } from
 '../components/documents/CommercialParts';
 import { QrPlaceholder } from '../components/brand/iconSystem';
-import { useCompany } from '@/lib/brand-context';
+import { useCompany, useBrandSettings } from '@/lib/brand-context';
 import { formats } from '@/lib/formats';
 import { quotationItems, totals, customer, terms, bankDetails } from '../data/commercial';
 import { enterpriseCommercialDocs } from '@/components/documents/CommercialExtra';
@@ -19,6 +19,9 @@ const customerLines = [customer.company, customer.attention, customer.address, c
 
 export function CommercialPage() {
   const company = useCompany();
+  const { brand } = useBrandSettings();
+  const isAshBak = brand === 'ashbak';
+  const prefix = isAshBak ? 'AshBak' : 'NubiaGo';
   const salesLines = [company.personName, company.jobTitle, company.phone, company.email];
 
   return (
@@ -29,11 +32,10 @@ export function CommercialPage() {
         folder="05_COMMERCIAL_DOCUMENTS"
         description="One document engine — header, party blocks, line-item table, totals and terms — across quotation, invoice, credit instruments, logistics and account documents. Figures are tabular and right-aligned so totals can be checked at a glance." />
       
-
       <GroupLabel note="For international B2B customers">Quotation — standard</GroupLabel>
       <AssetFrame
         title="Quotation — Clean Standard"
-        fileName="NubiaGo_Quotation_Standard"
+        fileName={`${prefix}_Quotation_Standard`}
         description="The everyday version: light header, full line-item detail, terms grid and signature row. Lowest ink coverage of the commercial family."
         artboard={formats.a4}>
         
@@ -50,7 +52,7 @@ export function CommercialPage() {
           
           <PartyBlocks
             left={{ label: 'Quotation for', lines: customerLines }}
-            right={{ label: 'Your contact at NubiaGo', lines: salesLines }} />
+            right={{ label: `Your contact at ${prefix}`, lines: salesLines }} />
           
           <LineItemsTable items={quotationItems} currency={totals.currency} />
           <TotalsBlock
@@ -71,7 +73,7 @@ export function CommercialPage() {
       <GroupLabel note="For tenders, key accounts and first proposals">Quotation — premium sales</GroupLabel>
       <AssetFrame
         title="Quotation — Premium Sales"
-        fileName="NubiaGo_Quotation_Premium"
+        fileName={`${prefix}_Quotation_Premium`}
         description="Reversed header band, a summary statement above the table and bank details in the closing block. Same structure and figures as the standard version."
         artboard={formats.a4}>
         
@@ -89,16 +91,18 @@ export function CommercialPage() {
           
           <div className="mt-7 border-l-2 border-brand-gold pl-5">
             <h1 className="text-[16px] font-semibold tracking-[-0.015em] text-ink">
-              Cross-border settlement across four markets
+              {isAshBak ? 'Cross-border commerce, payments, and logistics across four markets' : 'Cross-border settlement across four markets'}
             </h1>
             <p className="mt-1.5 max-w-[520px] text-[10px] leading-[1.75] text-gray-700">
-              Covering integration, merchant verification, daily reconciliation and premium support for the twelve
-              months from go-live.
+              {isAshBak 
+                ? 'Covering integration, merchant verification, daily reconciliation and premium support for the twelve months from go-live.'
+                : 'Covering integration, merchant verification, daily reconciliation and premium support for the twelve months from go-live.'
+              }
             </p>
           </div>
           <PartyBlocks
             left={{ label: 'Quotation for', lines: customerLines }}
-            right={{ label: 'Your contact at NubiaGo', lines: salesLines }} />
+            right={{ label: `Your contact at ${prefix}`, lines: salesLines }} />
           
           <LineItemsTable items={quotationItems} currency={totals.currency} />
           <TotalsBlock
@@ -140,7 +144,7 @@ export function CommercialPage() {
 
       <AssetFrame
         title="Commercial Invoice"
-        fileName="NubiaGo_Commercial_Invoice"
+        fileName={`${prefix}_Commercial_Invoice`}
         description="Customs-ready layout: consignee and notify party, HS-style code column, declaration statement and signature. Clarity is prioritised over decoration throughout."
         artboard={formats.a4}>
         
@@ -188,13 +192,13 @@ export function CommercialPage() {
             We certify that the information on this invoice is true and correct and that the contents of this
             consignment are as stated above.
           </p>
-          <SignatureRow left="Authorised signature · NubiaGo" right="Company stamp" />
+          <SignatureRow left={`Authorised signature · ${prefix}`} right="Company stamp" />
         </A4Page>
       </AssetFrame>
 
       <AssetFrame
         title="Proforma Invoice"
-        fileName="NubiaGo_Proforma_Invoice"
+        fileName={`${prefix}_Proforma_Invoice`}
         description="Same engine, marked as proforma for advance payment and import licensing. A status band states explicitly that it is not a tax invoice."
         artboard={formats.a4}>
         
@@ -217,7 +221,7 @@ export function CommercialPage() {
           </div>
           <PartyBlocks
             left={{ label: 'Issued to', lines: customerLines }}
-            right={{ label: 'Your contact at NubiaGo', lines: salesLines }} />
+            right={{ label: `Your contact at ${prefix}`, lines: salesLines }} />
           
           <LineItemsTable items={quotationItems.slice(0, 3)} currency={totals.currency} />
           <TotalsBlock
@@ -238,13 +242,13 @@ export function CommercialPage() {
             ['Account / IBAN', '[Account number]']]
             } />
           
-          <SignatureRow left="For NubiaGo" right="Customer confirmation" />
+          <SignatureRow left={`For ${prefix}`} right="Customer confirmation" />
         </A4Page>
       </AssetFrame>
 
       <AssetFrame
         title="Order Confirmation"
-        fileName="NubiaGo_Order_Confirmation"
+        fileName={`${prefix}_Order_Confirmation`}
         description="Confirms an accepted order: status band in Success, confirmed delivery schedule table and no payment request."
         artboard={formats.a4}>
         
@@ -310,7 +314,7 @@ export function CommercialPage() {
         <AssetFrame
           key={doc.fileName}
           title={doc.title}
-          fileName={doc.fileName}
+          fileName={doc.fileName.replace(/NubiaGo|AshBak/g, prefix)}
           description={doc.description}
           artboard={formats.a4}
         >
@@ -318,5 +322,4 @@ export function CommercialPage() {
         </AssetFrame>
       ))}
     </>);
-
 }

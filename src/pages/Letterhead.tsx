@@ -5,10 +5,12 @@ import { Logo, BrandRule } from '../components/brand/Logo';
 import { EnvelopeDl, EnvelopeC5, WithCompliments } from '../components/documents/Stationery';
 import { LetterheadMemo, LetterheadLegal, LetterheadFr } from '../components/documents/LetterheadExtras';
 import { formats } from '@/lib/formats';
-import { useCompany } from '@/lib/brand-context';
+import { useCompany, useBrandSettings } from '@/lib/brand-context';
 
 export function LetterBody({ dense = false }: { dense?: boolean }) {
   const company = useCompany();
+  const { brand } = useBrandSettings();
+  const isAshBak = brand === 'ashbak';
   return (
     <div className={dense ? 'pt-10' : 'pt-12'}>
       <div className="flex items-start justify-between">
@@ -20,7 +22,7 @@ export function LetterBody({ dense = false }: { dense?: boolean }) {
         </div>
         <div className="text-right text-[10px] leading-[1.8] text-gray-700">
           <div>
-            <span className="text-gray-500">Ref.</span> NG-2024-0417
+            <span className="text-gray-500">Ref.</span> {isAshBak ? 'AB-' : 'NG-'}2024-0417
           </div>
           <div>
             <span className="text-gray-500">Date</span> 12 December 2024
@@ -35,11 +37,11 @@ export function LetterBody({ dense = false }: { dense?: boolean }) {
       <div className="mt-5 space-y-3.5 text-[10.5px] leading-[1.85] text-gray-700">
         <p>Dear Ms. Okonkwo,</p>
         <p>
-          Thank you for the discussion on 8 December regarding settlement infrastructure for your supplier network. This
+          Thank you for the discussion on 8 December regarding {isAshBak ? 'industrial infrastructure' : 'settlement infrastructure'} for your supplier network. This
           letter confirms the scope we agreed and sets out the commercial terms for your review.
         </p>
         <p>
-          NubiaGo will provide merchant onboarding, verification and settlement across the four markets identified,
+          {company.name} will provide merchant onboarding, verification and settlement across the four markets identified,
           integrated with your existing procurement platform. Implementation is scheduled across twelve weeks, with the
           first market live in week five. A detailed specification and the accompanying quotation are enclosed.
         </p>
@@ -55,7 +57,7 @@ export function LetterBody({ dense = false }: { dense?: boolean }) {
         <p>Yours sincerely,</p>
         <div className="mt-8 border-t border-gray-200 pt-2">
           <div className="font-semibold text-ink">{company.personName}</div>
-          <div className="text-gray-500">{company.jobTitle} · NubiaGo</div>
+          <div className="text-gray-500">{company.jobTitle} · {company.name}</div>
         </div>
       </div>
     </div>
@@ -63,10 +65,12 @@ export function LetterBody({ dense = false }: { dense?: boolean }) {
 }
 
 export function LetterheadFullColour() {
+  const { brand } = useBrandSettings();
+  const isAshBak = brand === 'ashbak';
   return (
     <A4Page
       header={<DocumentHeader variant="full" />}
-      footer={<DocumentFooter variant="full" page="1 / 2" reference="Ref. NG-2024-0417" showPhone />}
+      footer={<DocumentFooter variant="full" page="1 / 2" reference={`Ref. ${isAshBak ? 'AB-' : 'NG-'}2024-0417`} showPhone />}
     >
       <LetterBody />
     </A4Page>
@@ -83,9 +87,11 @@ export function LetterheadMinimal() {
 }
 
 export function LetterheadContinuation() {
+  const { brand } = useBrandSettings();
+  const isAshBak = brand === 'ashbak';
   return (
     <A4Page
-      header={<DocumentHeader variant="continuation" documentTitle="Partnership terms · NG-2024-0417" />}
+      header={<DocumentHeader variant="continuation" documentTitle={`Partnership terms · ${isAshBak ? 'AB-' : 'NG-'}2024-0417`} />}
       footer={<DocumentFooter variant="minimal" page="2 / 2" />}
     >
       <div className="pt-10">
@@ -113,9 +119,11 @@ export function LetterheadContinuation() {
 }
 
 export function FooterFullCorporate() {
+  const { brand } = useBrandSettings();
+  const isAshBak = brand === 'ashbak';
   return (
     <div className="flex h-full flex-col justify-end" style={{ paddingLeft: MARGIN, paddingRight: MARGIN, paddingBottom: 28 }}>
-      <DocumentFooter variant="full" page="1 / 4" reference="Ref. NG-2024-0417" />
+      <DocumentFooter variant="full" page="1 / 4" reference={`Ref. ${isAshBak ? 'AB-' : 'NG-'}2024-0417`} />
     </div>
   );
 }
@@ -144,6 +152,8 @@ export function FooterBrandedBand() {
 }
 
 export function LetterheadPage() {
+  const { brand } = useBrandSettings();
+  const isAshBak = brand === 'ashbak';
   return (
     <>
       <PageHeader
@@ -158,7 +168,7 @@ export function LetterheadPage() {
       </GroupLabel>
       <AssetFrame
         title="Letterhead — A4 Full Colour"
-        fileName="NubiaGo_Letterhead_A4_Full_Color"
+        fileName={`${isAshBak ? 'AshBak' : 'NubiaGo'}_Letterhead_A4_Full_Color`}
         artboard={formats.a4}
         description="Full three-column footer carrying office, contact and company registration details. Use for first pages of formal correspondence."
       >
@@ -170,7 +180,7 @@ export function LetterheadPage() {
       </GroupLabel>
       <AssetFrame
         title="Letterhead — A4 Minimal"
-        fileName="NubiaGo_Letterhead_A4_Minimal"
+        fileName={`${isAshBak ? 'AshBak' : 'NubiaGo'}_Letterhead_A4_Minimal`}
         artboard={formats.a4}
         description="Wordmark in Black, hairline rules and a single-line footer. Reproduces cleanly on mono office printers and fax-grade scans."
       >
@@ -180,7 +190,7 @@ export function LetterheadPage() {
       <GroupLabel note="Documents longer than one page">Continuation page</GroupLabel>
       <AssetFrame
         title="Letterhead — Continuation Page"
-        fileName="NubiaGo_Letterhead_Continuation"
+        fileName={`${isAshBak ? 'AshBak' : 'NubiaGo'}_Letterhead_Continuation`}
         artboard={formats.a4}
         description="A compact identity strip replaces the full header so the reader keeps context without losing body space. Page numbering is mandatory from page two onward."
       >
@@ -190,16 +200,16 @@ export function LetterheadPage() {
       <GroupLabel note="Standardised across every document family in this kit">Corporate footer system</GroupLabel>
       <AssetFrame
         title="Footer — Full corporate"
-        fileName="NubiaGo_Footer_Full_Corporate"
+        fileName={`${isAshBak ? 'AshBak' : 'NubiaGo'}_Footer_Full_Corporate`}
         artboard={formats.footerFull}
-        description="Three-column footer for formal documents: office, contact and company registration, closing on the AshBak endorsement."
+        description="Three-column footer for formal documents: office, contact and company registration, closing on the brand endorsement."
       >
         <FooterFullCorporate />
       </AssetFrame>
 
       <AssetFrame
         title="Footer — Compact single line"
-        fileName="NubiaGo_Footer_Compact"
+        fileName={`${isAshBak ? 'AshBak' : 'NubiaGo'}_Footer_Compact`}
         artboard={formats.footerCompact}
         description="For continuation pages, internal documents and multi-page annexes where the full block would crowd the content."
       >
@@ -208,17 +218,17 @@ export function LetterheadPage() {
 
       <AssetFrame
         title="Footer — Branded band"
-        fileName="NubiaGo_Footer_Branded_Band"
+        fileName={`${isAshBak ? 'AshBak' : 'NubiaGo'}_Footer_Branded_Band`}
         artboard={formats.footerBand}
         description="Reversed band for covers, catalogues and proposals where the footer is part of the design rather than administrative chrome."
       >
         <FooterBrandedBand />
       </AssetFrame>
 
-      <GroupLabel note="220 × 110 mm · 229 × 162 mm · A6">Stationery — envelopes &amp; compliments</GroupLabel>
+      <GroupLabel note="220 × 110 mm · 229 × 162 mm · A6">Stationery — envelopes & compliments</GroupLabel>
       <AssetFrame
         title="Envelope — DL"
-        fileName="NubiaGo_Envelope_DL"
+        fileName={`${isAshBak ? 'AshBak' : 'NubiaGo'}_Envelope_DL`}
         artboard={formats.envelopeDl}
         description="Standard business envelope face. Return address top-left; dashed recipient window for layout reference (not printed)."
       >
@@ -226,15 +236,15 @@ export function LetterheadPage() {
       </AssetFrame>
       <AssetFrame
         title="Envelope — C5"
-        fileName="NubiaGo_Envelope_C5"
+        fileName={`${isAshBak ? 'AshBak' : 'NubiaGo'}_Envelope_C5`}
         artboard={formats.envelopeC5}
-        description="C5 face on Warm Sand for proposals and board packs. Matches A4 folded once."
+        description="C5 face on Light Gray for proposals and board packs. Matches A4 folded once."
       >
         <EnvelopeC5 />
       </AssetFrame>
       <AssetFrame
         title="With Compliments"
-        fileName="NubiaGo_With_Compliments"
+        fileName={`${isAshBak ? 'AshBak' : 'NubiaGo'}_With_Compliments`}
         artboard={formats.compliments}
         description="A6 slip for samples, proposals and hand delivery. Writing space left open above the contact block."
       >
@@ -244,7 +254,7 @@ export function LetterheadPage() {
       <GroupLabel note="Internal · legal · bilingual">Extended correspondence</GroupLabel>
       <AssetFrame
         title="Letterhead — Internal Memo"
-        fileName="NubiaGo_Letterhead_Memo"
+        fileName={`${isAshBak ? 'AshBak' : 'NubiaGo'}_Letterhead_Memo`}
         artboard={formats.a4}
         description="Meta block for From / To / Date / Ref / Classification. Internal only."
       >
@@ -252,7 +262,7 @@ export function LetterheadPage() {
       </AssetFrame>
       <AssetFrame
         title="Letterhead — Legal / Privileged"
-        fileName="NubiaGo_Letterhead_Legal"
+        fileName={`${isAshBak ? 'AshBak' : 'NubiaGo'}_Letterhead_Legal`}
         artboard={formats.a4}
         description="Counsel correspondence — without-prejudice framing and matter reference."
       >
@@ -260,7 +270,7 @@ export function LetterheadPage() {
       </AssetFrame>
       <AssetFrame
         title="Letterhead — Français (FR)"
-        fileName="NubiaGo_Letterhead_FR"
+        fileName={`${isAshBak ? 'AshBak' : 'NubiaGo'}_Letterhead_FR`}
         artboard={formats.a4}
         description="Full-colour twin with French body for West / Central Africa correspondence."
       >

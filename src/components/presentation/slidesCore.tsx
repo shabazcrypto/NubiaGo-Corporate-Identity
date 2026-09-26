@@ -1,10 +1,11 @@
 import { CheckIcon } from 'lucide-react';
 import { Logo, BrandRule } from '../brand/Logo';
 import { SlideShell, DarkSlide, StatBlock, SLIDE_MARGIN } from './SlideChrome';
-import { NG_STROKE, iconByKey } from '../brand/iconSystem';
-import { company } from '../../data/brand';
+import { AB_STROKE, iconByKey } from '../brand/iconSystem';
+import { useCompany } from '@/lib/brand-context';
 
 export function CoverSlide() {
+  const company = useCompany();
   return (
     <DarkSlide>
       <div className="flex h-full flex-col justify-between">
@@ -15,10 +16,10 @@ export function CoverSlide() {
         <div className="max-w-[820px]">
           <BrandRule width={96} thickness={2} tone="gold" />
           <h1 className="mt-8 text-[56px] font-bold leading-[1.05] tracking-[-0.035em] text-white">
-            Infrastructure for African commerce
+            {company.positioning}
           </h1>
           <p className="mt-5 max-w-[620px] text-[17px] leading-[1.65] text-white/70">
-            A trusted, modern platform connecting buyers and sellers across the continent.
+            {company.descriptor}
           </p>
         </div>
         <div className="flex items-end justify-between border-t border-white/15 pt-5 text-[12px] text-white/55">
@@ -49,6 +50,7 @@ export function SectionDividerSlide() {
 }
 
 export function CompanyIntroSlide() {
+  const company = useCompany();
   return (
     <SlideShell
       eyebrow="Company introduction"
@@ -58,7 +60,7 @@ export function CompanyIntroSlide() {
       <div className="grid h-full grid-cols-12 gap-10">
         <div className="col-span-7 space-y-4 text-[14.5px] leading-[1.8] text-gray-700">
           <p>
-            NubiaGo connects buyers and sellers across African markets with the infrastructure that trade depends on:
+            {company.name} connects buyers and sellers across African markets with the infrastructure that trade depends on:
             verified counterparties, predictable settlement and a single reconciliation record.
           </p>
           <p>
@@ -101,13 +103,14 @@ export function CompanyIntroSlide() {
 }
 
 export function AboutSlide() {
+  const company = useCompany();
   const Product = iconByKey('product');
   const Shipping = iconByKey('shipping');
   const Certification = iconByKey('certification');
   const Support = iconByKey('support');
   return (
     <SlideShell
-      eyebrow="About NubiaGo"
+      eyebrow={`About ${company.name}`}
       title="Built for the way African trade actually works"
       lead="Four capabilities, one contract, one integration. Each is available independently and priced transparently."
       number="04">
@@ -120,7 +123,7 @@ export function AboutSlide() {
         { Icon: Support, title: 'Service', body: 'Named account management with published response times.' }].
         map(({ Icon, title, body }) =>
         <div key={title} className="flex flex-col bg-white p-7">
-            <Icon className="h-6 w-6 text-brand" strokeWidth={NG_STROKE} />
+            <Icon className="h-6 w-6 text-brand" strokeWidth={AB_STROKE} />
             <h3 className="mt-5 text-[17px] font-semibold tracking-[-0.01em] text-ink">{title}</h3>
             <p className="mt-2.5 text-[13.5px] leading-[1.7] text-gray-700">{body}</p>
             <div className="mt-auto pt-5 text-[10px] font-medium uppercase tracking-[0.12em] text-gray-500">
@@ -204,6 +207,7 @@ export function ComparisonSlide() {
   ['Market coverage', '12 markets', '4 markets', '6 markets'],
   ['Integration', 'Single API', 'Per-market API', 'File transfer']];
 
+  const company = useCompany();
   return (
     <SlideShell eyebrow="Product comparison" title="How we compare" number="07">
       <table className="w-full border-collapse text-[14px]">
@@ -212,7 +216,7 @@ export function ComparisonSlide() {
             <th className="w-[28%] border-b border-gray-200 px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-500">
               Capability
             </th>
-            <th className="bg-brand px-4 py-3 text-left text-[13px] font-semibold text-white">NubiaGo</th>
+            <th className="bg-brand px-4 py-3 text-left text-[13px] font-semibold text-white">{company.name}</th>
             <th className="border-b border-gray-200 px-4 py-3 text-left text-[13px] font-semibold text-gray-700">
               Regional aggregator
             </th>
@@ -277,6 +281,7 @@ export function SpecificationSlide() {
 }
 
 export function ImageTextSlide() {
+  const company = useCompany();
   return (
     <div className="flex h-full w-full">
       <div className="flex w-1/2 items-center justify-center bg-brand-sand">

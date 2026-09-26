@@ -182,13 +182,13 @@ export const formats = {
   emailBanner: screenSpec('emailBanner', 'Email banner · 600 × 200', 600, 200, {
     defaultExports: ['png', 'jpg']
   }),
-  signature: screenSpec('signature', 'HTML signature preview', 720, 420, {
+  signature: screenSpec('signature', 'HTML signature preview', 720, 480, {
     defaultExports: []
   }),
-  signatureCompact: screenSpec('signatureCompact', 'HTML signature preview', 720, 260, {
+  signatureCompact: screenSpec('signatureCompact', 'HTML signature preview', 720, 300, {
     defaultExports: []
   }),
-  signatureExecutive: screenSpec('signatureExecutive', 'HTML signature preview', 720, 520, {
+  signatureExecutive: screenSpec('signatureExecutive', 'HTML signature preview', 720, 560, {
     defaultExports: []
   }),
   footerFull: screenSpec('footerFull', 'A4 width footer', 794, 172, {
@@ -200,7 +200,7 @@ export const formats = {
   footerBand: screenSpec('footerBand', 'A4 width footer', 794, 120, {
     defaultExports: ['png']
   }),
-  iconSheet: screenSpec('iconSheet', 'Icon sheet · 960 × 520 px', 960, 520, {
+  iconSheet: screenSpec('iconSheet', 'Icon sheet · 960 × 640 px', 960, 640, {
     family: 'logo',
     defaultExports: ['png'],
     transparent: true

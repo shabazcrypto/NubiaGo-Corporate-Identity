@@ -480,81 +480,135 @@ export function CoverContractSchedule(): JSX.Element {
   );
 }
 
-export const enterpriseCovers: Array<{
+/** Cover family used by Document Covers filter tabs. */
+export type CoverFamily =
+  | 'corporate'
+  | 'proposal'
+  | 'report'
+  | 'catalogue'
+  | 'legal'
+  | 'media';
+
+export const COVER_FAMILIES: { id: CoverFamily | 'all'; label: string; note: string }[] = [
+  { id: 'all', label: 'All', note: 'Full A4 cover library' },
+  { id: 'corporate', label: 'Corporate', note: 'Profiles, diligence, investor, training' },
+  { id: 'proposal', label: 'Proposal', note: 'Commercial proposals and tenders' },
+  { id: 'report', label: 'Report', note: 'Annual, board and technical reports' },
+  { id: 'catalogue', label: 'Catalogue', note: 'Product and service catalogues' },
+  { id: 'legal', label: 'Legal', note: 'Contracts and controlled policy' },
+  { id: 'media', label: 'Media', note: 'Press kits and white papers' }
+];
+
+export type CoverCatalogEntry = {
+  id: string;
   title: string;
   fileName: string;
   description: string;
-  group: string;
+  family: CoverFamily;
+  groupLabel: string;
+  groupNote: string;
   render: () => JSX.Element;
-}> = [
+};
+
+export const enterpriseCovers: CoverCatalogEntry[] = [
   {
+    id: 'annual-report',
     title: 'Cover — Annual Report',
     fileName: 'NubiaGo_Cover_Annual_Report',
     description: 'Reversed primary field with oversized year for the statutory annual report.',
-    group: 'Governance',
+    family: 'report',
+    groupLabel: 'Annual report',
+    groupNote: 'Statutory reporting',
     render: () => <CoverAnnualReport />
   },
   {
+    id: 'board-pack',
     title: 'Cover — Board Pack',
     fileName: 'NubiaGo_Cover_Board_Pack',
     description: 'White board-meeting agenda with a confidential band and numbered agenda list.',
-    group: 'Governance',
+    family: 'report',
+    groupLabel: 'Board pack',
+    groupNote: 'Governance meetings',
     render: () => <CoverBoardPack />
   },
   {
+    id: 'due-diligence',
     title: 'Cover — Due Diligence',
     fileName: 'NubiaGo_Cover_Due_Diligence',
     description: 'Warm Sand M&A / investment data-room cover with series and validity metadata.',
-    group: 'Corporate',
+    family: 'corporate',
+    groupLabel: 'Due diligence',
+    groupNote: 'M&A and investment',
     render: () => <CoverDueDiligence />
   },
   {
+    id: 'policy-handbook',
     title: 'Cover — Policy Handbook',
     fileName: 'NubiaGo_Cover_Policy_Handbook',
     description: 'Technical white index cover listing controlled internal policies with page numbers.',
-    group: 'Compliance',
+    family: 'legal',
+    groupLabel: 'Policy handbook',
+    groupNote: 'Controlled documents',
     render: () => <CoverPolicyHandbook />
   },
   {
+    id: 'investor-brief',
     title: 'Cover — Investor Brief',
     fileName: 'NubiaGo_Cover_Investor_Brief',
     description: 'Dark primary one-pager cover for investor relations with key metrics.',
-    group: 'Investor',
+    family: 'corporate',
+    groupLabel: 'Investor brief',
+    groupNote: 'Investor relations',
     render: () => <CoverInvestorBrief />
   },
   {
+    id: 'tender-response',
     title: 'Cover — Tender Response',
     fileName: 'NubiaGo_Cover_Tender_Response',
     description: 'Editorial sand cover with client and RFP reference grid for procurement responses.',
-    group: 'Commercial',
+    family: 'proposal',
+    groupLabel: 'Tender response',
+    groupNote: 'Procurement',
     render: () => <CoverTenderResponse />
   },
   {
+    id: 'white-paper',
     title: 'Cover — White Paper',
     fileName: 'NubiaGo_Cover_White_Paper',
     description: 'Thought-leadership cover on white with a gold rule and publication metadata.',
-    group: 'Thought leadership',
+    family: 'media',
+    groupLabel: 'White paper',
+    groupNote: 'Thought leadership',
     render: () => <CoverWhitePaper />
   },
   {
+    id: 'training-manual',
     title: 'Cover — Training Manual',
     fileName: 'NubiaGo_Cover_Training_Manual',
     description: 'Sand operations academy cover listing six foundation training modules.',
-    group: 'People',
+    family: 'corporate',
+    groupLabel: 'Training manual',
+    groupNote: 'People & academy',
     render: () => <CoverTrainingManual />
   },
   {
+    id: 'press-kit',
     title: 'Cover — Press Kit',
     fileName: 'NubiaGo_Cover_Press_Kit',
     description: 'Reversed media kit listing boilerplate, logos, colour sheet and photography.',
-    group: 'Media',
+    family: 'media',
+    groupLabel: 'Press kit',
+    groupNote: 'Media relations',
     render: () => <CoverPressKit />
   },
   {
+    id: 'contract-schedule',
     title: 'Cover — Contract Schedule',
     fileName: 'NubiaGo_Cover_Contract_Schedule',
     description: 'Legal schedule cover with Party A / Party B blocks and agreement references.',
-    group: 'Legal',
+    family: 'legal',
+    groupLabel: 'Contract schedule',
+    groupNote: 'Legal agreements',
     render: () => <CoverContractSchedule />
   }
 ];

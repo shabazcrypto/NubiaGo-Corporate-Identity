@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { brandIcons, NG_STROKE, QrPlaceholder } from '@/components/brand/iconSystem';
+import { brandIcons, AB_STROKE, QrPlaceholder } from '@/components/brand/iconSystem';
 import { Logo, BrandRule } from '@/components/brand/Logo';
 import { formats } from '@/lib/formats';
 
@@ -24,7 +24,7 @@ export const IconSheet: Story = {
       <div className="mt-10 grid flex-1 grid-cols-7 gap-y-10">
         {brandIcons.map(({ key, label, usage, Icon }) => (
           <div key={key} className="flex flex-col items-center px-2 text-center">
-            <Icon className="h-7 w-7 text-brand" strokeWidth={NG_STROKE} />
+            <Icon className="h-7 w-7 text-brand" strokeWidth={AB_STROKE} />
             <div className="mt-3 text-[11px] font-semibold text-ink">{label}</div>
             <div className="mt-0.5 text-[8.5px] leading-tight text-gray-500">{usage}</div>
           </div>
@@ -56,7 +56,7 @@ export const RuleStack: Story = {
       {[100, 72, 44].map((width) => (
         <div key={width} className="h-[2px] bg-brand" style={{ width: `${width}%` }} />
       ))}
-      <div className="h-[2px] w-[22%] bg-brand-gold" />
+      <div className="h-[2px] w-[22%] bg-brand-ink" />
     </div>
   )
 };

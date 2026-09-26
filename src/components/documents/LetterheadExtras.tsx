@@ -143,7 +143,7 @@ export function LetterheadFr() {
             de fournisseurs. La présente confirme le périmètre convenu et les conditions commerciales pour votre revue.
           </p>
           <p>
-            NubiaGo assurera l’onboarding marchand, la vérification et le règlement sur les quatre marchés identifiés,
+            {company.name} assurera l’onboarding marchand, la vérification et le règlement sur les quatre marchés identifiés,
             intégré à votre plateforme d’achat. La mise en œuvre est prévue sur douze semaines, avec un premier marché
             opérationnel en semaine cinq.
           </p>

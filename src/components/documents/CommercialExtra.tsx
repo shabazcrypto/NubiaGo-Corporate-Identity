@@ -15,12 +15,12 @@ const customerLines = [customer.company, customer.attention, customer.address, c
 
 function useSalesLines() {
   const company = useCompany();
-  return [company.personName, company.jobTitle, company.phone, company.email];
+  return { company, salesLines: [company.personName, company.jobTitle, company.phone, company.email] };
 }
 
 /** Credit note — negative totals emphasis. */
 export function CreditNoteDoc(): JSX.Element {
-  const salesLines = useSalesLines();
+  const { company, salesLines } = useSalesLines();
   return (
     <A4Page footer={<DocumentFooter variant="minimal" page="1 / 1" />}>
       <DocumentTypeHeader
@@ -62,14 +62,14 @@ export function CreditNoteDoc(): JSX.Element {
           ['Currency', totals.currency]
         ]}
       />
-      <SignatureRow left="Authorised · NubiaGo" right="Acknowledged by customer" />
+      <SignatureRow left={`Authorised · ${company.name}`} right="Acknowledged by customer" />
     </A4Page>
   );
 }
 
 /** Debit note. */
 export function DebitNoteDoc(): JSX.Element {
-  const salesLines = useSalesLines();
+  const { company, salesLines } = useSalesLines();
   return (
     <A4Page footer={<DocumentFooter variant="minimal" page="1 / 1" />}>
       <DocumentTypeHeader
@@ -90,7 +90,7 @@ export function DebitNoteDoc(): JSX.Element {
       </div>
       <PartyBlocks
         left={{ label: 'Debit to', lines: customerLines }}
-        right={{ label: 'Your contact at NubiaGo', lines: salesLines }}
+        right={{ label: `Your contact at ${company.name}`, lines: salesLines }}
       />
       <LineItemsTable items={quotationItems.slice(2, 4)} currency={totals.currency} />
       <TotalsBlock
@@ -117,7 +117,7 @@ export function DebitNoteDoc(): JSX.Element {
 
 /** Delivery / packing list — qty focus, no money totals. */
 export function DeliveryNoteDoc(): JSX.Element {
-  const salesLines = useSalesLines();
+  const { company, salesLines } = useSalesLines();
   return (
     <A4Page footer={<DocumentFooter variant="minimal" page="1 / 1" />}>
       <DocumentTypeHeader
@@ -185,12 +185,12 @@ export function DeliveryNoteDoc(): JSX.Element {
           </div>
         ))}
       </div>
-      <SignatureRow left="Despatched by · NubiaGo" right="Received by" />
+      <SignatureRow left={`Despatched by · ${company.name}`} right="Received by" />
     </A4Page>
   );
 }
 
-/** Purchase order — NubiaGo as buyer. */
+/** Purchase order — brand as buyer. */
 export function PurchaseOrderDoc(): JSX.Element {
   const company = useCompany();
   const buyerAddress = [company.addressLine1, company.addressLine2]
@@ -221,7 +221,7 @@ export function PurchaseOrderDoc(): JSX.Element {
       />
       <PartyBlocks
         left={{ label: 'Vendor / supplier', lines: vendorLines }}
-        right={{ label: 'Bill to / ship to — NubiaGo', lines: buyerLines }}
+        right={{ label: `Bill to / ship to — ${company.name}`, lines: buyerLines }}
       />
       <LineItemsTable items={quotationItems.slice(0, 3)} currency={totals.currency} />
       <TotalsBlock
@@ -241,14 +241,14 @@ export function PurchaseOrderDoc(): JSX.Element {
           ['Reference on invoice', 'PO-NG-2024-2201']
         ]}
       />
-      <SignatureRow left="Authorised buyer · NubiaGo" right="Vendor acknowledgement" />
+      <SignatureRow left={`Authorised buyer · ${company.name}`} right="Vendor acknowledgement" />
     </A4Page>
   );
 }
 
 /** Statement of account — opening / closing balance. */
 export function StatementOfAccountDoc(): JSX.Element {
-  const salesLines = useSalesLines();
+  const { salesLines } = useSalesLines();
   const rows: [string, string, string, string][] = [
     ['01 Dec 2024', 'Opening balance', '', '12,400.00'],
     ['05 Dec 2024', 'INV-2024-0881', '8,750.00', '21,150.00'],
@@ -323,8 +323,7 @@ export function StatementOfAccountDoc(): JSX.Element {
 
 /** Payment receipt / acknowledgement. */
 export function PaymentReceiptDoc(): JSX.Element {
-  const company = useCompany();
-  const salesLines = useSalesLines();
+  const { company, salesLines } = useSalesLines();
   return (
     <A4Page footer={<DocumentFooter variant="minimal" page="1 / 1" />}>
       <DocumentTypeHeader
@@ -382,14 +381,14 @@ export function PaymentReceiptDoc(): JSX.Element {
           </div>
         </div>
       </div>
-      <SignatureRow left="For NubiaGo · Accounts" right="Customer copy" />
+      <SignatureRow left={`For ${company.name} · Accounts`} right="Customer copy" />
     </A4Page>
   );
 }
 
 /** SLA summary — metrics table. */
 export function SlaSummaryDoc(): JSX.Element {
-  const salesLines = useSalesLines();
+  const { company, salesLines } = useSalesLines();
   const metrics: [string, string, string, string][] = [
     ['Platform availability', '99.90%', '99.95%', 'Met'],
     ['Settlement cut-off adherence', '98.00%', '99.10%', 'Met'],
@@ -444,14 +443,14 @@ export function SlaSummaryDoc(): JSX.Element {
           ['Document class', 'Customer confidential']
         ]}
       />
-      <SignatureRow left="NubiaGo service owner" right="Customer acceptance" />
+      <SignatureRow left={`${company.name} service owner`} right="Customer acceptance" />
     </A4Page>
   );
 }
 
 /** Change order / contract amendment. */
 export function ChangeOrderDoc(): JSX.Element {
-  const salesLines = useSalesLines();
+  const { company, salesLines } = useSalesLines();
   return (
     <A4Page footer={<DocumentFooter variant="minimal" page="1 / 1" />}>
       <DocumentTypeHeader
@@ -472,7 +471,7 @@ export function ChangeOrderDoc(): JSX.Element {
       </div>
       <PartyBlocks
         left={{ label: 'Customer', lines: customerLines }}
-        right={{ label: 'NubiaGo contact', lines: salesLines }}
+        right={{ label: `${company.name} contact`, lines: salesLines }}
       />
       <LineItemsTable items={quotationItems.slice(1, 3)} currency={totals.currency} />
       <TotalsBlock
@@ -494,7 +493,7 @@ export function ChangeOrderDoc(): JSX.Element {
           ...(terms.slice(0, 1) as [string, string][])
         ]}
       />
-      <SignatureRow left="For NubiaGo" right="Authorised customer signatory" />
+      <SignatureRow left={`For ${company.name}`} right="Authorised customer signatory" />
     </A4Page>
   );
 }
@@ -571,7 +570,7 @@ export function RemittanceAdviceDoc(): JSX.Element {
           ))}
         </div>
       </div>
-      <SignatureRow left="Prepared by payer" right="For NubiaGo accounts" />
+      <SignatureRow left="Prepared by payer" right={`For ${company.name} accounts`} />
     </A4Page>
   );
 }
@@ -631,7 +630,7 @@ export function CreditApplicationDoc(): JSX.Element {
           ['Processing time', '5–10 business days']
         ]}
       />
-      <SignatureRow left="Applicant authorised signatory" right="NubiaGo credit approval" />
+      <SignatureRow left="Applicant authorised signatory" right={`${company.name} credit approval`} />
     </A4Page>
   );
 }
@@ -667,7 +666,7 @@ export const enterpriseCommercialDocs: Array<{
   {
     title: 'Purchase Order',
     fileName: 'NubiaGo_Purchase_Order',
-    description: 'Outbound PO with NubiaGo as buyer and vendor party block.',
+    description: 'Outbound PO with the brand as buyer and vendor party block.',
     group: 'Procurement',
     render: () => <PurchaseOrderDoc />
   },

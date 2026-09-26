@@ -14,6 +14,35 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src')
     }
   },
+  server: {
+    // Transform the default route graph early so the first browser hit is warmer.
+    warmup: {
+      clientFiles: [
+        './src/index.tsx',
+        './src/App.tsx',
+        './src/components/layout/AppShell.tsx',
+        './src/pages/BrandSystem.tsx'
+      ]
+    }
+  },
+  optimizeDeps: {
+    include: [
+      'react',
+      'react-dom',
+      'react-dom/client',
+      'react-router-dom',
+      'lucide-react',
+      'clsx',
+      'tailwind-merge',
+      'class-variance-authority',
+      '@radix-ui/react-dialog',
+      '@radix-ui/react-dropdown-menu',
+      '@radix-ui/react-label',
+      '@radix-ui/react-separator',
+      '@radix-ui/react-slot',
+      '@radix-ui/react-tabs'
+    ]
+  },
   build: {
     sourcemap: false,
     chunkSizeWarningLimit: 1200
